@@ -1,0 +1,42 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+	<script type="text/javascript">
+		$(document).ready(function() {
+					
+		    if ( $.cookie("scroll") !== null ) {
+		        $(document).scrollTop( $.cookie("scroll") );
+		    }
+		
+		    $(window).on("scroll", function() {
+		        $.cookie("scroll", $(document).scrollTop() );	
+		    });		
+		});
+	</script>
+	<div class="row">
+		<div class="col-md-10">
+			<h4>
+				<b><span wicket:id="title" id="title"></span><small> 1.0.2 Final</small></b>
+			</h4>
+		</div>
+		<div class="col-md-2">
+			<div class="btn-group">
+				<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+					<span class="glyphicon glyphicon-cloud"></span> All sites<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#">Netbrasoft.com</a></li>
+					<li><a href="#">Cheirodeflor.nl</a></li>
+					<li class="divider"></li>
+					<li><a href="#">All sites</a></li>
+				</ul>
+			</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+					<span class="glyphicon glyphicon-user"></span> Admin <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</wicket:panel>
