@@ -5,14 +5,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.netbrasoft.application</groupId>
-	<artifactId>gnuob-application</artifactId>
+	<groupId>com.netbrasoft.gnuob</groupId>
+	<artifactId>gnuob-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>GNU Open Business Platform</name>
 	<description>GNU Open Business Platform is a open source business framework</description>
 
-	<url>https://github.com/bendraaisma/gnuob</url>
+	<url>https://github.com/bendraaisma/gnuob-app</url>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -112,6 +112,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 			<version>${version.springframework.plugin}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.netbrasoft.gnuob</groupId>
+			<artifactId>gnuob-api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.netbrasoft.application</groupId>

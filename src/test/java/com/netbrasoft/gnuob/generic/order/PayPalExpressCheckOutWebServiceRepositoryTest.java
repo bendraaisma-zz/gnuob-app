@@ -44,7 +44,7 @@ public class PayPalExpressCheckOutWebServiceRepositoryTest {
 		Address address = new Address();
 
 		address.setCityName("Zwolle");
-		address.setStreet1("Koggelaan 5d");
+		address.setStreet1("My street");
 
 		customer.setBuyerEmail("bendraaisma@gmail.com");
 		customer.setAdress(address);

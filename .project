@@ -3,6 +3,7 @@
 	<name>gnuob-application</name>
 	<comment></comment>
 	<projects>
+		<project>gnuob-api</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

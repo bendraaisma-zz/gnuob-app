@@ -4,7 +4,7 @@ import org.apache.wicket.markup.html.border.Border;
 
 import com.netbrasoft.gnuob.application.panel.FooterPanel;
 import com.netbrasoft.gnuob.application.panel.HeaderPanel;
-import com.netbrasoft.gnuob.application.panel.NavigationPanel;
+import com.netbrasoft.gnuob.application.panel.MainMenuPanel;
 
 public class ContentBorder extends Border {
 
@@ -19,11 +19,11 @@ public class ContentBorder extends Border {
 		super.onInitialize();
 
 		HeaderPanel headerPanel = new HeaderPanel("headerPanel");
-		NavigationPanel categoryPanel = new NavigationPanel("navigationPanel");
+		MainMenuPanel mainMenuPanel = new MainMenuPanel("mainMenuPanel");
 		FooterPanel footerPanel = new FooterPanel("footerPanel");
 
 		addToBorder(headerPanel);
-		addToBorder(categoryPanel);
+		addToBorder(mainMenuPanel);
 		addToBorder(footerPanel);
 	}
 

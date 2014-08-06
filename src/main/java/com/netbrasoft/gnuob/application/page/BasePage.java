@@ -15,12 +15,9 @@ public abstract class BasePage extends WebPage {
 		super.renderHead(response);
 
 		response.render(JavaScriptHeaderItem.forReference(getApplication().getJavaScriptLibrarySettings().getJQueryReference()));
-
-		// TODO deze regel verwijderen zodra wicket bootstrap mbv resource deze URL's kan herleiden.
-		response.render(new CssUrlReferenceHeaderItem("//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css", "", ""));
-		response.render(new CssUrlReferenceHeaderItem("//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css", "", ""));
-		//response.render(new JavaScriptUrlReferenceHeaderItem("//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js", "bootstrap", false, "UTF-8", ""));
-
-		response.render(new JavaScriptUrlReferenceHeaderItem("https://raw.github.com/carhartl/jquery-cookie/master/jquery.cookie.js", "jquery.cookie", false, "UTF-8", ""));
+		response.render(new CssUrlReferenceHeaderItem("//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css", "", ""));
+		response.render(new CssUrlReferenceHeaderItem("//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css", "", ""));
+		response.render(new JavaScriptUrlReferenceHeaderItem("//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js", "bootstrap", false, "UTF-8", ""));
+		response.render(new JavaScriptUrlReferenceHeaderItem("https://raw.githubusercontent.com/martinkr/jCookie/1.2.1/jcookie.js", "jquery.cookie", false, "UTF-8", ""));
 	}
 }

@@ -24,10 +24,6 @@ import com.netbrasoft.gnuob.generic.security.UserWebServiceRepository;
 @Service("wicketApplication")
 public class NetbrasoftApplication extends WebApplication {
 
-	private static final String BOOTSTRAP_MIN_JS = "//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js";
-
-	private static final String BOOTSTRAP_MIN_CSS = "//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css";
-
 	@Autowired(required = true)
 	private CategoryWebServiceRepository categoryWebServiceRepository;
 
