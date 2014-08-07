@@ -9,11 +9,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.springframework.stereotype.Service;
 
-import com.netbrasoft.gnuob.GNUOpenBusinessServiceException_Exception;
-import com.netbrasoft.gnuob.MetaData;
-import com.netbrasoft.gnuob.OrderBy;
-import com.netbrasoft.gnuob.Paging;
-import com.netbrasoft.gnuob.Product;
+import com.netbrasoft.gnuob.api.GNUOpenBusinessServiceException_Exception;
+import com.netbrasoft.gnuob.api.MetaData;
+import com.netbrasoft.gnuob.api.OrderBy;
+import com.netbrasoft.gnuob.api.Paging;
+import com.netbrasoft.gnuob.api.Product;
 import com.netbrasoft.gnuob.application.NetbrasoftApplication;
 import com.netbrasoft.gnuob.application.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.generic.product.ProductWebServiceRepository;

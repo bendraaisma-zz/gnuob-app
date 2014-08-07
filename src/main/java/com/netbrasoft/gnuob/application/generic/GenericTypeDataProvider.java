@@ -2,7 +2,7 @@ package com.netbrasoft.gnuob.application.generic;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 
-import com.netbrasoft.gnuob.GNUOpenBusinessServiceException_Exception;
+import com.netbrasoft.gnuob.api.GNUOpenBusinessServiceException_Exception;
 
 public interface GenericTypeDataProvider<T> extends IDataProvider<T> {
 

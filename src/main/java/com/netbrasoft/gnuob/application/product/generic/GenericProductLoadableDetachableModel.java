@@ -2,7 +2,7 @@ package com.netbrasoft.gnuob.application.product.generic;
 
 import org.apache.wicket.model.LoadableDetachableModel;
 
-import com.netbrasoft.gnuob.Product;
+import com.netbrasoft.gnuob.api.Product;
 
 public class GenericProductLoadableDetachableModel<P extends Product> extends LoadableDetachableModel<P> {
 

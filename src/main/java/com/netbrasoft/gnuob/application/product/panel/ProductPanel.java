@@ -19,7 +19,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.RangeValidator;
 
-import com.netbrasoft.gnuob.Product;
+import com.netbrasoft.gnuob.api.Product;
 import com.netbrasoft.gnuob.application.border.EntityBorder;
 import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
 import com.netbrasoft.gnuob.application.product.generic.GenericProductDataProvider;

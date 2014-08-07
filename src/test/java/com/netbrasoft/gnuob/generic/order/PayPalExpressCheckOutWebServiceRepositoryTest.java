@@ -11,16 +11,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.netbrasoft.gnuob.Address;
-import com.netbrasoft.gnuob.Contract;
-import com.netbrasoft.gnuob.Customer;
-import com.netbrasoft.gnuob.GNUOpenBusinessServiceException_Exception;
-import com.netbrasoft.gnuob.Invoice;
-import com.netbrasoft.gnuob.MetaData;
-import com.netbrasoft.gnuob.Order;
-import com.netbrasoft.gnuob.OrderRecord;
-import com.netbrasoft.gnuob.Product;
-import com.netbrasoft.gnuob.Stock;
+import com.netbrasoft.gnuob.api.Address;
+import com.netbrasoft.gnuob.api.Contract;
+import com.netbrasoft.gnuob.api.Customer;
+import com.netbrasoft.gnuob.api.GNUOpenBusinessServiceException_Exception;
+import com.netbrasoft.gnuob.api.Invoice;
+import com.netbrasoft.gnuob.api.MetaData;
+import com.netbrasoft.gnuob.api.Order;
+import com.netbrasoft.gnuob.api.OrderRecord;
+import com.netbrasoft.gnuob.api.Product;
+import com.netbrasoft.gnuob.api.Stock;
 import com.netbrasoft.gnuob.generic.product.ProductWebServiceRepository;
 import com.netbrasoft.gnuob.generic.utils.Utils;
 
