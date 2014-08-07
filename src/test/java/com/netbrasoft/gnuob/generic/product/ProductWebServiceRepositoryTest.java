@@ -16,6 +16,7 @@ import com.netbrasoft.gnuob.api.MetaData;
 import com.netbrasoft.gnuob.api.Paging;
 import com.netbrasoft.gnuob.api.Product;
 import com.netbrasoft.gnuob.api.Stock;
+import com.netbrasoft.gnuob.api.product.ProductWebServiceRepository;
 import com.netbrasoft.gnuob.generic.utils.Utils;
 
 @RunWith(Arquillian.class)

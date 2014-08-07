@@ -3,6 +3,8 @@ package com.netbrasoft.gnuob.generic.category;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.activation.DataHandler;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -12,11 +14,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.netbrasoft.gnuob.api.Category;
+import com.netbrasoft.gnuob.api.Content;
 import com.netbrasoft.gnuob.api.GNUOpenBusinessServiceException_Exception;
 import com.netbrasoft.gnuob.api.MetaData;
 import com.netbrasoft.gnuob.api.OrderBy;
 import com.netbrasoft.gnuob.api.Paging;
 import com.netbrasoft.gnuob.api.SubCategory;
+import com.netbrasoft.gnuob.api.category.CategoryWebServiceRepository;
 import com.netbrasoft.gnuob.generic.utils.Utils;
 
 @RunWith(Arquillian.class)
@@ -98,8 +102,14 @@ public class CategoryWebServiceRepositoryTest {
 		SubCategory subCategoryLenteSport = new SubCategory();
 		SubCategory subCategoryHerfstSport = new SubCategory();
 
+		Content content = new Content();
+		content.setFormat("pdf");
+		content.setName("Document");
+		content.setContent(new DataHandler(new String("dfd").getBytes(), "application/octet-stream"));
+
 		paramCategorySport.setName("Sport");
 		paramCategorySport.setDescription("Sport artikelen");
+		paramCategorySport.getContents().add(content);
 
 		subCategoryWinterSport.setName("WinterSport");
 		subCategoryWinterSport.setDescription("WinterSport");

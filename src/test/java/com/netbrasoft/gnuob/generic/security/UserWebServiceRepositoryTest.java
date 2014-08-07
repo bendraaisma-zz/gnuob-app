@@ -19,6 +19,7 @@ import com.netbrasoft.gnuob.api.Paging;
 import com.netbrasoft.gnuob.api.Rule;
 import com.netbrasoft.gnuob.api.Site;
 import com.netbrasoft.gnuob.api.User;
+import com.netbrasoft.gnuob.api.security.UserWebServiceRepository;
 import com.netbrasoft.gnuob.generic.utils.Utils;
 
 @RunWith(Arquillian.class)

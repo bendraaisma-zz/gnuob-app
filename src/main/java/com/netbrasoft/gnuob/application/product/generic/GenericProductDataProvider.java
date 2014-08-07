@@ -14,9 +14,9 @@ import com.netbrasoft.gnuob.api.MetaData;
 import com.netbrasoft.gnuob.api.OrderBy;
 import com.netbrasoft.gnuob.api.Paging;
 import com.netbrasoft.gnuob.api.Product;
+import com.netbrasoft.gnuob.api.product.ProductWebServiceRepository;
 import com.netbrasoft.gnuob.application.NetbrasoftApplication;
 import com.netbrasoft.gnuob.application.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.generic.product.ProductWebServiceRepository;
 
 @Service("ProductDataProvider")
 public class GenericProductDataProvider<P extends Product> extends SortableDataProvider<P, String> implements GenericTypeDataProvider<P> {
