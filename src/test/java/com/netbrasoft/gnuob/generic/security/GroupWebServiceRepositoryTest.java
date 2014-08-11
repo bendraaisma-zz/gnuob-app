@@ -44,7 +44,7 @@ public class GroupWebServiceRepositoryTest {
 		paramGroupWithNoAccess = new Group();
 		paramGroupWithNoAccess.setName(UUID.randomUUID().toString());
 		paramGroupWithNoAccess.setDescription(UUID.randomUUID().toString());
-		paramGroupWithNoAccess.setRule(Rule.NO_ACCESS);
+		paramGroupWithNoAccess.setRule(Rule.NONE_ACCESS);
 
 		paramGroupWithNoAccess = groupWebServiceRepository.persist(paramMetaData, paramGroupWithNoAccess);
 

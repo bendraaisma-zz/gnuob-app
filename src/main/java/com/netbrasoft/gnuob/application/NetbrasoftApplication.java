@@ -18,6 +18,7 @@ import com.netbrasoft.gnuob.api.product.ProductWebServiceRepository;
 import com.netbrasoft.gnuob.api.security.GroupWebServiceRepository;
 import com.netbrasoft.gnuob.api.security.SiteWebServiceRepository;
 import com.netbrasoft.gnuob.api.security.UserWebServiceRepository;
+import com.netbrasoft.gnuob.api.setting.SettingWebServiceRepository;
 import com.netbrasoft.gnuob.application.page.EntitiesPage;
 import com.netbrasoft.gnuob.application.product.page.ProductPage;
 
@@ -56,6 +57,9 @@ public class NetbrasoftApplication extends WebApplication {
 
 	@Autowired(required = true)
 	private GroupWebServiceRepository groupWebServiceRepository;
+
+	@Autowired(required = true)
+	private SettingWebServiceRepository settingWebServiceRepository;
 
 	public CategoryWebServiceRepository getCategoryWebServiceRepository() {
 		return categoryWebServiceRepository;
@@ -96,6 +100,10 @@ public class NetbrasoftApplication extends WebApplication {
 
 	public ProductWebServiceRepository getProductWebServiceRepository() {
 		return productWebServiceRepository;
+	}
+
+	public SettingWebServiceRepository getSettingWebServiceRepository() {
+		return settingWebServiceRepository;
 	}
 
 	public SiteWebServiceRepository getSiteWebServiceRepository() {

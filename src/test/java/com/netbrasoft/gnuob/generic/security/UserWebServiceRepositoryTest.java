@@ -46,7 +46,7 @@ public class UserWebServiceRepositoryTest {
 
 		paramUserWithNoAccess.setName(UUID.randomUUID().toString());
 		paramUserWithNoAccess.setPassword(UUID.randomUUID().toString());
-		paramUserWithNoAccess.setRule(Rule.NO_ACCESS);
+		paramUserWithNoAccess.setRule(Rule.NONE_ACCESS);
 
 		Group group = new Group();
 		group.setName(UUID.randomUUID().toString());
