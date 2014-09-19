@@ -16,7 +16,6 @@ import com.netbrasoft.gnuob.api.Group;
 import com.netbrasoft.gnuob.api.MetaData;
 import com.netbrasoft.gnuob.api.OrderBy;
 import com.netbrasoft.gnuob.api.Paging;
-import com.netbrasoft.gnuob.api.Rule;
 import com.netbrasoft.gnuob.api.security.GroupWebServiceRepository;
 import com.netbrasoft.gnuob.generic.utils.Utils;
 
@@ -44,7 +43,7 @@ public class GroupWebServiceRepositoryTest {
 		paramGroupWithNoAccess = new Group();
 		paramGroupWithNoAccess.setName(UUID.randomUUID().toString());
 		paramGroupWithNoAccess.setDescription(UUID.randomUUID().toString());
-		paramGroupWithNoAccess.setRule(Rule.NONE_ACCESS);
+		// paramGroupWithNoAccess.setRule(Rule.NONE_ACCESS);
 
 		paramGroupWithNoAccess = groupWebServiceRepository.persist(paramMetaData, paramGroupWithNoAccess);
 

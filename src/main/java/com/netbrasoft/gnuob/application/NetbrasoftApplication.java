@@ -3,7 +3,11 @@ package com.netbrasoft.gnuob.application;
 import net.ftlines.wicketsource.WicketSource;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.Session;
+import org.apache.wicket.authroles.authorization.strategies.role.RoleAuthorizationStrategy;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +23,17 @@ import com.netbrasoft.gnuob.api.security.GroupWebServiceRepository;
 import com.netbrasoft.gnuob.api.security.SiteWebServiceRepository;
 import com.netbrasoft.gnuob.api.security.UserWebServiceRepository;
 import com.netbrasoft.gnuob.api.setting.SettingWebServiceRepository;
-import com.netbrasoft.gnuob.application.page.EntitiesPage;
+import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.authorization.UserRolesAuthorizer;
+import com.netbrasoft.gnuob.application.category.page.CategoryPage;
+import com.netbrasoft.gnuob.application.content.page.ContentPage;
+import com.netbrasoft.gnuob.application.contract.page.ContractPage;
+import com.netbrasoft.gnuob.application.customer.page.CustomerPage;
+import com.netbrasoft.gnuob.application.offer.page.OfferPage;
+import com.netbrasoft.gnuob.application.order.page.OrderPage;
+import com.netbrasoft.gnuob.application.page.LogoutPage;
 import com.netbrasoft.gnuob.application.product.page.ProductPage;
+import com.netbrasoft.gnuob.application.setting.page.SettingPage;
 
 @Service("wicketApplication")
 public class NetbrasoftApplication extends WebApplication {
@@ -83,7 +96,7 @@ public class NetbrasoftApplication extends WebApplication {
 
 	@Override
 	public Class<? extends Page> getHomePage() {
-		return EntitiesPage.class;
+		return ContractPage.class;
 	}
 
 	public OfferWebServiceRepository getOfferWebServiceRepository() {
@@ -118,11 +131,25 @@ public class NetbrasoftApplication extends WebApplication {
 	protected void init() {
 		super.init();
 
+		getSecuritySettings().setAuthorizationStrategy(new RoleAuthorizationStrategy(new UserRolesAuthorizer()));
+
 		if ("true".equalsIgnoreCase(System.getProperty("gnuob.debug.enabled", "false"))) {
 			WicketSource.configure(this);
 		}
 
+		mountPage("ContractPage.html", ContractPage.class);
+		mountPage("CustomerPage.html", CustomerPage.class);
+		mountPage("OrderPage.html", OrderPage.class);
+		mountPage("OfferPage.html", OfferPage.class);
 		mountPage("ProductPage.html", ProductPage.class);
-		mountPage("EntitiesPage.html", EntitiesPage.class);
+		mountPage("CategoryPage.html", CategoryPage.class);
+		mountPage("ContentPage.html", ContentPage.class);
+		mountPage("SettingPage.html", SettingPage.class);
+		mountPage("LogoutPage.html", LogoutPage.class);
+	}
+
+	@Override
+	public Session newSession(Request request, Response response) {
+		return new RolesSession(request);
 	}
 }

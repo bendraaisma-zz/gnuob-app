@@ -5,8 +5,14 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 
-import com.netbrasoft.gnuob.application.page.EntitiesPage;
+import com.netbrasoft.gnuob.application.category.page.CategoryPage;
+import com.netbrasoft.gnuob.application.content.page.ContentPage;
+import com.netbrasoft.gnuob.application.contract.page.ContractPage;
+import com.netbrasoft.gnuob.application.customer.page.CustomerPage;
+import com.netbrasoft.gnuob.application.offer.page.OfferPage;
+import com.netbrasoft.gnuob.application.order.page.OrderPage;
 import com.netbrasoft.gnuob.application.product.page.ProductPage;
+import com.netbrasoft.gnuob.application.setting.page.SettingPage;
 
 public class EntityPanel extends Panel {
 
@@ -28,7 +34,7 @@ public class EntityPanel extends Panel {
 			protected void onInitialize() {
 				super.onInitialize();
 
-				if (getPage() instanceof EntitiesPage) {
+				if (getPage() instanceof ContractPage) {
 					add(new AttributeAppender("class", "active"));
 				}
 			}
@@ -42,7 +48,7 @@ public class EntityPanel extends Panel {
 			protected void onInitialize() {
 				super.onInitialize();
 
-				if (getPage() instanceof ProductPage) {
+				if (getPage() instanceof CustomerPage) {
 					add(new AttributeAppender("class", "active"));
 				}
 			}
@@ -56,7 +62,7 @@ public class EntityPanel extends Panel {
 			protected void onInitialize() {
 				super.onInitialize();
 
-				if (getPage() instanceof ProductPage) {
+				if (getPage() instanceof OrderPage) {
 					add(new AttributeAppender("class", "active"));
 				}
 			}
@@ -70,7 +76,7 @@ public class EntityPanel extends Panel {
 			protected void onInitialize() {
 				super.onInitialize();
 
-				if (getPage() instanceof ProductPage) {
+				if (getPage() instanceof OfferPage) {
 					add(new AttributeAppender("class", "active"));
 				}
 			}
@@ -98,7 +104,7 @@ public class EntityPanel extends Panel {
 			protected void onInitialize() {
 				super.onInitialize();
 
-				if (getPage() instanceof ProductPage) {
+				if (getPage() instanceof CategoryPage) {
 					add(new AttributeAppender("class", "active"));
 				}
 			}
@@ -112,7 +118,7 @@ public class EntityPanel extends Panel {
 			protected void onInitialize() {
 				super.onInitialize();
 
-				if (getPage() instanceof ProductPage) {
+				if (getPage() instanceof ContentPage) {
 					add(new AttributeAppender("class", "active"));
 				}
 			}
@@ -126,7 +132,7 @@ public class EntityPanel extends Panel {
 			protected void onInitialize() {
 				super.onInitialize();
 
-				if (getPage() instanceof ProductPage) {
+				if (getPage() instanceof SettingPage) {
 					add(new AttributeAppender("class", "active"));
 				}
 			}

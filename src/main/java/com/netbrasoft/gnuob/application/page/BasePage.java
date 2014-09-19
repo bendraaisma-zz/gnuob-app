@@ -1,11 +1,13 @@
 package com.netbrasoft.gnuob.application.page;
 
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.head.CssUrlReferenceHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.head.JavaScriptUrlReferenceHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 
+@AuthorizeInstantiation("Administrator")
 public abstract class BasePage extends WebPage {
 
 	private static final long serialVersionUID = 2104311609974795936L;

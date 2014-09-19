@@ -2,6 +2,7 @@ package com.netbrasoft.gnuob.application.product.panel;
 
 import java.math.BigDecimal;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLocator;
@@ -20,6 +21,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.RangeValidator;
 
 import com.netbrasoft.gnuob.api.Product;
+import com.netbrasoft.gnuob.application.authorization.RolesSession;
 import com.netbrasoft.gnuob.application.border.EntityBorder;
 import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
 import com.netbrasoft.gnuob.application.product.generic.GenericProductDataProvider;
@@ -128,6 +130,12 @@ public class ProductPanel extends Panel {
 	@Override
 	protected void onInitialize() {
 		super.onInitialize();
+
+		RolesSession roleSession = (RolesSession) Session.get();
+
+		genericTypeDataProvider.setUser(roleSession.getUsername());
+		genericTypeDataProvider.setPassword(roleSession.getPassword());
+		genericTypeDataProvider.setSite(roleSession.getSite());
 
 		ProductDataView productDataView = new ProductDataView("productTableRow", genericTypeDataProvider);
 

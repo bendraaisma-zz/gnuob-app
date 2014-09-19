@@ -46,11 +46,7 @@ public class GenericProductDataProvider<P extends Product> extends SortableDataP
 	public GenericProductDataProvider(P product, OrderBy orderBy) {
 		this.product = product;
 		this.orderBy = orderBy;
-
 		metaData = new MetaData();
-		metaData.setPassword("admin");
-		metaData.setUser("admin");
-		metaData.setSite("www.netbrasoft.com");
 	}
 
 	@Override
@@ -159,12 +155,20 @@ public class GenericProductDataProvider<P extends Product> extends SortableDataP
 
 	}
 
-	public void setMetaData(MetaData metaData) {
-		this.metaData = metaData;
+	public void setPassword(String password) {
+		this.metaData.setPassword(password);
 	}
 
 	public void setProduct(P product) {
 		this.product = product;
+	}
+
+	public void setSite(String site) {
+		this.metaData.setSite(site);
+	}
+
+	public void setUser(String user) {
+		this.metaData.setUser(user);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.netbrasoft.gnuob.application.product.page;
+package com.netbrasoft.gnuob.application.contract.page;
 
 import org.apache.wicket.markup.head.IHeaderResponse;
 
@@ -6,9 +6,9 @@ import com.netbrasoft.gnuob.application.border.ContentBorder;
 import com.netbrasoft.gnuob.application.page.BasePage;
 import com.netbrasoft.gnuob.application.product.panel.ProductPanel;
 
-public class ProductPage extends BasePage {
+public class ContractPage extends BasePage {
 
-	private static final long serialVersionUID = -4939575689434256761L;
+	private static final long serialVersionUID = 7735081526644455027L;
 
 	@Override
 	protected void onInitialize() {
