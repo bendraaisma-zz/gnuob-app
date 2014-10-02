@@ -30,6 +30,12 @@
 	<security-role>
 		<role-name>Administrator</role-name>
 	</security-role>
+	<security-role>
+		<role-name>Manager</role-name>
+	</security-role>
+	<security-role>
+		<role-name>Employee</role-name>
+	</security-role>
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>all</web-resource-name>
@@ -38,6 +44,8 @@
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>Administrator</role-name>
+			<role-name>Manager</role-name>
+			<role-name>Employee</role-name>
 		</auth-constraint>
 	</security-constraint>
 	<login-config>
