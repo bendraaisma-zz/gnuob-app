@@ -6,9 +6,9 @@ import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 
 public class UserRolesAuthorizer implements IRoleCheckingStrategy {
 
-	@Override
-	public boolean hasAnyRole(Roles roles) {
-		RolesSession roleSession = (RolesSession) Session.get();
-		return roleSession.hasAnyRole(roles);
-	}
+    @Override
+    public boolean hasAnyRole(Roles roles) {
+        RolesSession roleSession = (RolesSession) Session.get();
+        return roleSession.hasAnyRole(roles);
+    }
 }

@@ -6,13 +6,13 @@ import com.netbrasoft.gnuob.api.GNUOpenBusinessServiceException_Exception;
 
 public interface GenericTypeDataProvider<T> extends IDataProvider<T> {
 
-	T findById(T type);
+    T findById(T type);
 
-	T merge(T type) throws GNUOpenBusinessServiceException_Exception;
+    T merge(T type) throws GNUOpenBusinessServiceException_Exception;
 
-	T persist(T type);
+    T persist(T type);
 
-	T refresh(T type);
+    T refresh(T type);
 
-	void remove(T type);
+    void remove(T type);
 }
