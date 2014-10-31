@@ -2,7 +2,9 @@ package com.netbrasoft.gnuob.application.product.panel;
 
 import java.math.BigDecimal;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortStateLocator;
@@ -17,18 +19,20 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.RangeValidator;
 
 import com.netbrasoft.gnuob.api.Product;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
 import com.netbrasoft.gnuob.application.border.EntityBorder;
+import com.netbrasoft.gnuob.application.generic.HighlitableDataItem;
 import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
 import com.netbrasoft.gnuob.application.product.generic.GenericProductDataProvider;
 
 public class ProductPanel extends Panel {
 
-    private class ProductDataView extends DataView<Product> {
+    private static class ProductDataView extends DataView<Product> {
 
         private static final long serialVersionUID = -7766152164676332454L;
         private static final int ITEMS_PER_PAGE = 10;
@@ -43,9 +47,38 @@ public class ProductPanel extends Panel {
         }
 
         @Override
+        protected Item<Product> newItem(String id, int index, IModel<Product> model) {
+            return new HighlitableDataItem<Product>(id, index, model);
+        }
+
+        @Override
+        protected void onInitialize() {
+            super.onInitialize();
+        }
+
+        @Override
         protected void populateItem(Item<Product> item) {
             Product product = item.getModelObject();
 
+            AttributeModifier highLite = new AttributeModifier("class", "success");
+
+            item.add(new AjaxEventBehavior("onclick") {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public void onEvent(AjaxRequestTarget target) {
+                    HighlitableDataItem<Product> hitem = (HighlitableDataItem<Product>) item;
+                    hitem.toggleHighlite();
+
+                    if (hitem.isHighLite()) {
+                        hitem.add(highLite);
+                    } else {
+                        hitem.remove(highLite);
+                    }
+
+                    target.add(hitem);
+                }
+            });
             item.add(new Label("name", product.getName()));
             item.add(new Label("number", product.getNumber()));
             item.add(new Label("amount", product.getAmount()));
@@ -55,10 +88,11 @@ public class ProductPanel extends Panel {
             item.add(new Label("discount", product.getDiscount()));
             item.add(new Label("bestseller", product.isBestsellers()));
             item.add(new Label("latestCollection", product.isLatestCollection()));
+            item.setOutputMarkupId(true);
         }
     }
 
-    private class ProductInputForm extends Form<Product> {
+    private static class ProductInputForm extends Form<Product> {
 
         private static final long serialVersionUID = -5675866937114244756L;
 
@@ -104,12 +138,10 @@ public class ProductPanel extends Panel {
 
                 }
             });
-
-            setOutputMarkupId(true);
         }
     }
 
-    private class ProductOrderByBorder extends OrderByBorder<String> {
+    private static class ProductOrderByBorder extends OrderByBorder<String> {
 
         private static final long serialVersionUID = 2521149256104535510L;
 

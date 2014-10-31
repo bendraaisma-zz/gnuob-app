@@ -17,6 +17,7 @@ import com.netbrasoft.gnuob.api.contract.ContractWebServiceRepository;
 import com.netbrasoft.gnuob.api.customer.CustomerWebServiceRepository;
 import com.netbrasoft.gnuob.api.offer.OfferWebServiceRepository;
 import com.netbrasoft.gnuob.api.order.OrderWebServiceRepository;
+import com.netbrasoft.gnuob.api.order.PagseguroCheckOutWebServiceRepository;
 import com.netbrasoft.gnuob.api.order.PayPalExpressCheckOutWebServiceRepository;
 import com.netbrasoft.gnuob.api.product.ProductWebServiceRepository;
 import com.netbrasoft.gnuob.api.security.GroupWebServiceRepository;
@@ -43,6 +44,9 @@ public class NetbrasoftApplication extends WebApplication {
 
     @Autowired(required = true)
     private PayPalExpressCheckOutWebServiceRepository payPalExpressCheckOutWebServiceRepository;
+
+    @Autowired(required = true)
+    private PagseguroCheckOutWebServiceRepository pagseguroCheckOutWebServiceRepository;
 
     @Autowired(required = true)
     private OrderWebServiceRepository orderWebServiceRepository;
@@ -105,6 +109,10 @@ public class NetbrasoftApplication extends WebApplication {
 
     public OrderWebServiceRepository getOrderWebServiceRepository() {
         return orderWebServiceRepository;
+    }
+
+    public PagseguroCheckOutWebServiceRepository getPagseguroCheckOutWebServiceRepository() {
+        return pagseguroCheckOutWebServiceRepository;
     }
 
     public PayPalExpressCheckOutWebServiceRepository getPayPalExpressCheckOutWebServiceRepository() {
