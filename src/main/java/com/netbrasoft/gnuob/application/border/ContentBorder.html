@@ -1,4 +1,16 @@
 <wicket:border xmlns:wicket="http://wicket.apache.org">
+	<script type="text/javascript">
+		$(document).ready(function() {
+					
+		    if ( jQuery.jCookie("scroll") !== null ) {
+		        $(document).scrollTop( jQuery.jCookie("scroll") );
+		    }
+		
+		    $(window).on("scroll", function() {
+		    	jQuery.jCookie("scroll", $(document).scrollTop() );	
+		    });		
+		});
+	</script>
 	<div class="well well-sm">
 		<wicket:container wicket:id="headerPanel"></wicket:container>
 		<div class="panel panel-default">

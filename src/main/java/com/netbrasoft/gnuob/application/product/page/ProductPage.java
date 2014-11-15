@@ -1,7 +1,5 @@
 package com.netbrasoft.gnuob.application.product.page;
 
-import org.apache.wicket.markup.head.IHeaderResponse;
-
 import com.netbrasoft.gnuob.application.border.ContentBorder;
 import com.netbrasoft.gnuob.application.page.BasePage;
 import com.netbrasoft.gnuob.application.product.panel.ProductPanel;
@@ -19,10 +17,5 @@ public class ProductPage extends BasePage {
 
         contentBorder.add(productPanel);
         add(contentBorder);
-    }
-
-    @Override
-    public void renderHead(IHeaderResponse response) {
-        super.renderHead(response);
     }
 }

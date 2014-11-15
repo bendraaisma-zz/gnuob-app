@@ -17,9 +17,9 @@ public abstract class BasePage extends WebPage {
         super.renderHead(response);
 
         response.render(JavaScriptHeaderItem.forReference(getApplication().getJavaScriptLibrarySettings().getJQueryReference()));
-        response.render(new CssUrlReferenceHeaderItem("//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css", "", ""));
-        response.render(new CssUrlReferenceHeaderItem("//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css", "", ""));
-        response.render(new JavaScriptUrlReferenceHeaderItem("//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js", "bootstrap", false, "UTF-8", ""));
-        response.render(new JavaScriptUrlReferenceHeaderItem("./script/jcookie.js", "jquery.cookie", false, "UTF-8", ""));
+        response.render(new CssUrlReferenceHeaderItem("./css/bootstrap.css", "", ""));
+        response.render(new CssUrlReferenceHeaderItem("./css/bootstrap-theme.css", "", ""));
+        response.render(new JavaScriptUrlReferenceHeaderItem("./js/bootstrap.min.js", "bootstrap", false, "UTF-8", ""));
+        response.render(new JavaScriptUrlReferenceHeaderItem("./js/jcookie.js", "jquery.cookie", false, "UTF-8", ""));
     }
 }

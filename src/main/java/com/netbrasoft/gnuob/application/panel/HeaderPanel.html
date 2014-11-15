@@ -1,16 +1,4 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
-	<script type="text/javascript">
-		$(document).ready(function() {
-					
-		    if ( jQuery.jCookie("scroll") !== null ) {
-		        $(document).scrollTop( jQuery.jCookie("scroll") );
-		    }
-		
-		    $(window).on("scroll", function() {
-		    	jQuery.jCookie("scroll", $(document).scrollTop() );	
-		    });		
-		});
-	</script>
 	<div class="row">
 		<div class="col-md-10">
 			<h4>
