@@ -1,0 +1,28 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+	<div class="panel-body">
+		<small><wicket:message key="definitions">[Definitions]</wicket:message></small>
+		<div class="panel panel-default">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+					</tr>
+					<tr>
+						<th wicket:id="orderByPayerId"><small><wicket:message key="payerId">[Payer-Id]</wicket:message></small></th>
+						<th wicket:id="orderByFirstName"><small><wicket:message key="firstName">[First Name]</wicket:message></small></th>
+						<th wicket:id="orderByLastName"><small><wicket:message key="lastName">[Last Name]</wicket:message></small></th>
+						<th wicket:id="orderByBuyerEmail"><small><wicket:message key="buyerEmail">[Buyer Email]</wicket:message></small></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr wicket:id="customerDataview">
+						<td><small><span wicket:id="payerId"></span></small></td>
+						<td><small><span wicket:id="firstName"></span></small></td>
+						<td><small><span wicket:id="lastName"></span></small></td>
+						<td><small><span wicket:id="buyerEmail"></span></small></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<wicket:container wicket:id="customerPagingNavigator"></wicket:container>
+	</div>
+</wicket:panel>

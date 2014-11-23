@@ -1,0 +1,26 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+	<div class="panel-body">
+		<small><wicket:message key="definitions">[Definitions]</wicket:message></small>
+		<div class="panel panel-default">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+					</tr>
+					<tr>
+						<th wicket:id="orderByOfferId"><small><wicket:message key="offerId">[Offer-Id]</wicket:message></small></th>
+						<th wicket:id="orderByContractId"><small><wicket:message key="contractId">[Contract-Id]</wicket:message></small></th>
+						<th wicket:id="orderByPayerId"><small><wicket:message key="payerId">[Payer-Id]</wicket:message></small></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr wicket:id="offerDataview">
+						<td><small><span wicket:id="offerId"></span></small></td>
+						<td><small><span wicket:id="contract.contractId"></span></small></td>
+						<td><small><span wicket:id="contract.customer.payerId"></span></small></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<wicket:container wicket:id="offerPagingNavigator"></wicket:container>
+	</div>
+</wicket:panel>

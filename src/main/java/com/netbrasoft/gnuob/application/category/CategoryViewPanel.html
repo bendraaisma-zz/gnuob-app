@@ -1,0 +1,230 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+	<h1>
+		<small> <wicket:message key="definitions">[Definitions]</wicket:message>
+		</small>
+	</h1>
+	<div>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<td colspan="3" align="right"><a href="#" wicket:id="addButton" class="btn btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;<wicket:message key="add">[Add]</wicket:message></a><a href="#" wicket:id="removeButton" class="btn btn-xs"><span class="glyphicon glyphicon-minus"></span>&nbsp;<wicket:message key="remove">[Remove]</wicket:message></a></td>
+				</tr>
+				<tr>
+					<th wicket:id="orderByPosition"><small> <wicket:message key="position">[Position]</wicket:message>
+					</small></th>
+					<th wicket:id="orderByName"><small> <wicket:message key="name">[Name]</wicket:message>
+					</small></th>
+					<th wicket:id="orderByDescription"><small> <wicket:message key="description">[Description]</wicket:message>
+					</small></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr wicket:id="categoryDataview">
+					<td><small> <span wicket:id="position"></span>
+					</small></td>
+					<td><small> <span wicket:id="name"></span>
+					</small></td>
+					<td><small> <span wicket:id="description"></span>
+					</small></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="3" align="right"><wicket:container wicket:id="categoryPagingNavigator"></wicket:container></td>
+				</tr>
+			</tfoot>
+		</table>
+		<h2>
+			<small> <wicket:message key="details">[Details]</wicket:message>
+			</small>
+		</h2>
+		<div align="right">
+			<a href="#needHelp" data-toggle="collapse" aria-expanded="false" aria-controls="needHelp"><small><wicket:message key="needHelp">[Need Help]</wicket:message>?</small></a>
+			<div class="collapse panel panel-default " id="needHelp">
+				<div class="panel-body">
+					<small>TODO: Add help text here.</small>
+				</div>
+			</div>
+		</div>
+		<div class="well well-sm">
+			<form wicket:id="categoryViewOrEditForm" class="form-horizontal" id="categoryViewOrEditForm">
+				<div wicket:id="categoryViewOrEditFragement"></div>
+			</form>
+		</div>
+	</div>
+	<style type="text/css">
+/* Place the HTML 5 spinner at the default position */
+#categoryViewOrEditForm .inputContainer .form-control {
+	padding-right: 10px;
+}
+/* Adjust feedback icon position */
+#categoryViewOrEditForm .inputContainer .form-control-feedback {
+	right: -15px;
+}
+</style>
+	<wicket:fragment wicket:id="categoryEditFragement">
+		<table class="table" style="border-top: none;">
+			<thead>
+				<tr>
+					<td colspan="1" align="left"><a href="#" wicket:id="editButton" class="btn btn-xs"><span class="glyphicon glyphicon-edit"></span>&nbsp;<wicket:message key="edit">[Edit]</wicket:message></a></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border-top: none;"><div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="position">[Position]</wicket:message>:</label></small>
+							<div class="col-sm-10">
+								<input wicket:id="position" class="form-control input-sm" id="position" type="number"></input>
+							</div>
+						</div>
+						<div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="name">[Name]</wicket:message>:</label></small>
+							<div class="col-sm-10">
+								<input wicket:id="name" class="form-control input-sm" id="name" type="text"></input>
+							</div>
+						</div>
+						<div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="description">[Description]</wicket:message>:</label></small>
+							<div class="col-sm-10">
+								<textarea wicket:id="description" class="form-control input-sm" style="resize: vertical;" rows="1" id="description"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="contents">[Contents]</wicket:message>:</label></small>
+							<div class="col-sm-10">
+								<table class="table" style="border-top: none;">
+									<thead>
+										<tr>
+											<td colspan="5" align="left"><a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add</a></td>
+										</tr>
+										<tr>
+											<th><small>File type </small></th>
+											<th><small>File name </small></th>
+											<th><small>Size </small></th>
+											<th><small>Last modified </small></th>
+											<th><small>Operations </small></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+									<tfoot>
+									</tfoot>
+								</table>
+							</div>
+						</div>
+						<div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="subCategories">[Sub-Categories]</wicket:message>:</label></small>
+							<div class="col-sm-10">
+								<table class="table" style="border-top: none;">
+									<thead>
+										<tr>
+											<td colspan="5" align="left"><a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add</a><a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-minus"></span>&nbsp;Remove</a><a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-edit"></span>&nbsp;Edit</a></td>
+										</tr>
+										<tr>
+											<th><small>Name</small></th>
+											<th><small></small></th>
+											<th><small></small></th>
+											<th><small></small></th>
+											<th><small>Operations </small></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+									<tfoot>
+									</tfoot>
+								</table>
+							</div>
+						</div></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td style="border-top: none;" colspan="1" align="right"><a href="#" wicket:id="cancelButton" class="btn btn-xs"><wicket:message key="cancel">[Cancel]</wicket:message></a><a wicket:id="saveButton" class="btn btn-primary btn-xs"><wicket:message key="save">[Save]</wicket:message></a></td>
+				</tr>
+			</tfoot>
+		</table>
+	</wicket:fragment>
+	<wicket:fragment wicket:id="categoryViewFragement">
+		<table class="table" style="border-top: none;">
+			<thead>
+				<tr>
+					<td colspan="1" align="left"><a href="#" wicket:id="editButton" class="btn btn-xs"><span class="glyphicon glyphicon-edit"></span>&nbsp;<wicket:message key="edit">[Edit]</wicket:message></a></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border-top: none;"><div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="position">[Position]</wicket:message>:</label></small>
+							<div class="col-sm-10">
+								<small><span class="form-control input-sm" wicket:id="position">[Position]</span></small>
+							</div>
+						</div>
+						<div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="name">[Name]</wicket:message>:</label></small>
+							<div class="col-sm-10">
+								<small><span class="form-control input-sm" wicket:id="name">[Name]</span></small>
+							</div>
+						</div>
+						<div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="description">[Description]</wicket:message>:</label></small>
+							<div class="col-sm-10">
+								<small><span class="form-control input-sm" wicket:id="description">[Description]</span></small>
+							</div>
+						</div>
+						<div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="contents">[Contents]</wicket:message>:</label></small>
+							<div class="col-sm-10">
+								<table class="table" style="border-top: none;">
+									<thead>
+										<tr>
+											<td colspan="5" align="left"><a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add</a></td>
+										</tr>
+										<tr>
+											<th><small>File type </small></th>
+											<th><small>File name </small></th>
+											<th><small>Size </small></th>
+											<th><small>Last modified </small></th>
+											<th><small>Operations </small></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+									<tfoot>
+									</tfoot>
+								</table>
+							</div>
+						</div>
+						<div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="subCategories">[Sub-Categories]</wicket:message>:</label></small>
+							<div class="col-sm-10">
+								<table class="table" style="border-top: none;">
+									<thead>
+										<tr>
+											<td colspan="5" align="left"><a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Add</a><a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-minus"></span>&nbsp;Remove</a><a href="#" class="btn btn-xs"><span class="glyphicon glyphicon-edit"></span>&nbsp;Edit</a></td>
+										</tr>
+										<tr>
+											<th><small>Name</small></th>
+											<th><small></small></th>
+											<th><small></small></th>
+											<th><small></small></th>
+											<th><small>Operations </small></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+									<tfoot>
+									</tfoot>
+								</table>
+							</div>
+						</div></td>
+
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td style="border-top: none;" colspan="1" align="right"><a href="#" wicket:id="cancelButton" class="btn btn-xs"><wicket:message key="cancel">[Cancel]</wicket:message></a><a wicket:id="saveButton" class="btn btn-primary btn-xs"><wicket:message key="save">[Save]</wicket:message></a></td>
+				</tr>
+			</tfoot>
+		</table>
+	</wicket:fragment>
+</wicket:panel>
