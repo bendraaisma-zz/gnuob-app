@@ -7,10 +7,10 @@ import com.netbrasoft.gnuob.application.authorization.RolesSession;
 
 public class LogoutPage extends WebPage {
 
-    private static final long serialVersionUID = 9159077355372212288L;
+   private static final long serialVersionUID = 9159077355372212288L;
 
-    public LogoutPage() {
-        RolesSession roleSession = (RolesSession) Session.get();
-        roleSession.logout();
-    }
+   public LogoutPage() {
+      RolesSession roleSession = (RolesSession) Session.get();
+      roleSession.logout();
+   }
 }

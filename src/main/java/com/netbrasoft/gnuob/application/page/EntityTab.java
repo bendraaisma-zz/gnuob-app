@@ -22,9 +22,9 @@ import com.netbrasoft.gnuob.application.setting.SettingTab;
 import com.netbrasoft.gnuob.wicket.bootstrap.extensions.markup.html.tabs.BootstrapTabbedPanel;
 
 public class EntityTab extends AbstractTab {
-   
+
    private static final long serialVersionUID = 3355248856566175516L;
-   
+
    private ITab categoryTab = new CategoryTab(new Model<String>("Category"));
    private ITab contentTab = new ContentTab(new Model<String>("Content"));
    private ITab contractTab = new ContractTab(new Model<String>("Contract"));
@@ -36,23 +36,23 @@ public class EntityTab extends AbstractTab {
    private ITab settingTab = new SettingTab(new Model<String>("Setting"));
    private ITab siteTab = new SiteTab(new Model<String>("Site"));
    private ITab userTab = new UserTab(new Model<String>("User"));
-   
+
    public EntityTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       BootstrapTabbedPanel<ITab> entityTabbedPanel = new BootstrapTabbedPanel<ITab>(panelId, new ArrayList<ITab>()) {
-         
+
          private static final long serialVersionUID = -8650291789763661400L;
-         
+
          @Override
          public String getVariation() {
             return BootstrapTabbedPanel.PILLS_STACKED_VARIATION;
          };
       };
-      
+
       entityTabbedPanel.getTabs().add(categoryTab);
       entityTabbedPanel.getTabs().add(contentTab);
       entityTabbedPanel.getTabs().add(contractTab);
@@ -64,7 +64,7 @@ public class EntityTab extends AbstractTab {
       entityTabbedPanel.getTabs().add(settingTab);
       entityTabbedPanel.getTabs().add(siteTab);
       entityTabbedPanel.getTabs().add(userTab);
-      
+
       return entityTabbedPanel;
    }
 }

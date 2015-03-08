@@ -11,7 +11,7 @@ public class ContentTab extends AbstractTab {
    public ContentTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       return new ContentViewPanel(panelId);

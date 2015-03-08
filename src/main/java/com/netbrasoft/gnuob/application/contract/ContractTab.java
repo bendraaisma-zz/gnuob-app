@@ -11,7 +11,7 @@ public class ContractTab extends AbstractTab {
    public ContractTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       return new ContractViewPanel(panelId);

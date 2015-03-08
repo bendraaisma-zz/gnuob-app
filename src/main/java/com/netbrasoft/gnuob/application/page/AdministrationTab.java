@@ -11,7 +11,7 @@ public class AdministrationTab extends AbstractTab {
    public AdministrationTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       return new WebMarkupContainer(panelId);

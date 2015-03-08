@@ -11,7 +11,7 @@ public class ProductTab extends AbstractTab {
    public ProductTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       return new ProductViewPanel(panelId);

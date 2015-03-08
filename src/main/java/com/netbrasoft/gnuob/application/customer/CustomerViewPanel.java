@@ -17,23 +17,28 @@ import com.netbrasoft.gnuob.application.authorization.RolesSession;
 import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
 
 public class CustomerViewPanel extends Panel {
-   
+
    private static final long serialVersionUID = 3703226064705246155L;
-   
+
    private static final int ITEMS_PER_PAGE = 10;
-   
+
    @SpringBean(name = "CustomerDataProvider", required = true)
    private GenericTypeDataProvider<Customer> customerDataProvider;
-   
-   private OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "payerId", customerDataProvider);
-   private OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", customerDataProvider);
-   private OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", customerDataProvider);
-   private OrderByBorder<String> orderByBuyerEmail = new OrderByBorder<String>("orderByBuyerEmail", "buyerEmail", customerDataProvider);
-   
-   private DataView<Customer> customerDataview = new DataView<Customer>("customerDataview", customerDataProvider, ITEMS_PER_PAGE) {
-      
+
+   private OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "payerId",
+         customerDataProvider);
+   private OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName",
+         customerDataProvider);
+   private OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName",
+         customerDataProvider);
+   private OrderByBorder<String> orderByBuyerEmail = new OrderByBorder<String>("orderByBuyerEmail", "buyerEmail",
+         customerDataProvider);
+
+   private DataView<Customer> customerDataview = new DataView<Customer>("customerDataview", customerDataProvider,
+         ITEMS_PER_PAGE) {
+
       private static final long serialVersionUID = -5039874949058607907L;
-      
+
       @Override
       protected void populateItem(Item<Customer> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Customer>(paramItem.getModelObject()));
@@ -42,31 +47,32 @@ public class CustomerViewPanel extends Panel {
          paramItem.add(new Label("lastName"));
          paramItem.add(new Label("buyerEmail"));
          paramItem.add(new AjaxEventBehavior("onclick") {
-            
+
             private static final long serialVersionUID = 1L;
-            
+
             @Override
             public void onEvent(AjaxRequestTarget target) {
-               
+
             }
          });
       }
    };
-   private ItemsPerPagePagingNavigator customerPagingNavigator = new ItemsPerPagePagingNavigator("customerPagingNavigator", customerDataview);
-   
+   private ItemsPerPagePagingNavigator customerPagingNavigator = new ItemsPerPagePagingNavigator(
+         "customerPagingNavigator", customerDataview);
+
    public CustomerViewPanel(String id) {
       super(id);
    }
-   
+
    @Override
    protected void onInitialize() {
       super.onInitialize();
       RolesSession roleSession = (RolesSession) Session.get();
-      
+
       customerDataProvider.setUser(roleSession.getUsername());
       customerDataProvider.setPassword(roleSession.getPassword());
       customerDataProvider.setSite(roleSession.getSite());
-      
+
       add(orderByPayerId);
       add(orderByFirstName);
       add(orderByLastName);

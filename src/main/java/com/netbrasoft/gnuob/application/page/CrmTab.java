@@ -11,7 +11,7 @@ public class CrmTab extends AbstractTab {
    public CrmTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       return new WebMarkupContainer(panelId);

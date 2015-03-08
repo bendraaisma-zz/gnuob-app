@@ -17,21 +17,24 @@ import com.netbrasoft.gnuob.application.authorization.RolesSession;
 import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
 
 public class OfferViewPanel extends Panel {
-   
+
    private static final long serialVersionUID = 3703226064705246155L;
-   
+
    private static final int ITEMS_PER_PAGE = 10;
-   
+
    @SpringBean(name = "OfferDataProvider", required = true)
    private GenericTypeDataProvider<Offer> offerDataProvider;
-   
-   private OrderByBorder<String> orderByOfferId = new OrderByBorder<String>("orderByOfferId", "offerId", offerDataProvider);
-   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", offerDataProvider);
-   private OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "payerId", offerDataProvider);
+
+   private OrderByBorder<String> orderByOfferId = new OrderByBorder<String>("orderByOfferId", "offerId",
+         offerDataProvider);
+   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId",
+         offerDataProvider);
+   private OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "payerId",
+         offerDataProvider);
    private DataView<Offer> offerDataview = new DataView<Offer>("offerDataview", offerDataProvider, ITEMS_PER_PAGE) {
-      
+
       private static final long serialVersionUID = -5039874949058607907L;
-      
+
       @Override
       protected void populateItem(Item<Offer> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Offer>(paramItem.getModelObject()));
@@ -39,31 +42,32 @@ public class OfferViewPanel extends Panel {
          paramItem.add(new Label("contract.contractId"));
          paramItem.add(new Label("contract.customer.payerId"));
          paramItem.add(new AjaxEventBehavior("onclick") {
-            
+
             private static final long serialVersionUID = 1L;
-            
+
             @Override
             public void onEvent(AjaxRequestTarget target) {
-               
+
             }
          });
       }
    };
-   private ItemsPerPagePagingNavigator offerPagingNavigator = new ItemsPerPagePagingNavigator("offerPagingNavigator", offerDataview);
-   
+   private ItemsPerPagePagingNavigator offerPagingNavigator = new ItemsPerPagePagingNavigator("offerPagingNavigator",
+         offerDataview);
+
    public OfferViewPanel(String id) {
       super(id);
    }
-   
+
    @Override
    protected void onInitialize() {
       super.onInitialize();
       RolesSession roleSession = (RolesSession) Session.get();
-      
+
       offerDataProvider.setUser(roleSession.getUsername());
       offerDataProvider.setPassword(roleSession.getPassword());
       offerDataProvider.setSite(roleSession.getSite());
-      
+
       add(orderByOfferId);
       add(orderByContractId);
       add(orderByPayerId);

@@ -11,7 +11,7 @@ public class OrderTab extends AbstractTab {
    public OrderTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       return new OrderViewPanel(panelId);

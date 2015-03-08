@@ -26,7 +26,8 @@ public class UserViewPanel extends Panel {
    private GenericTypeDataProvider<User> userDataProvider;
 
    private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", userDataProvider);
-   private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description", userDataProvider);
+   private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description",
+         userDataProvider);
    private DataView<User> userDataview = new DataView<User>("userDataview", userDataProvider, ITEMS_PER_PAGE) {
 
       private static final long serialVersionUID = -5039874949058607907L;
@@ -47,7 +48,8 @@ public class UserViewPanel extends Panel {
          });
       }
    };
-   private ItemsPerPagePagingNavigator userPagingNavigator = new ItemsPerPagePagingNavigator("userPagingNavigator", userDataview);
+   private ItemsPerPagePagingNavigator userPagingNavigator = new ItemsPerPagePagingNavigator("userPagingNavigator",
+         userDataview);
 
    public UserViewPanel(String id) {
       super(id);

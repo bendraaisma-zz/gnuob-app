@@ -25,9 +25,12 @@ public class OrderViewPanel extends Panel {
    @SpringBean(name = "OrderDataProvider", required = true)
    private GenericTypeDataProvider<Order> orderDataProvider;
 
-   private OrderByBorder<String> orderByOrderId = new OrderByBorder<String>("orderByOrderId", "orderId", orderDataProvider);
-   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", orderDataProvider);
-   private OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "payerId", orderDataProvider);
+   private OrderByBorder<String> orderByOrderId = new OrderByBorder<String>("orderByOrderId", "orderId",
+         orderDataProvider);
+   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId",
+         orderDataProvider);
+   private OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "payerId",
+         orderDataProvider);
    private DataView<Order> orderDataview = new DataView<Order>("orderDataview", orderDataProvider, ITEMS_PER_PAGE) {
 
       private static final long serialVersionUID = -5039874949058607907L;
@@ -49,7 +52,8 @@ public class OrderViewPanel extends Panel {
          });
       }
    };
-   private ItemsPerPagePagingNavigator orderPagingNavigator = new ItemsPerPagePagingNavigator("orderPagingNavigator", orderDataview);
+   private ItemsPerPagePagingNavigator orderPagingNavigator = new ItemsPerPagePagingNavigator("orderPagingNavigator",
+         orderDataview);
 
    public OrderViewPanel(String id) {
       super(id);

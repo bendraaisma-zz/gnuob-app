@@ -25,9 +25,11 @@ public class ProductViewPanel extends Panel {
    @SpringBean(name = "ProductDataProvider", required = true)
    private GenericTypeDataProvider<Product> productDataProvider;
 
-   private OrderByBorder<String> orderByNumber = new OrderByBorder<String>("orderByNumber", "number", productDataProvider);
+   private OrderByBorder<String> orderByNumber = new OrderByBorder<String>("orderByNumber", "number",
+         productDataProvider);
    private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", productDataProvider);
-   private DataView<Product> productDataview = new DataView<Product>("productDataview", productDataProvider, ITEMS_PER_PAGE) {
+   private DataView<Product> productDataview = new DataView<Product>("productDataview", productDataProvider,
+         ITEMS_PER_PAGE) {
 
       private static final long serialVersionUID = -5039874949058607907L;
 
@@ -47,7 +49,8 @@ public class ProductViewPanel extends Panel {
          });
       }
    };
-   private ItemsPerPagePagingNavigator productPagingNavigator = new ItemsPerPagePagingNavigator("productPagingNavigator", productDataview);
+   private ItemsPerPagePagingNavigator productPagingNavigator = new ItemsPerPagePagingNavigator(
+         "productPagingNavigator", productDataview);
 
    public ProductViewPanel(String id) {
       super(id);

@@ -17,51 +17,53 @@ import com.netbrasoft.gnuob.application.authorization.RolesSession;
 import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
 
 public class GroupViewPanel extends Panel {
-   
+
    private static final long serialVersionUID = 3703226064705246155L;
-   
+
    private static final int ITEMS_PER_PAGE = 10;
-   
+
    @SpringBean(name = "GroupDataProvider", required = true)
    private GenericTypeDataProvider<Group> groupDataProvider;
-   
+
    private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", groupDataProvider);
-   private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description", groupDataProvider);
+   private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description",
+         groupDataProvider);
    private DataView<Group> groupDataview = new DataView<Group>("groupDataview", groupDataProvider, ITEMS_PER_PAGE) {
-      
+
       private static final long serialVersionUID = -5039874949058607907L;
-      
+
       @Override
       protected void populateItem(Item<Group> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Group>(paramItem.getModelObject()));
          paramItem.add(new Label("name"));
          paramItem.add(new Label("description"));
          paramItem.add(new AjaxEventBehavior("onclick") {
-            
+
             private static final long serialVersionUID = 1L;
-            
+
             @Override
             public void onEvent(AjaxRequestTarget target) {
-               
+
             }
          });
       }
    };
-   private ItemsPerPagePagingNavigator groupPagingNavigator = new ItemsPerPagePagingNavigator("groupPagingNavigator", groupDataview);
-   
+   private ItemsPerPagePagingNavigator groupPagingNavigator = new ItemsPerPagePagingNavigator("groupPagingNavigator",
+         groupDataview);
+
    public GroupViewPanel(String id) {
       super(id);
    }
-   
+
    @Override
    protected void onInitialize() {
       super.onInitialize();
       RolesSession roleSession = (RolesSession) Session.get();
-      
+
       groupDataProvider.setUser(roleSession.getUsername());
       groupDataProvider.setPassword(roleSession.getPassword());
       groupDataProvider.setSite(roleSession.getSite());
-      
+
       add(orderByName);
       add(orderByDescription);
       add(groupDataview);

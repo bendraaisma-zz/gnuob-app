@@ -25,9 +25,12 @@ public class ContractViewPanel extends Panel {
    @SpringBean(name = "ContractDataProvider", required = true)
    private GenericTypeDataProvider<Contract> contractDataProvider;
 
-   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", contractDataProvider);
-   private OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "payerId", contractDataProvider);
-   private DataView<Contract> contractDataview = new DataView<Contract>("contractDataview", contractDataProvider, ITEMS_PER_PAGE) {
+   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId",
+         contractDataProvider);
+   private OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "payerId",
+         contractDataProvider);
+   private DataView<Contract> contractDataview = new DataView<Contract>("contractDataview", contractDataProvider,
+         ITEMS_PER_PAGE) {
 
       private static final long serialVersionUID = -5039874949058607907L;
 
@@ -47,7 +50,8 @@ public class ContractViewPanel extends Panel {
          });
       }
    };
-   private ItemsPerPagePagingNavigator contractPagingNavigator = new ItemsPerPagePagingNavigator("contractPagingNavigator", contractDataview);
+   private ItemsPerPagePagingNavigator contractPagingNavigator = new ItemsPerPagePagingNavigator(
+         "contractPagingNavigator", contractDataview);
 
    public ContractViewPanel(String id) {
       super(id);

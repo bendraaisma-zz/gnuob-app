@@ -11,7 +11,7 @@ public class SiteTab extends AbstractTab {
    public SiteTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       return new SiteViewPanel(panelId);

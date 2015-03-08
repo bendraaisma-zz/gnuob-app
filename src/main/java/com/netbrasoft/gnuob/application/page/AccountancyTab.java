@@ -11,7 +11,7 @@ public class AccountancyTab extends AbstractTab {
    public AccountancyTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       return new WebMarkupContainer(panelId);

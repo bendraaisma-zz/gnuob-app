@@ -1,0 +1,63 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+	<style type="text/css">
+.zoom {
+	display: inline-block;
+	position: relative;
+}
+
+.zoom:after {
+	content: '';
+	display: block;
+	width: 33px;
+	height: 33px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	background: url(image/icon.png);
+}
+
+.zoom img {
+	display: block;
+}
+
+.zoom img::selection {
+	background-color: transparent;
+}
+</style>
+	<div class="modal fade" id="imageUploadModal" tabindex="-1" aria-labelledby="imageUploadLabel" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="imageUploadLabel">
+						<wicket:message key="uploadImageMessage">[Upload Image Message]</wicket:message>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<form wicket:id="imageUploadForm">
+						<div class="form-group">
+							<wicket:message key="selectImageMessage">[Select Image Message]</wicket:message>
+						</div>
+						<div class="form-group">
+							<small><label class="col-sm-2 control-label"><wicket:message key="imageMessage">[Image Message]</wicket:message></label></small>
+							<div class="col-sm-10">
+								<input wicket:id="imageUploadLocation" type="file" accept="image/*"><a class="btn btn-xs" wicket:id="imageUpload" type="button"><span class="glyphicon glyphicon-upload"></span>&nbsp;<wicket:message key="uploadImageMessage">[Upload Image Message]</wicket:message></a>
+							</div>
+						</div>
+						<div class="form-group">
+							<wicket:message key="imagePreviewMessage">[Image Preview Message]</wicket:message>
+						</div>
+						<div class="form-group zoom" id='imagePreview'>
+							<img wicket:id="imagePreview" width="568" height="320" />
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<a class="btn btn-primary btn-xs" wicket:id="saveAndClose" data-dismiss="modal"><wicket:message key="saveAndCloseMessage">[Save And Close Message]</wicket:message></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</wicket:panel>

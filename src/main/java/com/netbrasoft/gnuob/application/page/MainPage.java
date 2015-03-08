@@ -20,7 +20,8 @@ public class MainPage extends BootstrapPage {
    private final ITab reportTab = new ReportTab(new Model<String>("Reports"));
    private final ITab administrationTab = new AdministrationTab(new Model<String>("Administration"));
 
-   private final BootstrapTabbedPanel<ITab> mainMenuTabbedPanel = new BootstrapTabbedPanel<ITab>("mainMenuTabbedPanel", new ArrayList<ITab>());
+   private final BootstrapTabbedPanel<ITab> mainMenuTabbedPanel = new BootstrapTabbedPanel<ITab>("mainMenuTabbedPanel",
+         new ArrayList<ITab>());
 
    private final ContentBorder contentBorder = new ContentBorder("contentBorder");
 

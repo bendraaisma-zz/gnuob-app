@@ -11,7 +11,7 @@ public class OfferTab extends AbstractTab {
    public OfferTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       return new OfferViewPanel(panelId);

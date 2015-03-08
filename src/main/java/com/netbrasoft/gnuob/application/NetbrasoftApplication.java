@@ -29,9 +29,11 @@ public class NetbrasoftApplication extends WebApplication {
 
    @Override
    protected void init() {
-      getComponentInstantiationListeners().add(new SpringComponentInjector(this));
+      super.init();
 
+      getComponentInstantiationListeners().add(new SpringComponentInjector(this));
       getSecuritySettings().setAuthorizationStrategy(new RoleAuthorizationStrategy(new UserRolesAuthorizer()));
+      getApplicationSettings().setUploadProgressUpdatesEnabled(true);
 
       if (getConfigurationType() == RuntimeConfigurationType.DEVELOPMENT) {
 
@@ -44,8 +46,6 @@ public class NetbrasoftApplication extends WebApplication {
       }
 
       mountPage("LogoutPage.html", LogoutPage.class);
-
-      super.init();
    }
 
    @Override

@@ -11,7 +11,7 @@ public class SettingTab extends AbstractTab {
    public SettingTab(IModel<String> title) {
       super(title);
    }
-   
+
    @Override
    public WebMarkupContainer getPanel(String panelId) {
       return new SettingViewPanel(panelId);
