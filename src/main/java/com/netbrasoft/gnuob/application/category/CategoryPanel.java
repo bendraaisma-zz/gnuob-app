@@ -36,13 +36,10 @@ public class CategoryPanel extends Panel {
       public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
       }
    };
-   private OrderByBorder<String> orderByposition = new OrderByBorder<String>("orderByPosition", "position",
-         categoryDataProvider);
+   private OrderByBorder<String> orderByposition = new OrderByBorder<String>("orderByPosition", "position", categoryDataProvider);
    private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", categoryDataProvider);
-   private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description",
-         categoryDataProvider);
-   private DataView<Category> categoryDataview = new DataView<Category>("categoryDataview", categoryDataProvider,
-         ITEMS_PER_PAGE) {
+   private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description", categoryDataProvider);
+   private DataView<Category> categoryDataview = new DataView<Category>("categoryDataview", categoryDataProvider, ITEMS_PER_PAGE) {
 
       private static final long serialVersionUID = -5039874949058607907L;
 
@@ -70,15 +67,14 @@ public class CategoryPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         super.onInitialize();
          add(categoryDataview);
+
          setOutputMarkupId(true);
+         super.onInitialize();
       };
    };
-   private ItemsPerPagePagingNavigator categoryPagingNavigator = new ItemsPerPagePagingNavigator(
-         "categoryPagingNavigator", categoryDataview);
-   private CategoryViewOrEditPanel categoryViewOrEditPanel = new CategoryViewOrEditPanel("categoryViewOrEditPanel",
-         new Model<Category>(new Category()));
+   private ItemsPerPagePagingNavigator categoryPagingNavigator = new ItemsPerPagePagingNavigator("categoryPagingNavigator", categoryDataview);
+   private CategoryViewOrEditPanel categoryViewOrEditPanel = new CategoryViewOrEditPanel("categoryViewOrEditPanel", new Model<Category>(new Category()));
 
    public CategoryPanel(String id, IModel<Category> model) {
       super(id, model);
@@ -86,7 +82,6 @@ public class CategoryPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      super.onInitialize();
       RolesSession roleSession = (RolesSession) Session.get();
 
       categoryDataProvider.setUser(roleSession.getUsername());
@@ -101,5 +96,7 @@ public class CategoryPanel extends Panel {
       add(categoryDataviewContainer);
       add(categoryPagingNavigator);
       add(categoryViewOrEditPanel);
+
+      super.onInitialize();
    }
 }

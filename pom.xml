@@ -28,6 +28,7 @@
 		<version.surefire.plugin>2.10</version.surefire.plugin>
 		<version.netbrasoft.gnuob>0.0.1-SNAPSHOT</version.netbrasoft.gnuob>
 		<javasimon.version>4.0.1</javasimon.version>
+		<wicket-dnd.version>0.6.0</wicket-dnd.version>
 
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -162,6 +163,11 @@
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-console-embed</artifactId>
 			<version>${javasimon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.svenmeier.wicket-dnd</groupId>
+			<artifactId>wicket-dnd</artifactId>
+			<version>${wicket-dnd.version}</version>
 		</dependency>
 	</dependencies>
 
