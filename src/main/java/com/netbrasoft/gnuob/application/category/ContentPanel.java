@@ -30,7 +30,7 @@ public class ContentPanel extends Panel {
    }
 
    private DataView<Content> createContentDataView(ListDataProvider<Content> contentListDataProvider) {
-      DataView<Content> contentDataview = new DataView<Content>("contentDataview", contentListDataProvider, ITEMS_PER_PAGE) {
+      return new DataView<Content>("contentDataview", contentListDataProvider, ITEMS_PER_PAGE) {
 
          private static final long serialVersionUID = -7353992345622657728L;
 
@@ -43,7 +43,6 @@ public class ContentPanel extends Panel {
             paramItem.add(createRemoveBootstrapConfirmationAjaxLink(paramItem).setVisible(enableOperations));
          }
       };
-      return contentDataview;
    }
 
    private ImageUploadPanel createImageUploadPanel() {
@@ -53,9 +52,7 @@ public class ContentPanel extends Panel {
 
          @Override
          public void uploadedImage(AjaxRequestTarget paramAjaxRequestTarget) {
-            Category model = ((Category) ContentPanel.this.getDefaultModelObject());
-            model.getContents().add((Content) getDefaultModel().getObject());
-
+            ((Category) getDefaultModelObject()).getContents().add((Content) getDefaultModel().getObject());
             paramAjaxRequestTarget.add(ContentPanel.this);
          }
       };
@@ -73,9 +70,7 @@ public class ContentPanel extends Panel {
 
          @Override
          public void onConfirm(AjaxRequestTarget paramAjaxRequestTarget) {
-            Category model = ((Category) ContentPanel.this.getDefaultModelObject());
-
-            model.getContents().remove(paramItem.getModelObject());
+            ((Category) getDefaultModelObject()).getContents().remove(paramItem.getModelObject());
             paramAjaxRequestTarget.add(ContentPanel.this);
          }
       };
