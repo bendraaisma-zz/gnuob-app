@@ -1,7 +1,5 @@
 package com.netbrasoft.gnuob.application;
 
-import net.ftlines.wicketsource.WicketSource;
-
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authorization.strategies.role.RoleAuthorizationStrategy;
@@ -17,6 +15,9 @@ import com.netbrasoft.gnuob.application.authorization.UserRolesAuthorizer;
 import com.netbrasoft.gnuob.application.page.LogoutPage;
 import com.netbrasoft.gnuob.application.page.MainPage;
 
+import de.agilecoders.wicket.core.Bootstrap;
+import net.ftlines.wicketsource.WicketSource;
+
 @Service("wicketApplication")
 public class NetbrasoftApplication extends WebApplication {
 
@@ -30,6 +31,8 @@ public class NetbrasoftApplication extends WebApplication {
    @Override
    protected void init() {
       super.init();
+
+      Bootstrap.install(this);
 
       getComponentInstantiationListeners().add(new SpringComponentInjector(this));
       getSecuritySettings().setAuthorizationStrategy(new RoleAuthorizationStrategy(new UserRolesAuthorizer()));

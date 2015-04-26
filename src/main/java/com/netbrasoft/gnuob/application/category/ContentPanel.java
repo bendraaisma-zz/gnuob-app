@@ -1,6 +1,7 @@
 package com.netbrasoft.gnuob.application.category;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -15,7 +16,6 @@ import com.netbrasoft.gnuob.api.Category;
 import com.netbrasoft.gnuob.api.Content;
 import com.netbrasoft.gnuob.application.image.ImageUploadPanel;
 import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
-import com.netbrasoft.gnuob.wicket.bootstrap.ajax.markup.html.BootstrapConfirmationAjaxLink;
 
 @SuppressWarnings("unchecked")
 public class ContentPanel extends Panel {
@@ -30,7 +30,7 @@ public class ContentPanel extends Panel {
    }
 
    private DataView<Content> createContentDataView(ListDataProvider<Content> contentListDataProvider) {
-      DataView<Content> contentDataview = new DataView<Content>("contentDataview", contentListDataProvider, ITEMS_PER_PAGE) {
+      return new DataView<Content>("contentDataview", contentListDataProvider, ITEMS_PER_PAGE) {
 
          private static final long serialVersionUID = -7353992345622657728L;
 
@@ -38,12 +38,11 @@ public class ContentPanel extends Panel {
          protected void populateItem(Item<Content> paramItem) {
             IModel<Content> compound = new CompoundPropertyModel<Content>(paramItem.getModelObject());
             paramItem.setModel(compound);
-            paramItem.add(new Label("format"));
             paramItem.add(new Label("name"));
-            paramItem.add(createRemoveBootstrapConfirmationAjaxLink(paramItem).setVisible(enableOperations));
+            paramItem.add(new Label("format"));
+            paramItem.add(createRemoveAjaxLink(paramItem).setVisible(enableOperations));
          }
       };
-      return contentDataview;
    }
 
    private ImageUploadPanel createImageUploadPanel() {
@@ -53,30 +52,24 @@ public class ContentPanel extends Panel {
 
          @Override
          public void uploadedImage(AjaxRequestTarget paramAjaxRequestTarget) {
-            Category model = ((Category) ContentPanel.this.getDefaultModelObject());
-            model.getContents().add((Content) getDefaultModel().getObject());
+            Category category = ((Category) ContentPanel.this.getDefaultModelObject());
+            Content content = (Content) getDefaultModel().getObject();
 
-            paramAjaxRequestTarget.add(ContentPanel.this);
+            category.getContents().add(content);
+
+            paramAjaxRequestTarget.add(getPage());
          }
       };
    }
 
-   private BootstrapConfirmationAjaxLink<Void> createRemoveBootstrapConfirmationAjaxLink(Item<Content> paramItem) {
-      return new BootstrapConfirmationAjaxLink<Void>("remove") {
+   private AjaxLink<Void> createRemoveAjaxLink(Item<Content> paramItem) {
+      return new AjaxLink<Void>("remove") {
 
          private static final long serialVersionUID = -6950515027229520882L;
 
          @Override
-         public void onCancel(AjaxRequestTarget paramAjaxRequestTarget) {
-            return; // Do noting here, only return.
-         }
-
-         @Override
-         public void onConfirm(AjaxRequestTarget paramAjaxRequestTarget) {
-            Category model = ((Category) ContentPanel.this.getDefaultModelObject());
-
-            model.getContents().remove(paramItem.getModelObject());
-            paramAjaxRequestTarget.add(ContentPanel.this);
+         public void onClick(AjaxRequestTarget target) {
+            // TODO Auto-generated method stub
          }
       };
    }
@@ -90,8 +83,9 @@ public class ContentPanel extends Panel {
       ItemsPerPagePagingNavigator itemsPerPagePagingNavigator = new ItemsPerPagePagingNavigator("contentPagingNavigator", contentDataview);
       ImageUploadPanel imageUploadPanel = createImageUploadPanel();
 
-      add(contentDataviewContainer.add(contentDataview).add(imageUploadPanel));
+      add(contentDataviewContainer.add(contentDataview));
       add(itemsPerPagePagingNavigator);
+      add(imageUploadPanel);
 
       setOutputMarkupId(true);
       super.onInitialize();

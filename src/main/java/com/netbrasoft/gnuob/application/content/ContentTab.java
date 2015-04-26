@@ -3,6 +3,9 @@ package com.netbrasoft.gnuob.application.content;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
+import com.netbrasoft.gnuob.api.Content;
 
 public class ContentTab extends AbstractTab {
 
@@ -14,6 +17,8 @@ public class ContentTab extends AbstractTab {
 
    @Override
    public WebMarkupContainer getPanel(String panelId) {
-      return new ContentViewPanel(panelId);
+      Content content = new Content();
+      content.setActive(true);
+      return new ContentPanel(panelId, new Model<Content>(content));
    }
 }

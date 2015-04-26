@@ -1,0 +1,211 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+	<wicket:container wicket:id="offerViewOrEditFragement"></wicket:container>
+	<wicket:fragment wicket:id="offerEditFragement">
+		<table class="table" style="border-top: none;">
+			<thead>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border-top: none;">
+						<form wicket:id="offerEditForm" class="form-horizontal">
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									<wicket:message key="offerMessage">[Offer Message]</wicket:message>
+								</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="offerIdMessage">[Offer Id Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="offerId" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="contractIdMessage">[Contract ID Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="contract.contractId" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="itemTotalMessage">[Item Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="itemTotal" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="offerDescriptionMessage">[Offer Description Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<textarea wicket:id="offerDescription" class="form-control input-sm" style="resize: vertical;" rows="3"></textarea>
+									</div>
+								</div>
+							</div>
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									<wicket:message key="priceMessage">[Price Message]</wicket:message>
+								</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="offerTotalMessage">[Offer Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="offerTotal" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="handlingTotalMessage">[Handling Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="handlingTotal" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="shippingTotalMessage">[ShippingTotal Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="shippingTotal" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="insuranceTotalMessage">[Insurance Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="insuranceTotal" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="taxTotalMessage">[Tax Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="taxTotal" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="extraAmountMessage">[Extra Amount Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="extraAmount" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="shippingDiscountMessage">[Shipping Discount Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="shippingDiscount" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="discountTotalMessage">[Discount Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="discountTotal" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+							</div>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td style="border-top: none;" colspan="1" align="right"><a href="#" wicket:id="cancel" class="btn btn-xs"><wicket:message key="cancelMessage">[Cancel]</wicket:message></a><a wicket:id="save" class="btn btn-primary btn-xs"><wicket:message key="saveAndCloseMessage">[Save And Close]</wicket:message></a></td>
+				</tr>
+			</tfoot>
+		</table>
+	</wicket:fragment>
+	<wicket:fragment wicket:id="offerViewFragement">
+		<table class="table" style="border-top: none;">
+			<thead>
+				<tr>
+					<td colspan="1" align="left"><a href="#" wicket:id="edit" class="btn btn-xs"><span class="glyphicon glyphicon-edit"></span>&nbsp;<wicket:message key="editMessage">[Edit Message]</wicket:message></a></td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border-top: none;">
+						<form wicket:id="offerViewForm" class="form-horizontal">
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									<wicket:message key="offerMessage">[Offer Message]</wicket:message>
+								</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="offerIdMessage">[Offer Id Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="offerId" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="contractIdMessage">[Contract ID Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="contract.contractId" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="itemTotalMessage">[Item Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="itemTotal" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="offerDescriptionMessage">[Offer Description Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="offerDescription" class="form-control input-sm" style="resize: vertical;"></span></small>
+									</div>
+								</div>
+							</div>
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									<wicket:message key="priceMessage">[Price Message]</wicket:message>
+								</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="offerTotalMessage">[Offer Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="offerTotal" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="handlingTotalMessage">[Handling Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="handlingTotal" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="shippingTotalMessage">[ShippingTotal Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="shippingTotal" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="insuranceTotalMessage">[Insurance Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="insuranceTotal" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="taxTotalMessage">[Tax Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="taxTotal" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="extraAmountMessage">[Extra Amount Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="extraAmount" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="shippingDiscountMessage">[Shipping Discount Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="shippingDiscount" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="discountTotalMessage">[Discount Total Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="discountTotal" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+							</div>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</wicket:fragment>
+</wicket:panel>

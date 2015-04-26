@@ -19,7 +19,8 @@ import com.netbrasoft.gnuob.application.security.GroupTab;
 import com.netbrasoft.gnuob.application.security.SiteTab;
 import com.netbrasoft.gnuob.application.security.UserTab;
 import com.netbrasoft.gnuob.application.setting.SettingTab;
-import com.netbrasoft.gnuob.wicket.bootstrap.extensions.markup.html.tabs.BootstrapTabbedPanel;
+
+import de.agilecoders.wicket.core.markup.html.bootstrap.tabs.BootstrapTabbedPanel;
 
 public class EntityTab extends AbstractTab {
 
@@ -48,22 +49,22 @@ public class EntityTab extends AbstractTab {
          private static final long serialVersionUID = -8650291789763661400L;
 
          @Override
-         public String getVariation() {
-            return BootstrapTabbedPanel.PILLS_STACKED_VARIATION;
+         public String getTabContainerCssClass() {
+            return "nav nav-pills nav-stacked col-md-2";
          };
       };
 
-      entityTabbedPanel.getTabs().add(categoryTab);
-      entityTabbedPanel.getTabs().add(contentTab);
-      entityTabbedPanel.getTabs().add(contractTab);
       entityTabbedPanel.getTabs().add(customerTab);
-      entityTabbedPanel.getTabs().add(groupTab);
-      entityTabbedPanel.getTabs().add(offerTab);
+      entityTabbedPanel.getTabs().add(contractTab);
       entityTabbedPanel.getTabs().add(orderTab);
-      entityTabbedPanel.getTabs().add(productTab);
-      entityTabbedPanel.getTabs().add(settingTab);
-      entityTabbedPanel.getTabs().add(siteTab);
+      entityTabbedPanel.getTabs().add(offerTab);
       entityTabbedPanel.getTabs().add(userTab);
+      entityTabbedPanel.getTabs().add(groupTab);
+      entityTabbedPanel.getTabs().add(siteTab);
+      entityTabbedPanel.getTabs().add(settingTab);
+      entityTabbedPanel.getTabs().add(categoryTab);
+      entityTabbedPanel.getTabs().add(productTab);
+      entityTabbedPanel.getTabs().add(contentTab);
 
       return entityTabbedPanel;
    }

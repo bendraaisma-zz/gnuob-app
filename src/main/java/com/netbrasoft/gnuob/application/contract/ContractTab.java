@@ -3,6 +3,9 @@ package com.netbrasoft.gnuob.application.contract;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
+import com.netbrasoft.gnuob.api.Contract;
 
 public class ContractTab extends AbstractTab {
 
@@ -14,6 +17,8 @@ public class ContractTab extends AbstractTab {
 
    @Override
    public WebMarkupContainer getPanel(String panelId) {
-      return new ContractViewPanel(panelId);
+      Contract contract = new Contract();
+      contract.setActive(true);
+      return new ContractPanel(panelId, new Model<Contract>(contract));
    }
 }

@@ -3,6 +3,9 @@ package com.netbrasoft.gnuob.application.setting;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
+import com.netbrasoft.gnuob.api.Setting;
 
 public class SettingTab extends AbstractTab {
 
@@ -14,6 +17,8 @@ public class SettingTab extends AbstractTab {
 
    @Override
    public WebMarkupContainer getPanel(String panelId) {
-      return new SettingViewPanel(panelId);
+      Setting setting = new Setting();
+      setting.setActive(true);
+      return new SettingPanel(panelId, new Model<Setting>(setting));
    }
 }

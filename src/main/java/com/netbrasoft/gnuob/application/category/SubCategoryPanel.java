@@ -6,9 +6,9 @@ import java.util.List;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractToolbar;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
-import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
 import org.apache.wicket.extensions.markup.html.repeater.tree.table.TreeColumn;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -17,7 +17,6 @@ import org.apache.wicket.model.Model;
 
 import com.netbrasoft.gnuob.api.Category;
 import com.netbrasoft.gnuob.api.SubCategory;
-import com.netbrasoft.gnuob.wicket.bootstrap.extensions.markup.html.repeater.tree.BootstrapTableTree;
 
 @SuppressWarnings("unchecked")
 public class SubCategoryPanel extends Panel {
@@ -70,25 +69,26 @@ public class SubCategoryPanel extends Panel {
       return columns;
    }
 
-   private BootstrapTableTree<SubCategory, String> createSubCategoriesBootstrapTableTree(ITreeProvider<SubCategory> subCategoryTreeProvider) {
+   private SubCategoryTableTree<SubCategory> createSubCategoriesBootstrapTableTree(SubCategoryTreeProvider<SubCategory> subCategoryTreeProvider) {
       SubCategoryExpansionModel subCategoryExpansionModel = new SubCategoryExpansionModel();
       List<IColumn<SubCategory, String>> columns = createColumns();
-      SubCategoryBootstrapTableTree<SubCategory> subCategoriesBootstrapTableTree = new SubCategoryBootstrapTableTree<SubCategory>("subCategoriesBootstrapTableTree", columns, subCategoryTreeProvider, Integer.MAX_VALUE, subCategoryExpansionModel);
+      SubCategoryTableTree<SubCategory> subCategoriesBootstrapTableTree = new SubCategoryTableTree<SubCategory>("subCategoriesTableTree", columns, subCategoryTreeProvider, Integer.MAX_VALUE, subCategoryExpansionModel);
       return subCategoriesBootstrapTableTree;
    }
 
-   private ITreeProvider<SubCategory> createSubCategoryTreeProvider() {
+   private SubCategoryTreeProvider<SubCategory> createSubCategoryTreeProvider() {
       IModel<Category> model = (IModel<Category>) getDefaultModel();
-      ITreeProvider<SubCategory> subCategoryTreeProvider = new SubCategoryTreeProvider<SubCategory>(model);
+      SubCategoryTreeProvider<SubCategory> subCategoryTreeProvider = new SubCategoryTreeProvider<SubCategory>(model);
       return subCategoryTreeProvider;
    }
 
    @Override
    protected void onInitialize() {
-      BootstrapTableTree<SubCategory, String> subCategoriesBootstrapTableTree = createSubCategoriesBootstrapTableTree(createSubCategoryTreeProvider());
+      SubCategoryTableTree<SubCategory> subCategoriesBootstrapTableTree = createSubCategoriesBootstrapTableTree(createSubCategoryTreeProvider());
       SubCategoryToolBar addSubCategoryToolBar = new SubCategoryToolBar(subCategoriesBootstrapTableTree.getTable());
 
       subCategoriesBootstrapTableTree.getTable().addTopToolbar((AbstractToolbar) addSubCategoryToolBar.setVisible(enableOperations));
+      subCategoriesBootstrapTableTree.getTable().addTopToolbar(new HeadersToolbar<String>(subCategoriesBootstrapTableTree.getTable(), null));
       add(subCategoriesBootstrapTableTree.setOutputMarkupId(true));
 
       setOutputMarkupId(true);

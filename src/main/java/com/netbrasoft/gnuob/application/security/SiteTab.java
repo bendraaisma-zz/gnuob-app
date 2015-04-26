@@ -3,6 +3,9 @@ package com.netbrasoft.gnuob.application.security;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
+import com.netbrasoft.gnuob.api.Site;
 
 public class SiteTab extends AbstractTab {
 
@@ -14,6 +17,8 @@ public class SiteTab extends AbstractTab {
 
    @Override
    public WebMarkupContainer getPanel(String panelId) {
-      return new SiteViewPanel(panelId);
+      Site site = new Site();
+      site.setActive(true);
+      return new SitePanel(panelId, new Model<Site>(site));
    }
 }

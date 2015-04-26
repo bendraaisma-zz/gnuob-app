@@ -4,14 +4,15 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.NumberTextField;
+import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
 import com.netbrasoft.gnuob.api.Category;
-import com.netbrasoft.gnuob.wicket.bootstrap.markup.html.form.BootstrapNumberTextField;
-import com.netbrasoft.gnuob.wicket.bootstrap.markup.html.form.BootstrapTextField;
 
 @SuppressWarnings("unchecked")
 public class CategoryViewOrEditPanel extends Panel {
@@ -20,7 +21,7 @@ public class CategoryViewOrEditPanel extends Panel {
 
    public CategoryViewOrEditPanel(String id, IModel<Category> model) {
       super(id, model);
-      add(createCategoryViewFragement());
+      add(createCategoryViewFragement().setOutputMarkupId(true));
    }
 
    private AjaxLink<Void> createCancelAjaxLink() {
@@ -31,7 +32,7 @@ public class CategoryViewOrEditPanel extends Panel {
          @Override
          public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
             CategoryViewOrEditPanel.this.removeAll();
-            CategoryViewOrEditPanel.this.add(createCategoryViewFragement());
+            CategoryViewOrEditPanel.this.add(createCategoryViewFragement()).setOutputMarkupId(true);
             paramAjaxRequestTarget.add(paramAjaxRequestTarget.getPage());
          }
       };
@@ -48,17 +49,16 @@ public class CategoryViewOrEditPanel extends Panel {
             Form<Category> categoryEditForm = new Form<Category>("categoryEditForm");
 
             categoryEditForm.setModel(new CompoundPropertyModel<Category>((IModel<Category>) getDefaultModel()));
-            categoryEditForm.add(new BootstrapNumberTextField<Integer>("position"));
-            categoryEditForm.add(new BootstrapTextField<String>("name"));
-            categoryEditForm.add(new Label("description"));
-            categoryEditForm.add(new ContentPanel("contentPanel", (IModel<Category>) getDefaultModel(), enableOperations));
-            categoryEditForm.add(new SubCategoryPanel("subCategoriesPanel", (IModel<Category>) getDefaultModel(), enableOperations));
+            categoryEditForm.add(new NumberTextField<Integer>("position"));
+            categoryEditForm.add(new TextField<String>("name"));
+            categoryEditForm.add(new TextArea<String>("description"));
 
-            add(categoryEditForm.setOutputMarkupId(enableOperations));
-            add(createCancelAjaxLink().setOutputMarkupId(enableOperations));
-            add(createSaveAjaxLink().setOutputMarkupId(enableOperations));
+            add(new ContentPanel("contentPanel", (IModel<Category>) getDefaultModel(), enableOperations).setOutputMarkupId(true));
+            add(new SubCategoryPanel("subCategoriesPanel", (IModel<Category>) getDefaultModel(), enableOperations).setOutputMarkupId(true));
+            add(categoryEditForm.setOutputMarkupId(true));
+            add(createCancelAjaxLink().setOutputMarkupId(true));
+            add(createSaveAjaxLink().setOutputMarkupId(true));
 
-            setOutputMarkupId(enableOperations);
             super.onInitialize();
          }
       };
@@ -78,13 +78,12 @@ public class CategoryViewOrEditPanel extends Panel {
             categoryViewForm.add(new Label("position"));
             categoryViewForm.add(new Label("name"));
             categoryViewForm.add(new Label("description"));
-            categoryViewForm.add(new ContentPanel("contentPanel", (IModel<Category>) getDefaultModel(), enableOperations));
-            categoryViewForm.add(new SubCategoryPanel("subCategoriesPanel", (IModel<Category>) getDefaultModel(), enableOperations));
 
+            add(new ContentPanel("contentPanel", (IModel<Category>) getDefaultModel(), enableOperations).setOutputMarkupId(true));
+            add(new SubCategoryPanel("subCategoriesPanel", (IModel<Category>) getDefaultModel(), enableOperations).setOutputMarkupId(true));
             add(createEditAjaxLink().setOutputMarkupId(true));
             add(categoryViewForm.setOutputMarkupId(true));
 
-            setOutputMarkupId(true);
             super.onInitialize();
          }
       };
@@ -98,7 +97,7 @@ public class CategoryViewOrEditPanel extends Panel {
          @Override
          public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
             CategoryViewOrEditPanel.this.removeAll();
-            CategoryViewOrEditPanel.this.add(createCategoryEditFragement());
+            CategoryViewOrEditPanel.this.add(createCategoryEditFragement().setOutputMarkupId(true));
             paramAjaxRequestTarget.add(CategoryViewOrEditPanel.this);
          }
       };
@@ -114,11 +113,5 @@ public class CategoryViewOrEditPanel extends Panel {
             // TODO Auto-generated method stub
          }
       };
-   }
-
-   @Override
-   protected void onInitialize() {
-      setOutputMarkupId(true);
-      super.onInitialize();
    }
 }

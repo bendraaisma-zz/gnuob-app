@@ -4,7 +4,7 @@
 
 	<groupId>com.netbrasoft.gnuob</groupId>
 	<artifactId>gnuob-app</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>GNU Open Business Platform</name>
 	<description>GNU Open Business Platform is a open source business framework</description>
@@ -26,9 +26,14 @@
 		<version.wicket-source.plugin>7.0.0</version.wicket-source.plugin>
 		<version.springframework.plugin>4.1.0.RELEASE</version.springframework.plugin>
 		<version.surefire.plugin>2.10</version.surefire.plugin>
-		<version.netbrasoft.gnuob>0.0.1-SNAPSHOT</version.netbrasoft.gnuob>
+		<version.netbrasoft.gnuob>0.0.2-SNAPSHOT</version.netbrasoft.gnuob>
 		<javasimon.version>4.0.1</javasimon.version>
 		<wicket-dnd.version>0.6.0</wicket-dnd.version>
+		<wicket-bootstrap.version>0.10.1-SNAPSHOT</wicket-bootstrap.version>
+		<!-- <wicket-bootstrap.version>0.10.0</wicket-bootstrap.version> -->
+		<bootstrap-validator.version>0.8.1</bootstrap-validator.version>
+		<jquery.cookie.version>1.4.1</jquery.cookie.version>
+		<bootstrap-3-datepicker.version>1.4.0</bootstrap-3-datepicker.version>
 
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -104,6 +109,41 @@
 			<version>${version.wicket.plugin}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.github.svenmeier.wicket-dnd</groupId>
+			<artifactId>wicket-dnd</artifactId>
+			<version>${wicket-dnd.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.agilecoders.wicket</groupId>
+			<artifactId>wicket-bootstrap-core</artifactId>
+			<version>${wicket-bootstrap.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.agilecoders.wicket</groupId>
+			<artifactId>wicket-bootstrap-extensions</artifactId>
+			<version>${wicket-bootstrap.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.agilecoders.wicket</groupId>
+			<artifactId>wicket-bootstrap-themes</artifactId>
+			<version>${wicket-bootstrap.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>bootstrap-validator</artifactId>
+			<version>${bootstrap-validator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>jquery.cookie</artifactId>
+			<version>${jquery.cookie.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>bootstrap-3-datepicker</artifactId>
+			<version>${bootstrap-3-datepicker.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${version.springframework.plugin}</version>
@@ -126,11 +166,6 @@
 		<dependency>
 			<groupId>com.netbrasoft.gnuob</groupId>
 			<artifactId>gnuob-api</artifactId>
-			<version>${version.netbrasoft.gnuob}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.netbrasoft.gnuob</groupId>
-			<artifactId>gnuob-wicket-bootstrap</artifactId>
 			<version>${version.netbrasoft.gnuob}</version>
 		</dependency>
 		<dependency>
@@ -163,11 +198,6 @@
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-console-embed</artifactId>
 			<version>${javasimon.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.svenmeier.wicket-dnd</groupId>
-			<artifactId>wicket-dnd</artifactId>
-			<version>${wicket-dnd.version}</version>
 		</dependency>
 	</dependencies>
 

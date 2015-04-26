@@ -3,6 +3,9 @@ package com.netbrasoft.gnuob.application.offer;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
+import com.netbrasoft.gnuob.api.Offer;
 
 public class OfferTab extends AbstractTab {
 
@@ -14,6 +17,7 @@ public class OfferTab extends AbstractTab {
 
    @Override
    public WebMarkupContainer getPanel(String panelId) {
-      return new OfferViewPanel(panelId);
+      Offer offer = new Offer();
+      return new OfferPanel(panelId, new Model<Offer>(offer));
    }
 }

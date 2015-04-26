@@ -3,6 +3,9 @@ package com.netbrasoft.gnuob.application.security;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
+import com.netbrasoft.gnuob.api.User;
 
 public class UserTab extends AbstractTab {
 
@@ -14,6 +17,8 @@ public class UserTab extends AbstractTab {
 
    @Override
    public WebMarkupContainer getPanel(String panelId) {
-      return new UserViewPanel(panelId);
+      User user = new User();
+      user.setActive(true);
+      return new UserPanel(panelId, new Model<User>(user));
    }
 }

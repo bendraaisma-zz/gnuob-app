@@ -23,24 +23,21 @@ public class RolesSession extends WebSession {
    }
 
    public String getPassword() {
-      HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest()
-            .getContainerRequest();
+      HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest();
 
       GNUOBPrincipal gnuobPrincipal = (GNUOBPrincipal) httpServletRequest.getUserPrincipal();
       return gnuobPrincipal != null ? gnuobPrincipal.getPassword() : "-";
    }
 
    public String getSite() {
-      HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest()
-            .getContainerRequest();
+      HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest();
 
       GNUOBPrincipal gnuobPrincipal = (GNUOBPrincipal) httpServletRequest.getUserPrincipal();
       return gnuobPrincipal != null ? gnuobPrincipal.getSite() : "-";
    }
 
    public String getUsername() {
-      HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest()
-            .getContainerRequest();
+      HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest();
 
       GNUOBPrincipal gnuobPrincipal = (GNUOBPrincipal) httpServletRequest.getUserPrincipal();
       return gnuobPrincipal != null ? gnuobPrincipal.getName() : "-";
@@ -48,8 +45,7 @@ public class RolesSession extends WebSession {
 
    public boolean hasAnyRole(Roles roles) {
 
-      HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest()
-            .getContainerRequest();
+      HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest();
 
       for (String role : roles) {
          if (httpServletRequest.isUserInRole(role)) {
@@ -61,8 +57,7 @@ public class RolesSession extends WebSession {
 
    public void login(String username, String password) {
       try {
-         HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest()
-               .getContainerRequest();
+         HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest();
 
          httpServletRequest.login(username, password);
       } catch (ServletException e) {
@@ -72,8 +67,7 @@ public class RolesSession extends WebSession {
 
    public void logout() {
       try {
-         HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest()
-               .getContainerRequest();
+         HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest();
 
          httpServletRequest.logout();
       } catch (ServletException e) {

@@ -23,6 +23,7 @@ import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
 public class CategoryPanel extends Panel {
 
    private static final long serialVersionUID = 3703226064705246155L;
+
    private static final int ITEMS_PER_PAGE = 5;
 
    @SpringBean(name = "CategoryDataProvider", required = true)
@@ -36,9 +37,13 @@ public class CategoryPanel extends Panel {
       public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
       }
    };
+
    private OrderByBorder<String> orderByposition = new OrderByBorder<String>("orderByPosition", "position", categoryDataProvider);
+
    private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", categoryDataProvider);
+
    private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description", categoryDataProvider);
+
    private DataView<Category> categoryDataview = new DataView<Category>("categoryDataview", categoryDataProvider, ITEMS_PER_PAGE) {
 
       private static final long serialVersionUID = -5039874949058607907L;
@@ -46,9 +51,9 @@ public class CategoryPanel extends Panel {
       @Override
       protected void populateItem(Item<Category> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Category>(paramItem.getModelObject()));
-         paramItem.add(new Label("position"));
          paramItem.add(new Label("name"));
          paramItem.add(new Label("description"));
+         paramItem.add(new Label("position"));
          paramItem.add(new AjaxEventBehavior("onclick") {
 
             private static final long serialVersionUID = 1L;
@@ -61,6 +66,7 @@ public class CategoryPanel extends Panel {
          });
       }
    };
+
    private WebMarkupContainer categoryDataviewContainer = new WebMarkupContainer("categoryDataviewContainer") {
 
       private static final long serialVersionUID = -497527332092449028L;
@@ -68,15 +74,15 @@ public class CategoryPanel extends Panel {
       @Override
       protected void onInitialize() {
          add(categoryDataview);
-
-         setOutputMarkupId(true);
          super.onInitialize();
       };
    };
+
    private ItemsPerPagePagingNavigator categoryPagingNavigator = new ItemsPerPagePagingNavigator("categoryPagingNavigator", categoryDataview);
+
    private CategoryViewOrEditPanel categoryViewOrEditPanel = new CategoryViewOrEditPanel("categoryViewOrEditPanel", new Model<Category>(new Category()));
 
-   public CategoryPanel(String id, IModel<Category> model) {
+   public CategoryPanel(final String id, final IModel<Category> model) {
       super(id, model);
    }
 
@@ -93,9 +99,9 @@ public class CategoryPanel extends Panel {
       add(orderByposition);
       add(orderByName);
       add(orderByDescription);
-      add(categoryDataviewContainer);
+      add(categoryDataviewContainer.setOutputMarkupId(true));
       add(categoryPagingNavigator);
-      add(categoryViewOrEditPanel);
+      add(categoryViewOrEditPanel.setOutputMarkupId(true));
 
       super.onInitialize();
    }
