@@ -20,13 +20,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.Order;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
-import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
-import com.netbrasoft.gnuob.application.security.Roles;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
-@AuthorizeAction(action = Action.RENDER, roles = { Roles.MANAGER, Roles.EMPLOYEE })
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
+
+@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class OrderPanel extends Panel {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { Roles.MANAGER })
+   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
    class AddAjaxLinke extends AjaxLink<Void> {
 
       private static final long serialVersionUID = 9191172039973638020L;
@@ -36,28 +37,19 @@ public class OrderPanel extends Panel {
       }
 
       @Override
-      public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
+      public void onClick(AjaxRequestTarget target) {
+         // TODO Auto-generated method stub
+
       }
    }
 
-   private static final long serialVersionUID = 3703226064705246155L;
-
-   private static final int ITEMS_PER_PAGE = 10;
-
-   @SpringBean(name = "OrderDataProvider", required = true)
-   private GenericTypeDataProvider<Order> orderDataProvider;;
-
-   private OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", orderDataProvider);
-
-   private OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", orderDataProvider);
-
-   private OrderByBorder<String> orderByOrderId = new OrderByBorder<String>("orderByOrderId", "orderId", orderDataProvider);
-
-   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", orderDataProvider);
-
-   private DataView<Order> orderDataview = new DataView<Order>("orderDataview", orderDataProvider, ITEMS_PER_PAGE) {
+   class OrderDataview extends DataView<Order> {
 
       private static final long serialVersionUID = -5039874949058607907L;
+
+      protected OrderDataview() {
+         super("orderDataview", orderDataProvider, ITEMS_PER_PAGE);
+      }
 
       @Override
       protected void populateItem(Item<Order> paramItem) {
@@ -77,7 +69,24 @@ public class OrderPanel extends Panel {
             }
          });
       }
-   };
+   }
+
+   private static final long serialVersionUID = 3703226064705246155L;
+
+   private static final int ITEMS_PER_PAGE = 10;
+
+   @SpringBean(name = "OrderDataProvider", required = true)
+   private GenericTypeDataProvider<Order> orderDataProvider;
+
+   private OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", orderDataProvider);
+
+   private OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", orderDataProvider);
+
+   private OrderByBorder<String> orderByOrderId = new OrderByBorder<String>("orderByOrderId", "orderId", orderDataProvider);
+
+   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", orderDataProvider);
+
+   private OrderDataview orderDataview = new OrderDataview();
 
    private WebMarkupContainer orderDataviewContainer = new WebMarkupContainer("orderDataviewContainer") {
 
@@ -87,10 +96,10 @@ public class OrderPanel extends Panel {
       protected void onInitialize() {
          add(orderDataview);
          super.onInitialize();
-      };
+      }
    };
 
-   private ItemsPerPagePagingNavigator orderPagingNavigator = new ItemsPerPagePagingNavigator("orderPagingNavigator", orderDataview);
+   private BootstrapPagingNavigator orderPagingNavigator = new BootstrapPagingNavigator("orderPagingNavigator", orderDataview);
 
    private OrderViewOrEditPanel orderViewOrEditPanel = new OrderViewOrEditPanel("orderViewOrEditPanel", new Model<Order>(new Order()));
 

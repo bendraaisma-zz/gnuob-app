@@ -20,13 +20,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.Customer;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
-import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
-import com.netbrasoft.gnuob.application.security.Roles;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
-@AuthorizeAction(action = Action.RENDER, roles = { Roles.MANAGER, Roles.EMPLOYEE })
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
+
+@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class CustomerPanel extends Panel {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { Roles.MANAGER })
+   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
    class AddAjaxLink extends AjaxLink<Void> {
 
       private static final long serialVersionUID = -8317730269644885290L;
@@ -41,20 +42,13 @@ public class CustomerPanel extends Panel {
       }
    }
 
-   private static final long serialVersionUID = 3703226064705246155L;
-
-   private static final int ITEMS_PER_PAGE = 10;
-
-   @SpringBean(name = "CustomerDataProvider", required = true)
-   private GenericTypeDataProvider<Customer> customerDataProvider;
-
-   private OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", customerDataProvider);
-
-   private OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", customerDataProvider);
-
-   private DataView<Customer> customerDataview = new DataView<Customer>("customerDataview", customerDataProvider, ITEMS_PER_PAGE) {
+   class CustomerDataview extends DataView<Customer> {
 
       private static final long serialVersionUID = -5039874949058607907L;
+
+      protected CustomerDataview() {
+         super("customerDataview", customerDataProvider, ITEMS_PER_PAGE);
+      }
 
       @Override
       protected void populateItem(Item<Customer> paramItem) {
@@ -72,7 +66,20 @@ public class CustomerPanel extends Panel {
             }
          });
       }
-   };
+   }
+
+   private static final long serialVersionUID = 3703226064705246155L;
+
+   private static final int ITEMS_PER_PAGE = 10;
+
+   @SpringBean(name = "CustomerDataProvider", required = true)
+   private GenericTypeDataProvider<Customer> customerDataProvider;
+
+   private OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", customerDataProvider);
+
+   private OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", customerDataProvider);
+
+   private DataView<Customer> customerDataview = new CustomerDataview();
 
    private WebMarkupContainer customerDataviewContainer = new WebMarkupContainer("customerDataviewContainer") {
 
@@ -82,10 +89,10 @@ public class CustomerPanel extends Panel {
       protected void onInitialize() {
          add(customerDataview);
          super.onInitialize();
-      };
+      }
    };
 
-   private ItemsPerPagePagingNavigator customerPagingNavigator = new ItemsPerPagePagingNavigator("customerPagingNavigator", customerDataview);
+   private BootstrapPagingNavigator customerPagingNavigator = new BootstrapPagingNavigator("customerPagingNavigator", customerDataview);
 
    private CustomerViewOrEditPanel customerViewOrEditPanel = new CustomerViewOrEditPanel("customerViewOrEditPanel", new Model<Customer>(new Customer()));
 

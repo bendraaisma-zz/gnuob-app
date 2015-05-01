@@ -3,6 +3,8 @@ package com.netbrasoft.gnuob.application.category;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractToolbar;
@@ -17,8 +19,10 @@ import org.apache.wicket.model.Model;
 
 import com.netbrasoft.gnuob.api.Category;
 import com.netbrasoft.gnuob.api.SubCategory;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
 @SuppressWarnings("unchecked")
+@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class SubCategoryPanel extends Panel {
 
    private static final String CSS_SMALL = "small";
@@ -72,14 +76,12 @@ public class SubCategoryPanel extends Panel {
    private SubCategoryTableTree<SubCategory> createSubCategoriesBootstrapTableTree(SubCategoryTreeProvider<SubCategory> subCategoryTreeProvider) {
       SubCategoryExpansionModel subCategoryExpansionModel = new SubCategoryExpansionModel();
       List<IColumn<SubCategory, String>> columns = createColumns();
-      SubCategoryTableTree<SubCategory> subCategoriesBootstrapTableTree = new SubCategoryTableTree<SubCategory>("subCategoriesTableTree", columns, subCategoryTreeProvider, Integer.MAX_VALUE, subCategoryExpansionModel);
-      return subCategoriesBootstrapTableTree;
+      return new SubCategoryTableTree<SubCategory>("subCategoriesTableTree", columns, subCategoryTreeProvider, Integer.MAX_VALUE, subCategoryExpansionModel);
    }
 
    private SubCategoryTreeProvider<SubCategory> createSubCategoryTreeProvider() {
       IModel<Category> model = (IModel<Category>) getDefaultModel();
-      SubCategoryTreeProvider<SubCategory> subCategoryTreeProvider = new SubCategoryTreeProvider<SubCategory>(model);
-      return subCategoryTreeProvider;
+      return new SubCategoryTreeProvider<SubCategory>(model);
    }
 
    @Override

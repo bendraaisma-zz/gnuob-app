@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.category;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -60,15 +61,17 @@ public class SubCategoryTreeProvider<S extends SubCategory> extends SortableTree
          return subCategories;
       }
 
+      List<S> results = new ArrayList<S>();
+
       for (S sub : subCategories) {
-         List<S> results = getParent(subCategory, (List<S>) sub.getSubCategories());
+         results = getParent(subCategory, (List<S>) sub.getSubCategories());
 
          if (results != null && results.contains(subCategory)) {
             return results;
          }
       }
 
-      return null;
+      return results;
    }
 
    @Override

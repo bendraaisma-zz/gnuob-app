@@ -16,7 +16,8 @@ public class SubCategoryExpansion implements Set<SubCategory>, Serializable {
    private static final long serialVersionUID = -115456451423752276L;
 
    private static MetaDataKey<SubCategoryExpansion> KEY = new MetaDataKey<SubCategoryExpansion>() {
-      private static final long serialVersionUID = 1L;
+
+      private static final long serialVersionUID = 689335047835010940L;
    };
 
    public static SubCategoryExpansion get() {
@@ -30,7 +31,7 @@ public class SubCategoryExpansion implements Set<SubCategory>, Serializable {
       return expansion;
    }
 
-   private Set<Long> ids = new HashSet<Long>();
+   private transient Set<Long> ids = new HashSet<Long>();
 
    private boolean inverse;
 

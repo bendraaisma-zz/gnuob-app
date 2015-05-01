@@ -11,6 +11,8 @@ import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
 
@@ -18,12 +20,14 @@ public class HeaderPanel extends Panel {
 
    private static final long serialVersionUID = 3137234732197409313L;
 
+   private static final Logger LOGGER = LoggerFactory.getLogger(HeaderPanel.class);
+
    public HeaderPanel(String id) {
       super(id);
    }
 
    @Override
-   protected void onInitialize() throws RuntimeException {
+   protected void onInitialize() {
       try {
          super.onInitialize();
 
@@ -37,7 +41,7 @@ public class HeaderPanel extends Panel {
          add(new Label("implementationVersion", attributes.getValue("Implementation-Version")));
          add(new Label("login", roleSession.getUsername()));
       } catch (IOException e) {
-         throw new RuntimeException(e.getMessage(), e);
+         LOGGER.error(e.getMessage(), e);
       }
    }
 }

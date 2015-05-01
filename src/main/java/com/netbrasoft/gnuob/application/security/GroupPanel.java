@@ -4,6 +4,8 @@ import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -18,31 +20,34 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.Group;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
-import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
+
+@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR, AppRoles.MANAGER })
 public class GroupPanel extends Panel {
 
-   private static final long serialVersionUID = 3703226064705246155L;
+   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR })
+   class AddAjaxLink extends AjaxLink<Void> {
 
-   private static final int ITEMS_PER_PAGE = 10;
+      private static final long serialVersionUID = -8317730269644885290L;
 
-   @SpringBean(name = "GroupDataProvider", required = true)
-   private GenericTypeDataProvider<Group> groupDataProvider;
-
-   private AjaxLink<Void> add = new AjaxLink<Void>("add") {
-
-      private static final long serialVersionUID = 9191172039973638020L;
+      public AddAjaxLink() {
+         super("add");
+      }
 
       @Override
-      public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
+      public void onClick(AjaxRequestTarget target) {
+         // TODO Auto-generated method stub
       }
-   };
+   }
 
-   private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", groupDataProvider);
-
-   private DataView<Group> groupDataview = new DataView<Group>("groupDataview", groupDataProvider, ITEMS_PER_PAGE) {
+   class GroupDataview extends DataView<Group> {
 
       private static final long serialVersionUID = -5039874949058607907L;
+
+      protected GroupDataview() {
+         super("groupDataview", groupDataProvider, ITEMS_PER_PAGE);
+      }
 
       @Override
       protected void populateItem(Item<Group> paramItem) {
@@ -60,7 +65,18 @@ public class GroupPanel extends Panel {
             }
          });
       }
-   };
+   }
+
+   private static final long serialVersionUID = 3703226064705246155L;
+
+   private static final int ITEMS_PER_PAGE = 10;
+
+   @SpringBean(name = "GroupDataProvider", required = true)
+   private GenericTypeDataProvider<Group> groupDataProvider;
+
+   private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", groupDataProvider);
+
+   private GroupDataview groupDataview = new GroupDataview();
 
    private WebMarkupContainer groupDataviewContainer = new WebMarkupContainer("groupDataviewContainer") {
 
@@ -70,10 +86,10 @@ public class GroupPanel extends Panel {
       protected void onInitialize() {
          add(groupDataview);
          super.onInitialize();
-      };
+      }
    };
 
-   private ItemsPerPagePagingNavigator groupPagingNavigator = new ItemsPerPagePagingNavigator("groupPagingNavigator", groupDataview);
+   private BootstrapPagingNavigator groupPagingNavigator = new BootstrapPagingNavigator("groupPagingNavigator", groupDataview);
 
    private GroupViewOrEditPanel groupViewOrEditPanel = new GroupViewOrEditPanel("groupViewOrEditPanel", new Model<Group>(new Group()));
 
@@ -90,7 +106,7 @@ public class GroupPanel extends Panel {
       groupDataProvider.setSite(roleSession.getSite());
       groupDataProvider.setType((Group) getDefaultModelObject());
 
-      add(add);
+      add(new AddAjaxLink());
       add(orderByName);
       add(groupDataviewContainer.setOutputMarkupId(true));
       add(groupPagingNavigator);

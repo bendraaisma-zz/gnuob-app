@@ -6,13 +6,12 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.tree.AbstractTree.State;
 import org.apache.wicket.extensions.markup.html.repeater.tree.TableTree;
 
+import com.netbrasoft.gnuob.api.SubCategory;
+
 import wicketdnd.DropTarget;
 import wicketdnd.Location;
 import wicketdnd.Operation;
-import wicketdnd.Reject;
 import wicketdnd.Transfer;
-
-import com.netbrasoft.gnuob.api.SubCategory;
 
 public class SubCategoryDropTarget<S extends SubCategory> extends DropTarget {
 
@@ -39,7 +38,7 @@ public class SubCategoryDropTarget<S extends SubCategory> extends DropTarget {
    }
 
    @Override
-   public void onDrop(AjaxRequestTarget target, Transfer transfer, Location location) throws Reject {
+   public void onDrop(AjaxRequestTarget target, Transfer transfer, Location location) {
       S subCategorySource = transfer.getData();
       S subCategorytarget = location.getModelObject();
 
@@ -55,6 +54,7 @@ public class SubCategoryDropTarget<S extends SubCategory> extends DropTarget {
          break;
       case BOTTOM:
          provider.addAfter(subCategorySource, subCategorytarget);
+         break;
       default:
          break;
       }

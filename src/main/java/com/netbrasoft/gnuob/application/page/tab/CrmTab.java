@@ -1,4 +1,4 @@
-package com.netbrasoft.gnuob.application.page;
+package com.netbrasoft.gnuob.application.page.tab;
 
 import java.util.ArrayList;
 
@@ -37,7 +37,7 @@ public class CrmTab extends AbstractTab {
          @Override
          public String getTabContainerCssClass() {
             return "nav nav-pills nav-stacked col-md-2";
-         };
+         }
       };
 
       crmTabbedPanel.getTabs().add(customerTab);

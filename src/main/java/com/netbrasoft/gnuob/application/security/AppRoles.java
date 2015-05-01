@@ -1,6 +1,8 @@
 package com.netbrasoft.gnuob.application.security;
 
-public class Roles {
+public class AppRoles extends org.apache.wicket.authroles.authorization.strategies.role.Roles {
+
+   private static final long serialVersionUID = -1865955815082169990L;
 
    public static final String ADMINISTRATOR = "Administrator";
 

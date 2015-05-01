@@ -4,6 +4,8 @@ import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -18,33 +20,34 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.User;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
-import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
+
+@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR, AppRoles.MANAGER })
 public class UserPanel extends Panel {
 
-   private static final long serialVersionUID = 3703226064705246155L;
+   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR })
+   class AddAjaxLink extends AjaxLink<Void> {
 
-   private static final int ITEMS_PER_PAGE = 10;
+      private static final long serialVersionUID = -8317730269644885290L;
 
-   @SpringBean(name = "UserDataProvider", required = true)
-   private GenericTypeDataProvider<User> userDataProvider;
-
-   private AjaxLink<Void> add = new AjaxLink<Void>("add") {
-
-      private static final long serialVersionUID = 9191172039973638020L;
+      public AddAjaxLink() {
+         super("add");
+      }
 
       @Override
-      public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
+      public void onClick(AjaxRequestTarget target) {
+         // TODO Auto-generated method stub
       }
-   };
+   }
 
-   private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", userDataProvider);
-
-   private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description", userDataProvider);
-
-   private DataView<User> userDataview = new DataView<User>("userDataview", userDataProvider, ITEMS_PER_PAGE) {
+   class UserDataview extends DataView<User> {
 
       private static final long serialVersionUID = -5039874949058607907L;
+
+      protected UserDataview() {
+         super("userDataview", userDataProvider, ITEMS_PER_PAGE);
+      }
 
       @Override
       protected void populateItem(Item<User> paramItem) {
@@ -62,7 +65,20 @@ public class UserPanel extends Panel {
             }
          });
       }
-   };
+   }
+
+   private static final long serialVersionUID = 3703226064705246155L;
+
+   private static final int ITEMS_PER_PAGE = 10;
+
+   @SpringBean(name = "UserDataProvider", required = true)
+   private GenericTypeDataProvider<User> userDataProvider;
+
+   private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", userDataProvider);
+
+   private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description", userDataProvider);
+
+   private UserDataview userDataview = new UserDataview();
 
    private WebMarkupContainer userDataviewContainer = new WebMarkupContainer("userDataviewContainer") {
 
@@ -72,10 +88,10 @@ public class UserPanel extends Panel {
       protected void onInitialize() {
          add(userDataview);
          super.onInitialize();
-      };
+      }
    };
 
-   private ItemsPerPagePagingNavigator userPagingNavigator = new ItemsPerPagePagingNavigator("userPagingNavigator", userDataview);
+   private BootstrapPagingNavigator userPagingNavigator = new BootstrapPagingNavigator("userPagingNavigator", userDataview);
 
    private UserViewOrEditPanel userViewOrEditPanel = new UserViewOrEditPanel("userViewOrEditPanel", new Model<User>(new User()));
 
@@ -93,7 +109,7 @@ public class UserPanel extends Panel {
       userDataProvider.setSite(roleSession.getSite());
       userDataProvider.setType((User) getDefaultModelObject());
 
-      add(add);
+      add(new AddAjaxLink());
       add(orderByName);
       add(orderByDescription);
       add(userDataviewContainer.setOutputMarkupId(true));

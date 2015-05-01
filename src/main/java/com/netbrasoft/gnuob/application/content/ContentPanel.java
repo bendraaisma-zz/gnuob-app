@@ -4,6 +4,8 @@ import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -18,33 +20,35 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.Content;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
-import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
+
+@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class ContentPanel extends Panel {
 
-   private static final long serialVersionUID = 3703226064705246155L;
+   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
+   class AddAjaxLink extends AjaxLink<Void> {
 
-   private static final int ITEMS_PER_PAGE = 10;
+      private static final long serialVersionUID = -8317730269644885290L;
 
-   @SpringBean(name = "ContentDataProvider", required = true)
-   private GenericTypeDataProvider<Content> contentDataProvider;
-
-   private AjaxLink<Void> add = new AjaxLink<Void>("add") {
-
-      private static final long serialVersionUID = 9191172039973638020L;
+      public AddAjaxLink() {
+         super("add");
+      }
 
       @Override
-      public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
+      public void onClick(AjaxRequestTarget target) {
+         // TODO Auto-generated method stub
       }
-   };
+   }
 
-   private OrderByBorder<String> orderByFormat = new OrderByBorder<String>("orderByFormat", "format", contentDataProvider);
-
-   private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", contentDataProvider);
-
-   private DataView<Content> contentDataview = new DataView<Content>("contentDataview", contentDataProvider, ITEMS_PER_PAGE) {
+   class ContentDataview extends DataView<Content> {
 
       private static final long serialVersionUID = -5039874949058607907L;
+
+      protected ContentDataview() {
+         super("contentDataview", contentDataProvider, ITEMS_PER_PAGE);
+      }
 
       @Override
       protected void populateItem(Item<Content> paramItem) {
@@ -62,7 +66,20 @@ public class ContentPanel extends Panel {
             }
          });
       }
-   };
+   }
+
+   private static final long serialVersionUID = 3703226064705246155L;
+
+   private static final int ITEMS_PER_PAGE = 10;
+
+   @SpringBean(name = "ContentDataProvider", required = true)
+   private GenericTypeDataProvider<Content> contentDataProvider;
+
+   private OrderByBorder<String> orderByFormat = new OrderByBorder<String>("orderByFormat", "format", contentDataProvider);
+
+   private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", contentDataProvider);
+
+   private DataView<Content> contentDataview = new ContentDataview();
 
    private WebMarkupContainer contentDataviewContainer = new WebMarkupContainer("contentDataviewContainer") {
 
@@ -71,13 +88,11 @@ public class ContentPanel extends Panel {
       @Override
       protected void onInitialize() {
          add(contentDataview);
-
-         setOutputMarkupId(true);
          super.onInitialize();
-      };
+      }
    };
 
-   private ItemsPerPagePagingNavigator contentPagingNavigator = new ItemsPerPagePagingNavigator("contentPagingNavigator", contentDataview);
+   private BootstrapPagingNavigator contentPagingNavigator = new BootstrapPagingNavigator("contentPagingNavigator", contentDataview);
 
    private ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", new Model<Content>(new Content()));
 
@@ -94,10 +109,10 @@ public class ContentPanel extends Panel {
       contentDataProvider.setSite(roleSession.getSite());
       contentDataProvider.setType((Content) getDefaultModelObject());
 
-      add(add);
+      add(new AddAjaxLink());
       add(orderByFormat);
       add(orderByName);
-      add(contentDataviewContainer);
+      add(contentDataviewContainer.setOutputMarkupId(true));
       add(contentPagingNavigator);
       add(contentViewOrEditPanel.setOutputMarkupId(true));
 

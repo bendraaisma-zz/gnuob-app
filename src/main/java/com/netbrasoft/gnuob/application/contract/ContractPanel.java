@@ -20,13 +20,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.Contract;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
-import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
-import com.netbrasoft.gnuob.application.security.Roles;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
-@AuthorizeAction(action = Action.RENDER, roles = { Roles.MANAGER, Roles.EMPLOYEE })
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
+
+@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class ContractPanel extends Panel {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { Roles.MANAGER })
+   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
    class AddAjaxLink extends AjaxLink<Void> {
 
       private static final long serialVersionUID = -8317730269644885290L;
@@ -41,22 +42,13 @@ public class ContractPanel extends Panel {
       }
    }
 
-   private static final long serialVersionUID = 3703226064705246155L;
+   class ContractDataview extends DataView<Contract> {
 
-   private static final int ITEMS_PER_PAGE = 10;
+      private static final long serialVersionUID = -7876356935046054019L;
 
-   @SpringBean(name = "ContractDataProvider", required = true)
-   private GenericTypeDataProvider<Contract> contractDataProvider;
-
-   private OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", contractDataProvider);
-
-   private OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", contractDataProvider);
-
-   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", contractDataProvider);
-
-   private DataView<Contract> contractDataview = new DataView<Contract>("contractDataview", contractDataProvider, ITEMS_PER_PAGE) {
-
-      private static final long serialVersionUID = -5039874949058607907L;
+      protected ContractDataview() {
+         super("contractDataview", contractDataProvider, ITEMS_PER_PAGE);
+      }
 
       @Override
       protected void populateItem(Item<Contract> paramItem) {
@@ -75,7 +67,22 @@ public class ContractPanel extends Panel {
             }
          });
       }
-   };
+   }
+
+   private static final long serialVersionUID = 3703226064705246155L;
+
+   private static final int ITEMS_PER_PAGE = 10;
+
+   @SpringBean(name = "ContractDataProvider", required = true)
+   private GenericTypeDataProvider<Contract> contractDataProvider;
+
+   private OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", contractDataProvider);
+
+   private OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", contractDataProvider);
+
+   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", contractDataProvider);
+
+   private DataView<Contract> contractDataview = new ContractDataview();
 
    private WebMarkupContainer contractDataviewContainer = new WebMarkupContainer("contractDataviewContainer") {
 
@@ -85,10 +92,10 @@ public class ContractPanel extends Panel {
       protected void onInitialize() {
          add(contractDataview);
          super.onInitialize();
-      };
+      }
    };
 
-   private ItemsPerPagePagingNavigator contractPagingNavigator = new ItemsPerPagePagingNavigator("contractPagingNavigator", contractDataview);
+   private BootstrapPagingNavigator contractPagingNavigator = new BootstrapPagingNavigator("contractPagingNavigator", contractDataview);
 
    private ContractViewOrEditPanel contractViewOrEditPanel = new ContractViewOrEditPanel("contractViewOrEditPanel", new Model<Contract>(new Contract()));
 

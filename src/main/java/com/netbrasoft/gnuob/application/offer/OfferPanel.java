@@ -20,13 +20,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.Offer;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
-import com.netbrasoft.gnuob.application.paging.ItemsPerPagePagingNavigator;
-import com.netbrasoft.gnuob.application.security.Roles;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
-@AuthorizeAction(action = Action.RENDER, roles = { Roles.MANAGER, Roles.EMPLOYEE })
+import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
+
+@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class OfferPanel extends Panel {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { Roles.MANAGER })
+   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
    class AddAjaxLinke extends AjaxLink<Void> {
 
       private static final long serialVersionUID = 9191172039973638020L;
@@ -36,7 +37,35 @@ public class OfferPanel extends Panel {
       }
 
       @Override
-      public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
+      public void onClick(AjaxRequestTarget target) {
+         // TODO Auto-generated method stub
+      }
+   }
+
+   class OfferDataview extends DataView<Offer> {
+
+      private static final long serialVersionUID = -5039874949058607907L;
+
+      protected OfferDataview() {
+         super("offerDataview", offerDataProvider, ITEMS_PER_PAGE);
+      }
+
+      @Override
+      protected void populateItem(Item<Offer> paramItem) {
+         paramItem.setModel(new CompoundPropertyModel<Offer>(paramItem.getModelObject()));
+         paramItem.add(new Label("offerId"));
+         paramItem.add(new Label("contract.contractId"));
+         paramItem.add(new Label("contract.customer.payerId"));
+         paramItem.add(new AjaxEventBehavior("onclick") {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void onEvent(AjaxRequestTarget target) {
+               offerViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
+               target.add(offerViewOrEditPanel);
+            }
+         });
       }
    }
 
@@ -53,27 +82,7 @@ public class OfferPanel extends Panel {
 
    private OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "payerId", offerDataProvider);
 
-   private DataView<Offer> offerDataview = new DataView<Offer>("offerDataview", offerDataProvider, ITEMS_PER_PAGE) {
-
-      private static final long serialVersionUID = -5039874949058607907L;
-
-      @Override
-      protected void populateItem(Item<Offer> paramItem) {
-         paramItem.setModel(new CompoundPropertyModel<Offer>(paramItem.getModelObject()));
-         paramItem.add(new Label("offerId"));
-         paramItem.add(new Label("contract.contractId"));
-         paramItem.add(new Label("contract.customer.payerId"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void onEvent(AjaxRequestTarget target) {
-
-            }
-         });
-      }
-   };
+   private OfferDataview offerDataview = new OfferDataview();
 
    private WebMarkupContainer offerDataviewContainer = new WebMarkupContainer("offerDataviewContainer") {
 
@@ -83,10 +92,10 @@ public class OfferPanel extends Panel {
       protected void onInitialize() {
          add(offerDataview);
          super.onInitialize();
-      };
+      }
    };
 
-   private ItemsPerPagePagingNavigator offerPagingNavigator = new ItemsPerPagePagingNavigator("offerPagingNavigator", offerDataview);
+   private BootstrapPagingNavigator offerPagingNavigator = new BootstrapPagingNavigator("offerPagingNavigator", offerDataview);
 
    private OfferViewOrEditPanel offerViewOrEditPanel = new OfferViewOrEditPanel("offerViewOrEditPanel", new Model<Offer>(new Offer()));
 
