@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.order;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -39,7 +40,6 @@ public class OrderPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
          // TODO Auto-generated method stub
-
       }
    }
 
@@ -49,6 +49,17 @@ public class OrderPanel extends Panel {
 
       protected OrderDataview() {
          super("orderDataview", orderDataProvider, ITEMS_PER_PAGE);
+      }
+
+      @Override
+      protected Item<Order> newItem(String id, int index, IModel<Order> model) {
+         Item<Order> item = super.newItem(id, index, model);
+
+         if (model.getObject().getId() == ((Order) orderViewOrEditPanel.getDefaultModelObject()).getId()) {
+            item.add(new AttributeModifier("class", "info"));
+         }
+
+         return item;
       }
 
       @Override
@@ -65,7 +76,7 @@ public class OrderPanel extends Panel {
             @Override
             public void onEvent(AjaxRequestTarget target) {
                orderViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
-               target.add(orderViewOrEditPanel);
+               target.add(getPage());
             }
          });
       }
@@ -105,6 +116,7 @@ public class OrderPanel extends Panel {
 
    public OrderPanel(final String id, final IModel<Order> model) {
       super(id, model);
+      model.getObject().setActive(true);
    }
 
    @Override

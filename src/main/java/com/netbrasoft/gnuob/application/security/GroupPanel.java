@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.security;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -50,6 +51,17 @@ public class GroupPanel extends Panel {
       }
 
       @Override
+      protected Item<Group> newItem(String id, int index, IModel<Group> model) {
+         Item<Group> item = super.newItem(id, index, model);
+
+         if (model.getObject().getId() == ((Group) groupViewOrEditPanel.getDefaultModelObject()).getId()) {
+            item.add(new AttributeModifier("class", "info"));
+         }
+
+         return item;
+      }
+
+      @Override
       protected void populateItem(Item<Group> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Group>(paramItem.getModelObject()));
          paramItem.add(new Label("name"));
@@ -61,7 +73,7 @@ public class GroupPanel extends Panel {
             @Override
             public void onEvent(AjaxRequestTarget target) {
                groupViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
-               target.add(groupViewOrEditPanel);
+               target.add(getPage());
             }
          });
       }
@@ -95,6 +107,7 @@ public class GroupPanel extends Panel {
 
    public GroupPanel(final String id, final IModel<Group> model) {
       super(id, model);
+      model.getObject().setActive(true);
    }
 
    @Override

@@ -22,12 +22,12 @@ public class PmTab extends AbstractTab {
    private ITab contentTab = new ContentTab(new Model<String>("Content"));
    private ITab productTab = new ProductTab(new Model<String>("Product"));
 
-   public PmTab(IModel<String> title) {
+   public PmTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
+   public WebMarkupContainer getPanel(final String panelId) {
       BootstrapTabbedPanel<ITab> productTabbedPanel = new BootstrapTabbedPanel<ITab>(panelId, new ArrayList<ITab>()) {
 
          private static final long serialVersionUID = -8650291789763661400L;

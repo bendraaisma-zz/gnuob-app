@@ -11,14 +11,12 @@ public class ContentTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   public ContentTab(IModel<String> title) {
+   public ContentTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
-      Content content = new Content();
-      content.setActive(true);
-      return new ContentPanel(panelId, new Model<Content>(content));
+   public WebMarkupContainer getPanel(final String panelId) {
+      return new ContentPanel(panelId, new Model<Content>(new Content()));
    }
 }

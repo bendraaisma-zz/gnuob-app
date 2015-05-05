@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.offer;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -51,6 +52,17 @@ public class OfferPanel extends Panel {
       }
 
       @Override
+      protected Item<Offer> newItem(String id, int index, IModel<Offer> model) {
+         Item<Offer> item = super.newItem(id, index, model);
+
+         if (model.getObject().getId() == ((Offer) offerViewOrEditPanel.getDefaultModelObject()).getId()) {
+            item.add(new AttributeModifier("class", "info"));
+         }
+
+         return item;
+      }
+
+      @Override
       protected void populateItem(Item<Offer> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Offer>(paramItem.getModelObject()));
          paramItem.add(new Label("offerId"));
@@ -63,7 +75,7 @@ public class OfferPanel extends Panel {
             @Override
             public void onEvent(AjaxRequestTarget target) {
                offerViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
-               target.add(offerViewOrEditPanel);
+               target.add(getPage());
             }
          });
       }
@@ -101,6 +113,7 @@ public class OfferPanel extends Panel {
 
    public OfferPanel(final String id, final IModel<Offer> model) {
       super(id, model);
+      model.getObject().setActive(true);
    }
 
    @Override

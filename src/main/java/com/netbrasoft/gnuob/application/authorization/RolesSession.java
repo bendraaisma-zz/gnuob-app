@@ -69,6 +69,7 @@ public class RolesSession extends WebSession {
       try {
          HttpServletRequest httpServletRequest = (HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest();
 
+         httpServletRequest.getSession().invalidate();
          httpServletRequest.logout();
       } catch (ServletException e) {
          LOGGER.warn("Unable to logout.", e);

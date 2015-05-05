@@ -90,6 +90,7 @@ public class OfferViewOrEditPanel extends Panel {
          offerEditForm.add(new NumberTextField<Integer>("offerTotal"));
 
          add(offerEditForm.setOutputMarkupId(true));
+         add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
          add(new SaveAjaxButton(offerEditForm).setOutputMarkupId(true));
          super.onInitialize();
@@ -135,7 +136,6 @@ public class OfferViewOrEditPanel extends Panel {
 
       public SaveAjaxButton(Form<?> form) {
          super("save", form);
-         form.add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
       }
 
       @Override

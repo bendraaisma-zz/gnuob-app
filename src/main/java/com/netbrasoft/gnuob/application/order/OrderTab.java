@@ -11,14 +11,12 @@ public class OrderTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   public OrderTab(IModel<String> title) {
+   public OrderTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
-      Order order = new Order();
-      order.setActive(true);
-      return new OrderPanel(panelId, new Model<Order>(order));
+   public WebMarkupContainer getPanel(final String panelId) {
+      return new OrderPanel(panelId, new Model<Order>(new Order()));
    }
 }

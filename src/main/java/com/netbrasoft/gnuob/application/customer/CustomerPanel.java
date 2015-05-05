@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.customer;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -51,6 +52,17 @@ public class CustomerPanel extends Panel {
       }
 
       @Override
+      protected Item<Customer> newItem(String id, int index, IModel<Customer> model) {
+         Item<Customer> item = super.newItem(id, index, model);
+
+         if (model.getObject().getId() == ((Customer) customerViewOrEditPanel.getDefaultModelObject()).getId()) {
+            item.add(new AttributeModifier("class", "info"));
+         }
+
+         return item;
+      }
+
+      @Override
       protected void populateItem(Item<Customer> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Customer>(paramItem.getModelObject()));
          paramItem.add(new Label("firstName"));
@@ -62,7 +74,7 @@ public class CustomerPanel extends Panel {
             @Override
             public void onEvent(AjaxRequestTarget target) {
                customerViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
-               target.add(customerViewOrEditPanel);
+               target.add(getPage());
             }
          });
       }
@@ -98,6 +110,7 @@ public class CustomerPanel extends Panel {
 
    public CustomerPanel(final String id, final IModel<Customer> model) {
       super(id, model);
+      model.getObject().setActive(true);
    }
 
    @Override

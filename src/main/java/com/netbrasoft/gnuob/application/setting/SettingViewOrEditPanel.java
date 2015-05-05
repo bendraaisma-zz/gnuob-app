@@ -69,7 +69,6 @@ public class SettingViewOrEditPanel extends Panel {
 
       public SaveAjaxButton(Form<?> form) {
          super("save", form);
-         form.add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
       }
 
       @Override
@@ -118,6 +117,7 @@ public class SettingViewOrEditPanel extends Panel {
          settingEditForm.add(new TextArea<String>("description"));
 
          add(settingEditForm.setOutputMarkupId(true));
+         add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new SaveAjaxButton(settingEditForm).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
          super.onInitialize();

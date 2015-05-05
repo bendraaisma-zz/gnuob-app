@@ -11,13 +11,12 @@ public class OfferTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   public OfferTab(IModel<String> title) {
+   public OfferTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
-      Offer offer = new Offer();
-      return new OfferPanel(panelId, new Model<Offer>(offer));
+   public WebMarkupContainer getPanel(final String panelId) {
+      return new OfferPanel(panelId, new Model<Offer>(new Offer()));
    }
 }

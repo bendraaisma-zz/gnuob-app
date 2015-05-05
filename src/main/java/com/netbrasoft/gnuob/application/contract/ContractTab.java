@@ -11,14 +11,12 @@ public class ContractTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   public ContractTab(IModel<String> title) {
+   public ContractTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
-      Contract contract = new Contract();
-      contract.setActive(true);
-      return new ContractPanel(panelId, new Model<Contract>(contract));
+   public WebMarkupContainer getPanel(final String panelId) {
+      return new ContractPanel(panelId, new Model<Contract>(new Contract()));
    }
 }

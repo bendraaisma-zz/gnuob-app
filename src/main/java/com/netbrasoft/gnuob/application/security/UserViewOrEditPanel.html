@@ -44,7 +44,6 @@
 									<textarea wicket:id="description" class="form-control input-sm" style="resize: vertical;" rows="3"></textarea>
 								</div>
 							</div>
-							<span wicket:id="feedback">[Feedback]</span>
 						</form>
 					</td>
 				</tr>
@@ -70,6 +69,9 @@
 				</tr>
 			</tbody>
 			<tfoot>
+				<tr>
+					<td style="border-top: none;"><span wicket:id="feedback">[Feedback]</span></td>
+				</tr>
 				<tr>
 					<td style="border-top: none;" colspan="1" align="right"><a href="#" wicket:id="cancel" class="btn btn-xs"><wicket:message key="cancelMessage">[Cancel]</wicket:message></a><a wicket:id="save" class="btn btn-primary btn-xs"><wicket:message key="saveAndCloseMessage">[Save And Close]</wicket:message></a></td>
 				</tr>

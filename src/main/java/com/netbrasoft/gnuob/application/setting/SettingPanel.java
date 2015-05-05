@@ -101,6 +101,7 @@ public class SettingPanel extends Panel {
 
    public SettingPanel(final String id, final IModel<Setting> model) {
       super(id, model);
+      model.getObject().setActive(true);
    }
 
    @Override

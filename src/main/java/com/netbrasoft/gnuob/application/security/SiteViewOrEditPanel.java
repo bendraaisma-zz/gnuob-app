@@ -69,7 +69,6 @@ public class SiteViewOrEditPanel extends Panel {
 
       public SaveAjaxButton(Form<?> form) {
          super("save", form);
-         form.add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
       }
 
       @Override
@@ -117,6 +116,7 @@ public class SiteViewOrEditPanel extends Panel {
          siteEditForm.add(new TextArea<String>("description"));
 
          add(siteEditForm.setOutputMarkupId(true));
+         add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new SaveAjaxButton(siteEditForm).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
          super.onInitialize();

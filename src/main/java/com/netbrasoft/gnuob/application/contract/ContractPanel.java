@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.contract;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -51,6 +52,17 @@ public class ContractPanel extends Panel {
       }
 
       @Override
+      protected Item<Contract> newItem(String id, int index, IModel<Contract> model) {
+         Item<Contract> item = super.newItem(id, index, model);
+
+         if (model.getObject().getId() == ((Contract) contractViewOrEditPanel.getDefaultModelObject()).getId()) {
+            item.add(new AttributeModifier("class", "info"));
+         }
+
+         return item;
+      }
+
+      @Override
       protected void populateItem(Item<Contract> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Contract>(paramItem.getModelObject()));
          paramItem.add(new Label("contractId"));
@@ -63,7 +75,7 @@ public class ContractPanel extends Panel {
             @Override
             public void onEvent(AjaxRequestTarget target) {
                contractViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
-               target.add(contractViewOrEditPanel);
+               target.add(getPage());
             }
          });
       }
@@ -101,6 +113,7 @@ public class ContractPanel extends Panel {
 
    public ContractPanel(final String id, final IModel<Contract> model) {
       super(id, model);
+      model.getObject().setActive(true);
    }
 
    @Override

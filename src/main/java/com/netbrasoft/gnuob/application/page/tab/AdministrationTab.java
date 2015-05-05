@@ -24,12 +24,12 @@ public class AdministrationTab extends AbstractTab {
    private ITab siteTab = new SiteTab(new Model<String>("Site"));
    private ITab userTab = new UserTab(new Model<String>("User"));
 
-   public AdministrationTab(IModel<String> title) {
+   public AdministrationTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
+   public WebMarkupContainer getPanel(final String panelId) {
       BootstrapTabbedPanel<ITab> administrationTabbedPanel = new BootstrapTabbedPanel<ITab>(panelId, new ArrayList<ITab>()) {
 
          private static final long serialVersionUID = -8650291789763661400L;

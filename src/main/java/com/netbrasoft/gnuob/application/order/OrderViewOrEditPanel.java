@@ -119,6 +119,7 @@ public class OrderViewOrEditPanel extends Panel {
          orderEditForm.add(new TextField<String>("shipment.address.phone"));
 
          add(orderEditForm.setOutputMarkupId(true));
+         add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
          add(new SaveAjaxButton(orderEditForm).setOutputMarkupId(true));
          super.onInitialize();
@@ -192,7 +193,6 @@ public class OrderViewOrEditPanel extends Panel {
 
       public SaveAjaxButton(Form<?> form) {
          super("save", form);
-         form.add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
       }
 
       @Override

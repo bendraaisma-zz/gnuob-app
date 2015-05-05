@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.product;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -51,6 +52,17 @@ public class ProductPanel extends Panel {
       }
 
       @Override
+      protected Item<Product> newItem(String id, int index, IModel<Product> model) {
+         Item<Product> item = super.newItem(id, index, model);
+
+         if (model.getObject().getId() == ((Product) productViewOrEditPanel.getDefaultModelObject()).getId()) {
+            item.add(new AttributeModifier("class", "info"));
+         }
+
+         return item;
+      }
+
+      @Override
       protected void populateItem(Item<Product> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Product>(paramItem.getModelObject()));
          paramItem.add(new Label("number"));
@@ -62,7 +74,7 @@ public class ProductPanel extends Panel {
             @Override
             public void onEvent(AjaxRequestTarget target) {
                productViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
-               target.add(productViewOrEditPanel);
+               target.add(getPage());
             }
          });
       }

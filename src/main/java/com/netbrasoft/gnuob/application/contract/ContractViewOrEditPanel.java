@@ -69,6 +69,7 @@ public class ContractViewOrEditPanel extends Panel {
          contractEditForm.add(new TextField<String>("customer.taxIdType"));
 
          add(contractEditForm.setOutputMarkupId(true));
+         add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new SaveAjaxButton(contractEditForm).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
          super.onInitialize();
@@ -129,7 +130,6 @@ public class ContractViewOrEditPanel extends Panel {
 
       public SaveAjaxButton(Form<?> form) {
          super("save", form);
-         form.add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
       }
 
       @Override

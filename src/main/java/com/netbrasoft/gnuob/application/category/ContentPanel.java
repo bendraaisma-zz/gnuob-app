@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.category;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.Action;
@@ -54,6 +55,17 @@ public class ContentPanel extends Panel {
       return new DataView<Content>("contentDataview", contentListDataProvider, ITEMS_PER_PAGE) {
 
          private static final long serialVersionUID = -7353992345622657728L;
+
+         @Override
+         protected Item<Content> newItem(String id, int index, IModel<Content> model) {
+            Item<Content> item = super.newItem(id, index, model);
+
+            if (model.getObject().getId() == ((Content) ContentPanel.this.getDefaultModelObject()).getId()) {
+               item.add(new AttributeModifier("class", "info"));
+            }
+
+            return item;
+         }
 
          @Override
          protected void populateItem(Item<Content> paramItem) {

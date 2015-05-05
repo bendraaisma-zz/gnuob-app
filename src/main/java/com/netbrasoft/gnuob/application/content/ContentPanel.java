@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.content;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -51,6 +52,17 @@ public class ContentPanel extends Panel {
       }
 
       @Override
+      protected Item<Content> newItem(String id, int index, IModel<Content> model) {
+         Item<Content> item = super.newItem(id, index, model);
+
+         if (model.getObject().getId() == ((Content) contentViewOrEditPanel.getDefaultModelObject()).getId()) {
+            item.add(new AttributeModifier("class", "info"));
+         }
+
+         return item;
+      }
+
+      @Override
       protected void populateItem(Item<Content> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Content>(paramItem.getModelObject()));
          paramItem.add(new Label("name"));
@@ -62,7 +74,7 @@ public class ContentPanel extends Panel {
             @Override
             public void onEvent(AjaxRequestTarget target) {
                contentViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
-               target.add(contentViewOrEditPanel);
+               target.add(getPage());
             }
          });
       }
@@ -98,6 +110,7 @@ public class ContentPanel extends Panel {
 
    public ContentPanel(final String id, final IModel<Content> model) {
       super(id, model);
+      model.getObject().setActive(true);
    }
 
    @Override

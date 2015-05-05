@@ -11,14 +11,12 @@ public class SettingTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   public SettingTab(IModel<String> title) {
+   public SettingTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
-      Setting setting = new Setting();
-      setting.setActive(true);
-      return new SettingPanel(panelId, new Model<Setting>(setting));
+   public WebMarkupContainer getPanel(final String panelId) {
+      return new SettingPanel(panelId, new Model<Setting>(new Setting()));
    }
 }

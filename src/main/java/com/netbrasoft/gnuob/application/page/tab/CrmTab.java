@@ -24,12 +24,12 @@ public class CrmTab extends AbstractTab {
    private ITab offerTab = new OfferTab(new Model<String>("Offer"));
    private ITab orderTab = new OrderTab(new Model<String>("Order"));
 
-   public CrmTab(IModel<String> title) {
+   public CrmTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
+   public WebMarkupContainer getPanel(final String panelId) {
       BootstrapTabbedPanel<ITab> crmTabbedPanel = new BootstrapTabbedPanel<ITab>(panelId, new ArrayList<ITab>()) {
 
          private static final long serialVersionUID = -8650291789763661400L;

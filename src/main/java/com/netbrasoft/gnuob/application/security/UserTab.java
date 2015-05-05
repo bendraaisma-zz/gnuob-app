@@ -11,14 +11,12 @@ public class UserTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   public UserTab(IModel<String> title) {
+   public UserTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
-      User user = new User();
-      user.setActive(true);
-      return new UserPanel(panelId, new Model<User>(user));
+   public WebMarkupContainer getPanel(final String panelId) {
+      return new UserPanel(panelId, new Model<User>(new User()));
    }
 }

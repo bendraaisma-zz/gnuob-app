@@ -28,10 +28,11 @@ public class HeaderPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      try {
-         super.onInitialize();
+      RolesSession roleSession = (RolesSession) Session.get();
 
-         RolesSession roleSession = (RolesSession) Session.get();
+      add(new Label("login", roleSession.getUsername()));
+
+      try {
          ServletContext application = WebApplication.get().getServletContext();
          InputStream inputStream = application.getResourceAsStream("/META-INF/MANIFEST.MF");
          Attributes attributes = new Manifest(inputStream).getMainAttributes();
@@ -39,9 +40,15 @@ public class HeaderPanel extends Panel {
          add(new Label("implementationVendor", attributes.getValue("Implementation-Vendor")));
          add(new Label("implementationTitle", attributes.getValue("Implementation-Title")));
          add(new Label("implementationVersion", attributes.getValue("Implementation-Version")));
-         add(new Label("login", roleSession.getUsername()));
+
       } catch (IOException e) {
-         LOGGER.error(e.getMessage(), e);
+         LOGGER.warn(e.getMessage(), e);
+
+         add(new Label("implementationVendor", "-"));
+         add(new Label("implementationTitle", "-"));
+         add(new Label("implementationVersion", "-"));
       }
+
+      super.onInitialize();
    }
 }

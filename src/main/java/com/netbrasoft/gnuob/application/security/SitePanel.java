@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.security;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -50,6 +51,17 @@ public class SitePanel extends Panel {
       }
 
       @Override
+      protected Item<Site> newItem(String id, int index, IModel<Site> model) {
+         Item<Site> item = super.newItem(id, index, model);
+
+         if (model.getObject().getId() == ((Site) siteViewOrEditPanel.getDefaultModelObject()).getId()) {
+            item.add(new AttributeModifier("class", "info"));
+         }
+
+         return item;
+      }
+
+      @Override
       protected void populateItem(Item<Site> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Site>(paramItem.getModelObject()));
          paramItem.add(new Label("name"));
@@ -61,7 +73,7 @@ public class SitePanel extends Panel {
             @Override
             public void onEvent(AjaxRequestTarget target) {
                siteViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
-               target.add(siteViewOrEditPanel);
+               target.add(getPage());
             }
          });
       }
@@ -97,6 +109,7 @@ public class SitePanel extends Panel {
 
    public SitePanel(final String id, final IModel<Site> model) {
       super(id, model);
+      model.getObject().setActive(true);
    }
 
    @Override

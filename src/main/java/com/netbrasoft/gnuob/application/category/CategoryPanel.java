@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.category;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -18,6 +19,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Category;
+import com.netbrasoft.gnuob.api.OrderBy;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -51,6 +53,17 @@ public class CategoryPanel extends Panel {
       }
 
       @Override
+      protected Item<Category> newItem(String id, int index, IModel<Category> model) {
+         Item<Category> item = super.newItem(id, index, model);
+
+         if (model.getObject().getId() == ((Category) categoryViewOrEditPanel.getDefaultModelObject()).getId()) {
+            item.add(new AttributeModifier("class", "info"));
+         }
+
+         return item;
+      }
+
+      @Override
       protected void populateItem(Item<Category> paramItem) {
          paramItem.setModel(new CompoundPropertyModel<Category>(paramItem.getModelObject()));
          paramItem.add(new Label("name"));
@@ -61,9 +74,9 @@ public class CategoryPanel extends Panel {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void onEvent(AjaxRequestTarget paramAjaxRequestTarget) {
+            public void onEvent(AjaxRequestTarget target) {
                categoryViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
-               paramAjaxRequestTarget.add(categoryViewOrEditPanel);
+               target.add(getPage());
             }
          });
       }
@@ -101,6 +114,7 @@ public class CategoryPanel extends Panel {
 
    public CategoryPanel(final String id, final IModel<Category> model) {
       super(id, model);
+      model.getObject().setActive(true);
    }
 
    @Override
@@ -111,6 +125,7 @@ public class CategoryPanel extends Panel {
       categoryDataProvider.setPassword(roleSession.getPassword());
       categoryDataProvider.setSite(roleSession.getSite());
       categoryDataProvider.setType((Category) getDefaultModelObject());
+      categoryDataProvider.setOrderBy(OrderBy.POSITION_A_Z);
 
       add(new AddAjaxLink());
       add(orderByposition);

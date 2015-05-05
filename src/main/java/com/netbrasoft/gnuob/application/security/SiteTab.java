@@ -11,14 +11,12 @@ public class SiteTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   public SiteTab(IModel<String> title) {
+   public SiteTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
-      Site site = new Site();
-      site.setActive(true);
-      return new SitePanel(panelId, new Model<Site>(site));
+   public WebMarkupContainer getPanel(final String panelId) {
+      return new SitePanel(panelId, new Model<Site>(new Site()));
    }
 }

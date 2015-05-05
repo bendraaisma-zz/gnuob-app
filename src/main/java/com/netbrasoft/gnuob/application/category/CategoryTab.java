@@ -11,14 +11,12 @@ public class CategoryTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   public CategoryTab(IModel<String> title) {
+   public CategoryTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
-      Category category = new Category();
-      category.setActive(true);
-      return new CategoryPanel(panelId, new Model<Category>(category));
+   public WebMarkupContainer getPanel(final String panelId) {
+      return new CategoryPanel(panelId, new Model<Category>(new Category()));
    }
 }
