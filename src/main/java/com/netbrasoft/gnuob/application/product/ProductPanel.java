@@ -127,6 +127,6 @@ public class ProductPanel extends Panel {
       add(orderByName);
       add(productDataviewContainer.setOutputMarkupId(true));
       add(productPagingNavigator);
-      add(productViewOrEditPanel.setOutputMarkupId(true));
+      add(productViewOrEditPanel.add(productViewOrEditPanel.new ProductViewFragement()).setOutputMarkupId(true));
    }
 }

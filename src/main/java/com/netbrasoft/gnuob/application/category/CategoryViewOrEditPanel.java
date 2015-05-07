@@ -56,7 +56,9 @@ public class CategoryViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         boolean enableOperations = true;
+         ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Category>) getDefaultModel());
+         SubCategoryViewOrEditPanel subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Category>) getDefaultModel());
+
          Form<Category> categoryEditForm = new Form<Category>("categoryEditForm");
 
          categoryEditForm.setModel(new CompoundPropertyModel<Category>((IModel<Category>) getDefaultModel()));
@@ -64,8 +66,8 @@ public class CategoryViewOrEditPanel extends Panel {
          categoryEditForm.add(new TextField<String>("name"));
          categoryEditForm.add(new TextArea<String>("description"));
 
-         add(new ContentPanel("contentPanel", (IModel<Category>) getDefaultModel(), enableOperations).setOutputMarkupId(true));
-         add(new SubCategoryPanel("subCategoriesPanel", (IModel<Category>) getDefaultModel(), enableOperations).setOutputMarkupId(true));
+         add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ContentEditFragement()).setOutputMarkupId(true));
+         add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryEditFragement()).setOutputMarkupId(true));
          add(categoryEditForm.setOutputMarkupId(true));
          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
@@ -85,7 +87,8 @@ public class CategoryViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         boolean enableOperations = false;
+         ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Category>) getDefaultModel());
+         SubCategoryViewOrEditPanel subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Category>) getDefaultModel());
          Form<Category> categoryViewForm = new Form<Category>("categoryViewForm");
 
          categoryViewForm.setModel(new CompoundPropertyModel<Category>((IModel<Category>) getDefaultModel()));
@@ -93,8 +96,8 @@ public class CategoryViewOrEditPanel extends Panel {
          categoryViewForm.add(new Label("name"));
          categoryViewForm.add(new Label("description"));
 
-         add(new ContentPanel("contentPanel", (IModel<Category>) getDefaultModel(), enableOperations).setOutputMarkupId(true));
-         add(new SubCategoryPanel("subCategoriesPanel", (IModel<Category>) getDefaultModel(), enableOperations).setOutputMarkupId(true));
+         add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ContentViewFragement()).setOutputMarkupId(true));
+         add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryViewFragement()).setOutputMarkupId(true));
          add(new EditAjaxLink().setOutputMarkupId(true));
          add(categoryViewForm.setOutputMarkupId(true));
 
@@ -164,6 +167,5 @@ public class CategoryViewOrEditPanel extends Panel {
 
    public CategoryViewOrEditPanel(String id, IModel<Category> model) {
       super(id, model);
-      add(new CategoryViewFragement().setOutputMarkupId(true));
    }
 }

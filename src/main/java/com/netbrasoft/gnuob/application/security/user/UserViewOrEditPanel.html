@@ -1,29 +1,47 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
-	<wicket:container wicket:id="categoryViewOrEditFragement"></wicket:container>
-	<wicket:fragment wicket:id="categoryEditFragement">
+	<wicket:container wicket:id="userViewOrEditFragement"></wicket:container>
+	<wicket:fragment wicket:id="userEditFragement">
 		<table class="table" style="border-top: none;">
 			<thead>
 			</thead>
 			<tbody>
 				<tr>
 					<td style="border-top: none;">
-						<form wicket:id="categoryEditForm" class="form-horizontal">
+						<form wicket:id="userEditForm" class="form-horizontal">
 							<div class="panel-heading">
 								<h3 class="panel-title">
-									<wicket:message key="categoryMessage">[Category Message]</wicket:message>
+									<wicket:message key="userMessage">[User Message]</wicket:message>
 								</h3>
 							</div>
 							<div class="panel-body">
 								<div class="form-group">
-									<small><label class="col-sm-2 control-label"><wicket:message key="positionMessage">[Position Message]</wicket:message></label></small>
+									<small><label class="col-sm-2 control-label"><wicket:message key="accessMessage">[Access Message]</wicket:message></label></small>
 									<div class="col-sm-10">
-										<input wicket:id="position" class="form-control input-sm" type="number"></input>
+										<select wicket:id="access"></select>
 									</div>
 								</div>
 								<div class="form-group">
 									<small><label class="col-sm-2 control-label"><wicket:message key="nameMessage">[Name Message]</wicket:message></label></small>
 									<div class="col-sm-10">
 										<input wicket:id="name" class="form-control input-sm" type="text"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="passwordMessage">[Password Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="password" class="form-control input-sm" type="password"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="confirmPasswordMessage">[Confirm Password Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="cpassword" class="form-control input-sm" type="password"></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="roleMessage">[Role Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<input wicket:id="role" class="form-control input-sm" type="text"></input>
 									</div>
 								</div>
 								<div class="form-group">
@@ -41,14 +59,14 @@
 						<div class="form-horizontal">
 							<div class="panel-heading">
 								<h3 class="panel-title">
-									<wicket:message key="contentMessage">[Content Message]</wicket:message>
+									<wicket:message key="groupMessage">[Group Message]</wicket:message>
 								</h3>
 							</div>
 							<div class="panel-body">
 								<div class="form-group">
-									<small><label class="col-sm-2 control-label"><wicket:message key="contentMessage">[Content Message]</wicket:message></label></small>
+									<small><label class="col-sm-2 control-label"><wicket:message key="groupMessage">[Group Message]</wicket:message></label></small>
 									<div class="col-sm-10">
-										<wicket:container wicket:id="contentViewOrEditPanel"></wicket:container>
+										<wicket:container wicket:id="groupViewOrEditPanel"></wicket:container>
 									</div>
 								</div>
 							</div>
@@ -60,14 +78,14 @@
 						<div class="form-horizontal">
 							<div class="panel-heading">
 								<h3 class="panel-title">
-									<wicket:message key="subCategoryMessage">[Sub-Category Message]</wicket:message>
+									<wicket:message key="siteMessage">[Site Message]</wicket:message>
 								</h3>
 							</div>
 							<div class="panel-body">
 								<div class="form-group">
-									<small><label class="col-sm-2 control-label"><wicket:message key="subCategoryMessage">[Sub-Category Message]</wicket:message></label></small>
+									<small><label class="col-sm-2 control-label"><wicket:message key="siteMessage">[Site Message]</wicket:message></label></small>
 									<div class="col-sm-10">
-										<wicket:container wicket:id="subCategoryViewOrEditPanel"></wicket:container>
+										<wicket:container wicket:id="siteViewOrEditPanel"></wicket:container>
 									</div>
 								</div>
 							</div>
@@ -85,7 +103,7 @@
 			</tfoot>
 		</table>
 	</wicket:fragment>
-	<wicket:fragment wicket:id="categoryViewFragement">
+	<wicket:fragment wicket:id="userViewFragement">
 		<table class="table" style="border-top: none;">
 			<thead>
 				<tr>
@@ -95,23 +113,29 @@
 			<tbody>
 				<tr>
 					<td style="border-top: none;">
-						<form wicket:id="categoryViewForm" class="form-horizontal">
+						<form wicket:id="userViewForm" class="form-horizontal">
 							<div class="panel-heading">
 								<h3 class="panel-title">
-									<wicket:message key="categoryMessage">[Category Message]</wicket:message>
+									<wicket:message key="userMessage">[User Message]</wicket:message>
 								</h3>
 							</div>
 							<div class="panel-body">
 								<div class="form-group">
-									<small><label class="col-sm-2 control-label"><wicket:message key="positionMessage">[Position Message]</wicket:message></label></small>
+									<small><label class="col-sm-2 control-label"><wicket:message key="accessMessage">[Access Message]</wicket:message></label></small>
 									<div class="col-sm-10">
-										<small><span class="form-control input-sm" wicket:id="position">[Position]</span></small>
+										<small><span class="form-control input-sm" wicket:id="access">[Access]</span></small>
 									</div>
 								</div>
 								<div class="form-group">
 									<small><label class="col-sm-2 control-label"><wicket:message key="nameMessage">[Name Message]</wicket:message></label></small>
 									<div class="col-sm-10">
 										<small><span class="form-control input-sm" wicket:id="name">[Name]</span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="roleMessage">[Role Message]</wicket:message></label></small>
+									<div class="col-sm-10">
+										<small><span class="form-control input-sm" wicket:id="role">[Role]</span></small>
 									</div>
 								</div>
 								<div class="form-group">
@@ -129,14 +153,14 @@
 						<div class="form-horizontal">
 							<div class="panel-heading">
 								<h3 class="panel-title">
-									<wicket:message key="contentMessage">[Content Message]</wicket:message>
+									<wicket:message key="groupMessage">[Group Message]</wicket:message>
 								</h3>
 							</div>
 							<div class="panel-body">
 								<div class="form-group">
-									<small><label class="col-sm-2 control-label"><wicket:message key="contentMessage">[Content Message]</wicket:message></label></small>
+									<small><label class="col-sm-2 control-label"><wicket:message key="groupMessage">[Group Message]</wicket:message></label></small>
 									<div class="col-sm-10">
-										<wicket:container wicket:id="contentViewOrEditPanel"></wicket:container>
+										<wicket:container wicket:id="groupViewOrEditPanel"></wicket:container>
 									</div>
 								</div>
 							</div>
@@ -148,14 +172,14 @@
 						<div class="form-horizontal">
 							<div class="panel-heading">
 								<h3 class="panel-title">
-									<wicket:message key="subCategoryMessage">[Sub-Category Message]</wicket:message>
+									<wicket:message key="siteMessage">[Site Message]</wicket:message>
 								</h3>
 							</div>
 							<div class="panel-body">
 								<div class="form-group">
-									<small><label class="col-sm-2 control-label"><wicket:message key="subCategoryMessage">[Sub-Category Message]</wicket:message></label></small>
+									<small><label class="col-sm-2 control-label"><wicket:message key="siteMessage">[Site Message]</wicket:message></label></small>
 									<div class="col-sm-10">
-										<wicket:container wicket:id="subCategoryViewOrEditPanel"></wicket:container>
+										<wicket:container wicket:id="siteViewOrEditPanel"></wicket:container>
 									</div>
 								</div>
 							</div>

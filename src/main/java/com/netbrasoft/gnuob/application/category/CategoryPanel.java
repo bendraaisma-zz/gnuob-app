@@ -133,7 +133,7 @@ public class CategoryPanel extends Panel {
       add(orderByDescription);
       add(categoryDataviewContainer.setOutputMarkupId(true));
       add(categoryPagingNavigator);
-      add(categoryViewOrEditPanel.setOutputMarkupId(true));
+      add(categoryViewOrEditPanel.add(categoryViewOrEditPanel.new CategoryViewFragement()).setOutputMarkupId(true));
 
       super.onInitialize();
    }

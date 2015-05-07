@@ -73,6 +73,7 @@ public class OfferViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
+         OfferRecordViewOrEditPanel offerRecordViewOrEditPanel = new OfferRecordViewOrEditPanel("offerRecordViewOrEditPanel", (IModel<Offer>) getDefaultModel());
          Form<Offer> offerEditForm = new Form<Offer>("offerEditForm");
          offerEditForm.setModel(new CompoundPropertyModel<Offer>((IModel<Offer>) getDefaultModel()));
 
@@ -90,6 +91,7 @@ public class OfferViewOrEditPanel extends Panel {
          offerEditForm.add(new NumberTextField<Integer>("offerTotal"));
 
          add(offerEditForm.setOutputMarkupId(true));
+         add(offerRecordViewOrEditPanel.add(offerRecordViewOrEditPanel.new OfferRecordEditFragement()).setOutputMarkupId(true));
          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
          add(new SaveAjaxButton(offerEditForm).setOutputMarkupId(true));
@@ -107,6 +109,7 @@ public class OfferViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
+         OfferRecordViewOrEditPanel offerRecordViewOrEditPanel = new OfferRecordViewOrEditPanel("offerRecordViewOrEditPanel", (IModel<Offer>) getDefaultModel());
          Form<Offer> offerViewForm = new Form<Offer>("offerViewForm");
          offerViewForm.setModel(new CompoundPropertyModel<Offer>((IModel<Offer>) getDefaultModel()));
 
@@ -125,6 +128,7 @@ public class OfferViewOrEditPanel extends Panel {
 
          add(new EditAjaxLink().setOutputMarkupId(true));
          add(offerViewForm.setOutputMarkupId(true));
+         add(offerRecordViewOrEditPanel.add(offerRecordViewOrEditPanel.new OfferRecordViewFragement()).setOutputMarkupId(true));
          super.onInitialize();
       }
    }
@@ -173,6 +177,11 @@ public class OfferViewOrEditPanel extends Panel {
 
    public OfferViewOrEditPanel(final String id, final IModel<Offer> model) {
       super(id, model);
+   }
+
+   @Override
+   protected void onInitialize() {
       add(new OfferViewFragement().setOutputMarkupId(true));
+      super.onInitialize();
    }
 }

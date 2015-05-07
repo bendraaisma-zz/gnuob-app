@@ -1,4 +1,4 @@
-package com.netbrasoft.gnuob.application.security;
+package com.netbrasoft.gnuob.application.security.group;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
@@ -21,6 +21,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.Group;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
@@ -123,7 +124,7 @@ public class GroupPanel extends Panel {
       add(orderByName);
       add(groupDataviewContainer.setOutputMarkupId(true));
       add(groupPagingNavigator);
-      add(groupViewOrEditPanel.setOutputMarkupId(true));
+      add(groupViewOrEditPanel.add(groupViewOrEditPanel.new GroupViewFragement()).setOutputMarkupId(true));
 
       super.onInitialize();
    }

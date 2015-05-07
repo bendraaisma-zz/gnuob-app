@@ -1,4 +1,4 @@
-package com.netbrasoft.gnuob.application.security;
+package com.netbrasoft.gnuob.application.security.user;
 
 import java.util.Arrays;
 
@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.netbrasoft.gnuob.api.Rule;
 import com.netbrasoft.gnuob.api.User;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.select.BootstrapSelect;
@@ -114,6 +115,8 @@ public class UserViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
+         GroupViewOrEditPanel groupViewOrEditPanel = new GroupViewOrEditPanel("groupViewOrEditPanel", (IModel<User>) getDefaultModel());
+         SiteViewOrEditPanel siteViewOrEditPanel = new SiteViewOrEditPanel("siteViewOrEditPanel", (IModel<User>) getDefaultModel());
          Form<User> userEditForm = new Form<User>("userEditForm");
 
          userEditForm.setModel(new CompoundPropertyModel<User>((IModel<User>) getDefaultModel()));
@@ -125,6 +128,8 @@ public class UserViewOrEditPanel extends Panel {
          userEditForm.add(new TextArea<String>("description"));
 
          add(userEditForm.setOutputMarkupId(true));
+         add(groupViewOrEditPanel.add(groupViewOrEditPanel.new GroupEditFragement()).setOutputMarkupId(true));
+         add(siteViewOrEditPanel.add(siteViewOrEditPanel.new SiteEditFragement()).setOutputMarkupId(true));
          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
          add(new SaveAjaxButton(userEditForm).setOutputMarkupId(true));
@@ -143,6 +148,8 @@ public class UserViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
+         GroupViewOrEditPanel groupViewOrEditPanel = new GroupViewOrEditPanel("groupViewOrEditPanel", (IModel<User>) getDefaultModel());
+         SiteViewOrEditPanel siteViewOrEditPanel = new SiteViewOrEditPanel("siteViewOrEditPanel", (IModel<User>) getDefaultModel());
          Form<User> userViewForm = new Form<User>("userViewForm");
 
          userViewForm.setModel(new CompoundPropertyModel<User>((IModel<User>) getDefaultModel()));
@@ -152,6 +159,8 @@ public class UserViewOrEditPanel extends Panel {
          userViewForm.add(new Label("description"));
 
          add(new EditAjaxLink().setOutputMarkupId(true));
+         add(groupViewOrEditPanel.add(groupViewOrEditPanel.new GroupViewFragement()).setOutputMarkupId(true));
+         add(siteViewOrEditPanel.add(siteViewOrEditPanel.new SiteViewFragement()).setOutputMarkupId(true));
          add(userViewForm.setOutputMarkupId(true));
          super.onInitialize();
       }
@@ -166,6 +175,5 @@ public class UserViewOrEditPanel extends Panel {
 
    public UserViewOrEditPanel(final String id, final IModel<User> model) {
       super(id, model);
-      add(new UserViewFragement().setOutputMarkupId(true));
    }
 }

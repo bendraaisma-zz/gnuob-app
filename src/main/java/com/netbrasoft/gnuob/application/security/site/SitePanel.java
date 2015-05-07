@@ -1,4 +1,4 @@
-package com.netbrasoft.gnuob.application.security;
+package com.netbrasoft.gnuob.application.security.site;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
@@ -21,6 +21,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.Site;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
@@ -127,6 +128,6 @@ public class SitePanel extends Panel {
       add(orderByDescription);
       add(siteDataviewContainer.setOutputMarkupId(true));
       add(sitePagingNavigator);
-      add(siteViewOrEditPanel.setOutputMarkupId(true));
+      add(siteViewOrEditPanel.add(siteViewOrEditPanel.new SiteViewFragement()).setOutputMarkupId(true));
    }
 }

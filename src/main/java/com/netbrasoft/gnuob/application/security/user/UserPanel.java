@@ -1,4 +1,4 @@
-package com.netbrasoft.gnuob.application.security;
+package com.netbrasoft.gnuob.application.security.user;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Session;
@@ -21,6 +21,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.User;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
@@ -127,6 +128,6 @@ public class UserPanel extends Panel {
       add(orderByDescription);
       add(userDataviewContainer.setOutputMarkupId(true));
       add(userPagingNavigator);
-      add(userViewOrEditPanel.setOutputMarkupId(true));
+      add(userViewOrEditPanel.add(userViewOrEditPanel.new UserViewFragement()).setOutputMarkupId(true));
    }
 }

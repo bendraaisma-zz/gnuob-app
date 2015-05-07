@@ -167,6 +167,11 @@ public class ContractViewOrEditPanel extends Panel {
 
    public ContractViewOrEditPanel(final String id, final IModel<Contract> model) {
       super(id, model);
+   }
+
+   @Override
+   protected void onInitialize() {
       add(new ContractViewFragement().setOutputMarkupId(true));
+      super.onInitialize();
    }
 }

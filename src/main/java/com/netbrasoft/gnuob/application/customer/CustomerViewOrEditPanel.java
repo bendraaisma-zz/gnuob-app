@@ -182,6 +182,11 @@ public class CustomerViewOrEditPanel extends Panel {
 
    public CustomerViewOrEditPanel(final String id, final IModel<Customer> model) {
       super(id, model);
+   }
+
+   @Override
+   protected void onInitialize() {
       add(new CustomerViewFragement().setOutputMarkupId(true));
+      super.onInitialize();
    }
 }

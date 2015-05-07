@@ -171,6 +171,11 @@ public class ContentViewOrEditPanel extends Panel {
 
    public ContentViewOrEditPanel(String id, IModel<Content> model) {
       super(id, model);
+   }
+
+   @Override
+   protected void onInitialize() {
       add(new ContentViewFragement().setOutputMarkupId(true));
+      super.onInitialize();
    }
 }

@@ -76,6 +76,8 @@ public class ProductViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
+         ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Product>) getDefaultModel());
+         SubCategoryViewOrEditPanel subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Product>) getDefaultModel());
          Form<Product> productEditForm = new Form<Product>("productEditForm");
          productEditForm.setModel(new CompoundPropertyModel<Product>((IModel<Product>) getDefaultModel()));
 
@@ -104,6 +106,8 @@ public class ProductViewOrEditPanel extends Panel {
          productEditForm.add(new NumberTextField<Integer>("stock.quantity"));
 
          add(productEditForm.setOutputMarkupId(true));
+         add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ContentEditFragement()).setOutputMarkupId(true));
+         add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryEditFragement()).setOutputMarkupId(true));
          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
          add(new SaveAjaxButton(productEditForm).setOutputMarkupId(true));
@@ -121,6 +125,8 @@ public class ProductViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
+         ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Product>) getDefaultModel());
+         SubCategoryViewOrEditPanel subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Product>) getDefaultModel());
          Form<Product> productViewForm = new Form<Product>("productViewForm");
          productViewForm.setModel(new CompoundPropertyModel<Product>((IModel<Product>) getDefaultModel()));
 
@@ -150,6 +156,8 @@ public class ProductViewOrEditPanel extends Panel {
 
          add(new EditAjaxLink().setOutputMarkupId(true));
          add(productViewForm.setOutputMarkupId(true));
+         add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ContentViewFragement()).setOutputMarkupId(true));
+         add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryViewFragement()).setOutputMarkupId(true));
          super.onInitialize();
       }
 
@@ -203,6 +211,5 @@ public class ProductViewOrEditPanel extends Panel {
 
    public ProductViewOrEditPanel(final String id, final IModel<?> model) {
       super(id, model);
-      add(new ProductViewFragement().setOutputMarkupId(true));
    }
 }

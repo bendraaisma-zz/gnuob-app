@@ -8,9 +8,9 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
-import com.netbrasoft.gnuob.application.security.GroupTab;
-import com.netbrasoft.gnuob.application.security.SiteTab;
-import com.netbrasoft.gnuob.application.security.UserTab;
+import com.netbrasoft.gnuob.application.security.group.GroupTab;
+import com.netbrasoft.gnuob.application.security.site.SiteTab;
+import com.netbrasoft.gnuob.application.security.user.UserTab;
 import com.netbrasoft.gnuob.application.setting.SettingTab;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.tabs.BootstrapTabbedPanel;

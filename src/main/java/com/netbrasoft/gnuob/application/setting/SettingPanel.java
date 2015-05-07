@@ -120,6 +120,6 @@ public class SettingPanel extends Panel {
       add(orderByDescription);
       add(settingDataviewContainer.setOutputMarkupId(true));
       add(settingPagingNavigator);
-      add(settingViewOrEditPanel.setOutputMarkupId(true));
+      add(settingViewOrEditPanel.add(settingViewOrEditPanel.new SettingViewFragement()).setOutputMarkupId(true));
    }
 }

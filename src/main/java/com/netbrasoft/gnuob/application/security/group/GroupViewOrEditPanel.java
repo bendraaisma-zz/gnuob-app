@@ -1,4 +1,4 @@
-package com.netbrasoft.gnuob.application.security;
+package com.netbrasoft.gnuob.application.security.group;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Group;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 
@@ -154,6 +155,5 @@ public class GroupViewOrEditPanel extends Panel {
 
    public GroupViewOrEditPanel(final String id, final IModel<Group> model) {
       super(id, model);
-      add(new GroupViewFragement().setOutputMarkupId(true));
    }
 }

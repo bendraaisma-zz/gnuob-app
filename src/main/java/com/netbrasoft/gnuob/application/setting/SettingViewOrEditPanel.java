@@ -156,6 +156,5 @@ public class SettingViewOrEditPanel extends Panel {
 
    public SettingViewOrEditPanel(final String id, final IModel<Setting> model) {
       super(id, model);
-      add(new SettingViewFragement().setOutputMarkupId(true));
    }
 }

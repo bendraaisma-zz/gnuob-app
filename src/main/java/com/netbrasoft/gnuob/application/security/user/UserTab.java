@@ -1,22 +1,22 @@
-package com.netbrasoft.gnuob.application.security;
+package com.netbrasoft.gnuob.application.security.user;
 
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
-import com.netbrasoft.gnuob.api.Group;
+import com.netbrasoft.gnuob.api.User;
 
-public class GroupTab extends AbstractTab {
+public class UserTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   public GroupTab(final IModel<String> title) {
+   public UserTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
    public WebMarkupContainer getPanel(final String panelId) {
-      return new GroupPanel(panelId, new Model<Group>(new Group()));
+      return new UserPanel(panelId, new Model<User>(new User()));
    }
 }

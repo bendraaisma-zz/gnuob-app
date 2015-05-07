@@ -121,7 +121,6 @@ public class OrderPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      super.onInitialize();
       RolesSession roleSession = (RolesSession) Session.get();
 
       orderDataProvider.setUser(roleSession.getUsername());
@@ -136,6 +135,8 @@ public class OrderPanel extends Panel {
       add(orderByContractId);
       add(orderDataviewContainer.setOutputMarkupId(true));
       add(orderPagingNavigator);
-      add(orderViewOrEditPanel.setOutputMarkupId(true));
+      add(orderViewOrEditPanel.add(orderViewOrEditPanel.new OrderViewFragement()).setOutputMarkupId(true));
+
+      super.onInitialize();
    }
 }

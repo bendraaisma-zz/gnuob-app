@@ -74,6 +74,7 @@ public class OrderViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
+         OrderRecordViewOrEditPanel orderRecordViewOrEditPanel = new OrderRecordViewOrEditPanel("orderRecordViewOrEditPanel", (IModel<Order>) getDefaultModel());
          Form<Order> orderEditForm = new Form<Order>("orderEditForm");
          orderEditForm.setModel(new CompoundPropertyModel<Order>((IModel<Order>) getDefaultModel()));
 
@@ -120,6 +121,7 @@ public class OrderViewOrEditPanel extends Panel {
 
          add(orderEditForm.setOutputMarkupId(true));
          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
+         add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordEditFragement()).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
          add(new SaveAjaxButton(orderEditForm).setOutputMarkupId(true));
          super.onInitialize();
@@ -136,6 +138,7 @@ public class OrderViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
+         OrderRecordViewOrEditPanel orderRecordViewOrEditPanel = new OrderRecordViewOrEditPanel("orderRecordViewOrEditPanel", (IModel<Order>) getDefaultModel());
          Form<Order> orderViewForm = new Form<Order>("orderViewForm");
          orderViewForm.setModel(new CompoundPropertyModel<Order>((IModel<Order>) getDefaultModel()));
 
@@ -182,6 +185,7 @@ public class OrderViewOrEditPanel extends Panel {
 
          add(new EditAjaxLink().setOutputMarkupId(true));
          add(orderViewForm.setOutputMarkupId(true));
+         add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordViewFragement()).setOutputMarkupId(true));
          super.onInitialize();
       }
    }
@@ -232,7 +236,5 @@ public class OrderViewOrEditPanel extends Panel {
 
    public OrderViewOrEditPanel(final String id, final IModel<Order> model) {
       super(id, model);
-      add(new OrderViewFragement().setOutputMarkupId(true));
    }
-
 }
