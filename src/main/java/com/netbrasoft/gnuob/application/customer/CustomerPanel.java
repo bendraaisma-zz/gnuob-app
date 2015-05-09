@@ -1,7 +1,6 @@
 package com.netbrasoft.gnuob.application.customer;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -20,7 +19,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Customer;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
@@ -28,7 +27,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagi
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class CustomerPanel extends Panel {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
+   // @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
    class AddAjaxLink extends AjaxLink<Void> {
 
       private static final long serialVersionUID = -8317730269644885290L;
@@ -115,12 +114,9 @@ public class CustomerPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      super.onInitialize();
-      RolesSession roleSession = (RolesSession) Session.get();
-
-      customerDataProvider.setUser(roleSession.getUsername());
-      customerDataProvider.setPassword(roleSession.getPassword());
-      customerDataProvider.setSite(roleSession.getSite());
+      customerDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      customerDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      customerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       customerDataProvider.setType((Customer) getDefaultModelObject());
 
       add(new AddAjaxLink());
@@ -129,5 +125,7 @@ public class CustomerPanel extends Panel {
       add(customerDataviewContainer.setOutputMarkupId(true));
       add(customerPagingNavigator);
       add(customerViewOrEditPanel.setOutputMarkupId(true));
+
+      super.onInitialize();
    }
 }

@@ -1,6 +1,5 @@
 package com.netbrasoft.gnuob.application.setting;
 
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -19,7 +18,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Setting;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
@@ -106,12 +105,9 @@ public class SettingPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      super.onInitialize();
-      RolesSession roleSession = (RolesSession) Session.get();
-
-      settingDataProvider.setUser(roleSession.getUsername());
-      settingDataProvider.setPassword(roleSession.getPassword());
-      settingDataProvider.setSite(roleSession.getSite());
+      settingDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      settingDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      settingDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       settingDataProvider.setType((Setting) getDefaultModelObject());
 
       add(new AddAjaxLink());
@@ -121,5 +117,7 @@ public class SettingPanel extends Panel {
       add(settingDataviewContainer.setOutputMarkupId(true));
       add(settingPagingNavigator);
       add(settingViewOrEditPanel.add(settingViewOrEditPanel.new SettingViewFragement()).setOutputMarkupId(true));
+
+      super.onInitialize();
    }
 }

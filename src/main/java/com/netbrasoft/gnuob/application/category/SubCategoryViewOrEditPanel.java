@@ -22,7 +22,6 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
-import org.apache.wicket.extensions.markup.html.repeater.tree.AbstractTree.State;
 import org.apache.wicket.extensions.markup.html.repeater.tree.TableTree;
 import org.apache.wicket.extensions.markup.html.repeater.tree.table.TreeColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
@@ -51,47 +50,6 @@ import wicketdnd.Transfer;
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class SubCategoryViewOrEditPanel extends Panel {
 
-   class SubCategoryDropTarget extends DropTarget {
-
-      private static final long serialVersionUID = 5064629267560245959L;
-
-      public SubCategoryDropTarget() {
-         super(EnumSet.allOf(Operation.class));
-      }
-
-      @Override
-      public void onDrag(AjaxRequestTarget target, Location location) {
-         SubCategory subCategory = location.getModelObject();
-         if (subCategoriesTableTree.getState(subCategory) == State.COLLAPSED) {
-            subCategoriesTableTree.expand(subCategory);
-         }
-      }
-
-      @Override
-      public void onDrop(AjaxRequestTarget target, Transfer transfer, Location location) {
-         SubCategory subCategorySource = transfer.getData();
-         SubCategory subCategorytarget = location.getModelObject();
-
-         switch (location.getAnchor()) {
-         case CENTER:
-            if (subCategorySource != target) {
-               subCategoryTreeProvider.add(subCategorySource, subCategorytarget);
-               subCategoriesTableTree.expand(subCategorytarget);
-            }
-            break;
-         case TOP:
-            subCategoryTreeProvider.addBefore(subCategorySource, subCategorytarget);
-            break;
-         case BOTTOM:
-            subCategoryTreeProvider.addAfter(subCategorySource, subCategorytarget);
-            break;
-         default:
-            break;
-         }
-         target.add(subCategoriesTableTree);
-      }
-   }
-
    class SubCategoryEditFragement extends Fragment {
 
       private static final long serialVersionUID = 3162058383568556008L;
@@ -102,7 +60,7 @@ public class SubCategoryViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         add(subCategoriesTableTree.setOutputMarkupId(true));
+         add(new SubCategoryTableTree().setOutputMarkupId(true));
          super.onInitialize();
       }
    }
@@ -244,6 +202,47 @@ public class SubCategoryViewOrEditPanel extends Panel {
    }
 
    class SubCategoryTableTree extends TableTree<SubCategory, String> {
+
+      class SubCategoryDropTarget extends DropTarget {
+
+         private static final long serialVersionUID = 5064629267560245959L;
+
+         public SubCategoryDropTarget() {
+            super(EnumSet.allOf(Operation.class));
+         }
+
+         @Override
+         public void onDrag(AjaxRequestTarget target, Location location) {
+            SubCategory subCategory = location.getModelObject();
+            if (SubCategoryTableTree.this.getState(subCategory) == State.COLLAPSED) {
+               SubCategoryTableTree.this.expand(subCategory);
+            }
+         }
+
+         @Override
+         public void onDrop(AjaxRequestTarget target, Transfer transfer, Location location) {
+            SubCategory subCategorySource = transfer.getData();
+            SubCategory subCategorytarget = location.getModelObject();
+
+            switch (location.getAnchor()) {
+            case CENTER:
+               if (subCategorySource != target) {
+                  subCategoryTreeProvider.add(subCategorySource, subCategorytarget);
+                  SubCategoryTableTree.this.expand(subCategorytarget);
+               }
+               break;
+            case TOP:
+               subCategoryTreeProvider.addBefore(subCategorySource, subCategorytarget);
+               break;
+            case BOTTOM:
+               subCategoryTreeProvider.addAfter(subCategorySource, subCategorytarget);
+               break;
+            default:
+               break;
+            }
+            target.add(SubCategoryTableTree.this);
+         }
+      }
 
       private static final long serialVersionUID = 1500770348691601351L;
 
@@ -387,7 +386,7 @@ public class SubCategoryViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         add(subCategoriesTableTree.setOutputMarkupId(true));
+         add(new SubCategoryTableTree().setOutputMarkupId(true));
          super.onInitialize();
       }
    }
@@ -397,8 +396,6 @@ public class SubCategoryViewOrEditPanel extends Panel {
    private static final long serialVersionUID = 4492979061717676247L;
 
    private SubCategoryTreeProvider subCategoryTreeProvider = new SubCategoryTreeProvider();
-
-   private SubCategoryTableTree subCategoriesTableTree = new SubCategoryTableTree();
 
    public SubCategoryViewOrEditPanel(final String id, final IModel<Category> model) {
       super(id, model);

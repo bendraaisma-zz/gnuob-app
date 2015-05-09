@@ -1,7 +1,6 @@
 package com.netbrasoft.gnuob.application.contract;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -20,7 +19,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Contract;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
@@ -118,12 +117,9 @@ public class ContractPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      super.onInitialize();
-      RolesSession roleSession = (RolesSession) Session.get();
-
-      contractDataProvider.setUser(roleSession.getUsername());
-      contractDataProvider.setPassword(roleSession.getPassword());
-      contractDataProvider.setSite(roleSession.getSite());
+      contractDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      contractDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      contractDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       contractDataProvider.setType((Contract) getDefaultModelObject());
 
       add(new AddAjaxLink());
@@ -133,5 +129,7 @@ public class ContractPanel extends Panel {
       add(contractDataviewContainer.setOutputMarkupId(true));
       add(contractPagingNavigator);
       add(contractViewOrEditPanel.setOutputMarkupId(true));
+
+      super.onInitialize();
    }
 }

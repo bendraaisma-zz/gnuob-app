@@ -1,7 +1,6 @@
 package com.netbrasoft.gnuob.application.product;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -20,7 +19,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Product;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
@@ -114,12 +113,9 @@ public class ProductPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      super.onInitialize();
-      RolesSession roleSession = (RolesSession) Session.get();
-
-      productDataProvider.setUser(roleSession.getUsername());
-      productDataProvider.setPassword(roleSession.getPassword());
-      productDataProvider.setSite(roleSession.getSite());
+      productDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      productDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      productDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       productDataProvider.setType((Product) getDefaultModelObject());
 
       add(new AddAjaxLink());
@@ -128,5 +124,7 @@ public class ProductPanel extends Panel {
       add(productDataviewContainer.setOutputMarkupId(true));
       add(productPagingNavigator);
       add(productViewOrEditPanel.add(productViewOrEditPanel.new ProductViewFragement()).setOutputMarkupId(true));
+
+      super.onInitialize();
    }
 }

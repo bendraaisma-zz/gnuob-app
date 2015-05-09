@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 	<display-name>gnuob-app</display-name>
-	
+
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/applicationContext.xml</param-value>
 	</context-param>
-	
+
 	<filter>
 		<filter-name>simon-console-filter</filter-name>
 		<filter-class>org.javasimon.console.SimonConsoleFilter</filter-class>
@@ -55,6 +59,8 @@
 	<filter-mapping>
 		<filter-name>wicket</filter-name>
 		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
 
 	<listener>
@@ -63,7 +69,7 @@
 
 	<servlet>
 		<servlet-name>SimonConsoleServlet</servlet-name>
-		<servlet-class>org.javasimon.console.SimonConsoleServlet</servlet-class> 
+		<servlet-class>org.javasimon.console.SimonConsoleServlet</servlet-class>
 		<init-param>
 			<param-name>url-prefix</param-name>
 			<param-value>/console-servlet</param-value>
@@ -74,7 +80,32 @@
 		<servlet-name>SimonConsoleServlet</servlet-name>
 		<url-pattern>/console-servlet/*</url-pattern>
 	</servlet-mapping>
-	
+
+	<security-constraint>
+		<display-name>GNUOBConstraint</display-name>
+		<web-resource-collection>
+			<web-resource-name>Restricted</web-resource-name>
+			<description />
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<description>GNUOB Roles</description>
+			<role-name>Administrator</role-name>
+			<role-name>Manager</role-name>
+			<role-name>Employee</role-name>
+			<role-name>Guest</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>GNUOBRealm</realm-name>
+		<form-login-config>
+			<form-login-page>/login.html</form-login-page>
+			<form-error-page>/index.html</form-error-page>
+		</form-login-config>
+	</login-config>
+
 	<security-role>
 		<role-name>Administrator</role-name>
 	</security-role>
@@ -87,22 +118,4 @@
 	<security-role>
 		<role-name>Guest</role-name>
 	</security-role>
-	
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>all</web-resource-name>
-			<url-pattern>/*</url-pattern>
-			<http-method>GET</http-method>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>Administrator</role-name>
-			<role-name>Manager</role-name>
-			<role-name>Employee</role-name>
-			<role-name>Guest</role-name>
-		</auth-constraint>
-	</security-constraint>
-	
-	<login-config>
-		<auth-method>BASIC</auth-method>
-	</login-config>
 </web-app>

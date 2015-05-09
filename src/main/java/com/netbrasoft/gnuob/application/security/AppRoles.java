@@ -11,4 +11,8 @@ public class AppRoles extends org.apache.wicket.authroles.authorization.strategi
    public static final String EMPLOYEE = "Employee";
 
    public static final String GUEST = "Guest";
+
+   public AppRoles() {
+      super(new String[] { ADMINISTRATOR, MANAGER, EMPLOYEE, GUEST });
+   }
 }

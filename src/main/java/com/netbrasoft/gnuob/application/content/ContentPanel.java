@@ -1,7 +1,6 @@
 package com.netbrasoft.gnuob.application.content;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -20,7 +19,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Content;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
@@ -115,11 +114,9 @@ public class ContentPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      RolesSession roleSession = (RolesSession) Session.get();
-
-      contentDataProvider.setUser(roleSession.getUsername());
-      contentDataProvider.setPassword(roleSession.getPassword());
-      contentDataProvider.setSite(roleSession.getSite());
+      contentDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      contentDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      contentDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       contentDataProvider.setType((Content) getDefaultModelObject());
 
       add(new AddAjaxLink());

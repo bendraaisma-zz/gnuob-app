@@ -1,7 +1,6 @@
 package com.netbrasoft.gnuob.application.offer;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -20,7 +19,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Offer;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
@@ -118,12 +117,9 @@ public class OfferPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      super.onInitialize();
-      RolesSession roleSession = (RolesSession) Session.get();
-
-      offerDataProvider.setUser(roleSession.getUsername());
-      offerDataProvider.setPassword(roleSession.getPassword());
-      offerDataProvider.setSite(roleSession.getSite());
+      offerDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      offerDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      offerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       offerDataProvider.setType((Offer) getDefaultModelObject());
 
       add(new AddAjaxLinke());
@@ -133,5 +129,7 @@ public class OfferPanel extends Panel {
       add(offerDataviewContainer.setOutputMarkupId(true));
       add(offerPagingNavigator);
       add(offerViewOrEditPanel.setOutputMarkupId(true));
+
+      super.onInitialize();
    }
 }

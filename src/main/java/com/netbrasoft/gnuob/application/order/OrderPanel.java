@@ -1,7 +1,6 @@
 package com.netbrasoft.gnuob.application.order;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -20,7 +19,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Order;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
@@ -121,11 +120,9 @@ public class OrderPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      RolesSession roleSession = (RolesSession) Session.get();
-
-      orderDataProvider.setUser(roleSession.getUsername());
-      orderDataProvider.setPassword(roleSession.getPassword());
-      orderDataProvider.setSite(roleSession.getSite());
+      orderDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      orderDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      orderDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       orderDataProvider.setType((Order) getDefaultModelObject());
 
       add(new AddAjaxLinke());

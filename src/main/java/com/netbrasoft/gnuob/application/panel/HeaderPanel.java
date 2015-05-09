@@ -7,14 +7,13 @@ import java.util.jar.Manifest;
 
 import javax.servlet.ServletContext;
 
-import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 
 public class HeaderPanel extends Panel {
 
@@ -28,9 +27,7 @@ public class HeaderPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      RolesSession roleSession = (RolesSession) Session.get();
-
-      add(new Label("login", roleSession.getUsername()));
+      add(new Label("login", AppServletContainerAuthenticatedWebSession.getUserName()));
 
       try {
          ServletContext application = WebApplication.get().getServletContext();

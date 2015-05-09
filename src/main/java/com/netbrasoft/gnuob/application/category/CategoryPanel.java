@@ -1,7 +1,6 @@
 package com.netbrasoft.gnuob.application.category;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -21,7 +20,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.Category;
 import com.netbrasoft.gnuob.api.OrderBy;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.application.authorization.RolesSession;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
@@ -119,11 +118,9 @@ public class CategoryPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      RolesSession roleSession = (RolesSession) Session.get();
-
-      categoryDataProvider.setUser(roleSession.getUsername());
-      categoryDataProvider.setPassword(roleSession.getPassword());
-      categoryDataProvider.setSite(roleSession.getSite());
+      categoryDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      categoryDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      categoryDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       categoryDataProvider.setType((Category) getDefaultModelObject());
       categoryDataProvider.setOrderBy(OrderBy.POSITION_A_Z);
 
