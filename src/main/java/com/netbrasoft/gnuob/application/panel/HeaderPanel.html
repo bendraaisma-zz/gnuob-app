@@ -8,10 +8,10 @@
 		<div class="col-md-2">
 			<div class="btn-group">
 				<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-					<span class="glyphicon glyphicon-user"><span wicket:id="login"></span></span><span class="caret"></span>
+					<span class="glyphicon glyphicon-user"></span>&nbsp;<wicket:message key="userMessage">[User Message]</wicket:message>&nbsp;<span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu">
-					<li><a href="LogoutPage.html">Logout</a></li>
+					<li><a class="btn btn-xs" wicket:id="logout" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>&nbsp;<wicket:message key="logoutMessage">[Logout Message]</wicket:message></a></li>
 				</ul>
 			</div>
 		</div>

@@ -2,7 +2,6 @@ package com.netbrasoft.gnuob.application;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.RuntimeConfigurationType;
-import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.devutils.inspector.InspectorPage;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.settings.SecuritySettings;
@@ -14,6 +13,7 @@ import org.wicketstuff.wicket.servlet3.auth.ServletContainerAuthenticatedWebSess
 
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.page.MainPage;
+import com.netbrasoft.gnuob.application.page.SignInPage;
 
 import de.agilecoders.wicket.core.Bootstrap;
 import de.agilecoders.wicket.core.settings.BootstrapSettings;
@@ -28,7 +28,7 @@ public class NetbrasoftApplication extends ServletContainerAuthenticatedWebAppli
 
    @Override
    protected Class<? extends ServletContainerAuthenticatedWebSession> getContainerManagedWebSessionClass() {
-      return ServletContainerAuthenticatedWebSession.class;
+      return AppServletContainerAuthenticatedWebSession.class;
    }
 
    @Override
