@@ -14,7 +14,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Offer;
@@ -24,6 +23,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class OfferPanel extends Panel {
 
@@ -67,7 +67,7 @@ public class OfferPanel extends Panel {
          paramItem.add(new Label("offerId"));
          paramItem.add(new Label("contract.contractId"));
          paramItem.add(new Label("contract.customer.payerId"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+         paramItem.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
@@ -108,11 +108,10 @@ public class OfferPanel extends Panel {
 
    private BootstrapPagingNavigator offerPagingNavigator = new BootstrapPagingNavigator("offerPagingNavigator", offerDataview);
 
-   private OfferViewOrEditPanel offerViewOrEditPanel = new OfferViewOrEditPanel("offerViewOrEditPanel", new Model<Offer>(new Offer()));
+   private OfferViewOrEditPanel offerViewOrEditPanel = new OfferViewOrEditPanel("offerViewOrEditPanel", (IModel<Offer>) getDefaultModel());
 
    public OfferPanel(final String id, final IModel<Offer> model) {
       super(id, model);
-      model.getObject().setActive(true);
    }
 
    @Override
@@ -120,7 +119,8 @@ public class OfferPanel extends Panel {
       offerDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       offerDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       offerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      offerDataProvider.setType((Offer) getDefaultModelObject());
+      offerDataProvider.setType(new Offer());
+      offerDataProvider.getType().setActive(true);
 
       add(new AddAjaxLinke());
       add(orderByOfferId);

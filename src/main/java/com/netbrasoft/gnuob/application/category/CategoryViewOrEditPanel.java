@@ -92,8 +92,8 @@ public class CategoryViewOrEditPanel extends Panel {
          Form<Category> categoryViewForm = new Form<Category>("categoryViewForm");
 
          categoryViewForm.setModel(new CompoundPropertyModel<Category>((IModel<Category>) getDefaultModel()));
-         categoryViewForm.add(new Label("position"));
-         categoryViewForm.add(new Label("name"));
+         categoryViewForm.add(new NumberTextField<Integer>("position"));
+         categoryViewForm.add(new TextField<String>("name"));
          categoryViewForm.add(new Label("description"));
 
          add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ContentViewFragement()).setOutputMarkupId(true));

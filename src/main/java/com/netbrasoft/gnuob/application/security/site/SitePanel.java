@@ -14,7 +14,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Site;
@@ -24,6 +23,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR, AppRoles.MANAGER })
 public class SitePanel extends Panel {
 
@@ -66,7 +66,7 @@ public class SitePanel extends Panel {
          paramItem.setModel(new CompoundPropertyModel<Site>(paramItem.getModelObject()));
          paramItem.add(new Label("name"));
          paramItem.add(new Label("description"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+         paramItem.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
@@ -105,11 +105,10 @@ public class SitePanel extends Panel {
 
    private BootstrapPagingNavigator sitePagingNavigator = new BootstrapPagingNavigator("sitePagingNavigator", siteDataview);
 
-   private SiteViewOrEditPanel siteViewOrEditPanel = new SiteViewOrEditPanel("siteViewOrEditPanel", new Model<Site>(new Site()));
+   private SiteViewOrEditPanel siteViewOrEditPanel = new SiteViewOrEditPanel("siteViewOrEditPanel", (IModel<Site>) getDefaultModel());
 
    public SitePanel(final String id, final IModel<Site> model) {
       super(id, model);
-      model.getObject().setActive(true);
    }
 
    @Override
@@ -117,7 +116,8 @@ public class SitePanel extends Panel {
       siteDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       siteDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       siteDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      siteDataProvider.setType((Site) getDefaultModelObject());
+      siteDataProvider.setType(new Site());
+      siteDataProvider.getType().setActive(true);
 
       add(new AddAjaxLink());
       add(orderByName);

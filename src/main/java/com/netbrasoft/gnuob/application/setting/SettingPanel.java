@@ -13,7 +13,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Setting;
@@ -23,6 +22,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR, AppRoles.MANAGER })
 public class SettingPanel extends Panel {
 
@@ -55,7 +55,7 @@ public class SettingPanel extends Panel {
          paramItem.add(new Label("property"));
          paramItem.add(new Label("value"));
          paramItem.add(new Label("description"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+         paramItem.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
@@ -96,11 +96,10 @@ public class SettingPanel extends Panel {
 
    private BootstrapPagingNavigator settingPagingNavigator = new BootstrapPagingNavigator("settingPagingNavigator", settingDataview);
 
-   private SettingViewOrEditPanel settingViewOrEditPanel = new SettingViewOrEditPanel("settingViewOrEditPanel", new Model<Setting>(new Setting()));
+   private SettingViewOrEditPanel settingViewOrEditPanel = new SettingViewOrEditPanel("settingViewOrEditPanel", (IModel<Setting>) getDefaultModel());
 
    public SettingPanel(final String id, final IModel<Setting> model) {
       super(id, model);
-      model.getObject().setActive(true);
    }
 
    @Override
@@ -108,7 +107,8 @@ public class SettingPanel extends Panel {
       settingDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       settingDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       settingDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      settingDataProvider.setType((Setting) getDefaultModelObject());
+      settingDataProvider.setType(new Setting());
+      settingDataProvider.getType().setActive(true);
 
       add(new AddAjaxLink());
       add(orderByProperty);

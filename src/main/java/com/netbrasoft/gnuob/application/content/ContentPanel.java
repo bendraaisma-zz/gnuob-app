@@ -14,7 +14,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Content;
@@ -24,6 +23,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class ContentPanel extends Panel {
 
@@ -66,7 +66,7 @@ public class ContentPanel extends Panel {
          paramItem.setModel(new CompoundPropertyModel<Content>(paramItem.getModelObject()));
          paramItem.add(new Label("name"));
          paramItem.add(new Label("format"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+         paramItem.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
@@ -105,11 +105,10 @@ public class ContentPanel extends Panel {
 
    private BootstrapPagingNavigator contentPagingNavigator = new BootstrapPagingNavigator("contentPagingNavigator", contentDataview);
 
-   private ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", new Model<Content>(new Content()));
+   private ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Content>) getDefaultModel());
 
    public ContentPanel(final String id, final IModel<Content> model) {
       super(id, model);
-      model.getObject().setActive(true);
    }
 
    @Override
@@ -117,7 +116,8 @@ public class ContentPanel extends Panel {
       contentDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       contentDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       contentDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      contentDataProvider.setType((Content) getDefaultModelObject());
+      contentDataProvider.setType(new Content());
+      contentDataProvider.getType().setActive(true);
 
       add(new AddAjaxLink());
       add(orderByFormat);

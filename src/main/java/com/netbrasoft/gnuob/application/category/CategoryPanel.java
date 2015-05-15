@@ -14,7 +14,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Category;
@@ -25,6 +24,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class CategoryPanel extends Panel {
 
@@ -47,6 +47,8 @@ public class CategoryPanel extends Panel {
 
       private static final long serialVersionUID = -5039874949058607907L;
 
+      private static final int ITEMS_PER_PAGE = 5;
+
       protected CategoryDataview() {
          super("categoryDataview", categoryDataProvider, ITEMS_PER_PAGE);
       }
@@ -63,18 +65,17 @@ public class CategoryPanel extends Panel {
       }
 
       @Override
-      protected void populateItem(Item<Category> paramItem) {
-         paramItem.setModel(new CompoundPropertyModel<Category>(paramItem.getModelObject()));
-         paramItem.add(new Label("name"));
-         paramItem.add(new Label("description"));
-         paramItem.add(new Label("position"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+      protected void populateItem(Item<Category> item) {
+         item.setModel(new CompoundPropertyModel<Category>(item.getModelObject()));
+         item.add(new Label("name"));
+         item.add(new Label("position"));
+         item.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
             @Override
             public void onEvent(AjaxRequestTarget target) {
-               categoryViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
+               categoryViewOrEditPanel.setDefaultModelObject(item.getModelObject());
                target.add(getPage());
             }
          });
@@ -82,8 +83,6 @@ public class CategoryPanel extends Panel {
    }
 
    private static final long serialVersionUID = 3703226064705246155L;
-
-   private static final int ITEMS_PER_PAGE = 5;
 
    private CategoryDataview categoryDataview = new CategoryDataview();
 
@@ -93,8 +92,6 @@ public class CategoryPanel extends Panel {
    private OrderByBorder<String> orderByposition = new OrderByBorder<String>("orderByPosition", "position", categoryDataProvider);
 
    private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", categoryDataProvider);
-
-   private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description", categoryDataProvider);
 
    private WebMarkupContainer categoryDataviewContainer = new WebMarkupContainer("categoryDataviewContainer") {
 
@@ -109,11 +106,10 @@ public class CategoryPanel extends Panel {
 
    private BootstrapPagingNavigator categoryPagingNavigator = new BootstrapPagingNavigator("categoryPagingNavigator", categoryDataview);
 
-   private CategoryViewOrEditPanel categoryViewOrEditPanel = new CategoryViewOrEditPanel("categoryViewOrEditPanel", new Model<Category>(new Category()));
+   private CategoryViewOrEditPanel categoryViewOrEditPanel = new CategoryViewOrEditPanel("categoryViewOrEditPanel", (IModel<Category>) getDefaultModel());
 
    public CategoryPanel(final String id, final IModel<Category> model) {
       super(id, model);
-      model.getObject().setActive(true);
    }
 
    @Override
@@ -121,13 +117,13 @@ public class CategoryPanel extends Panel {
       categoryDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       categoryDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       categoryDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      categoryDataProvider.setType((Category) getDefaultModelObject());
+      categoryDataProvider.setType(new Category());
+      categoryDataProvider.getType().setActive(true);
       categoryDataProvider.setOrderBy(OrderBy.POSITION_A_Z);
 
       add(new AddAjaxLink());
       add(orderByposition);
       add(orderByName);
-      add(orderByDescription);
       add(categoryDataviewContainer.setOutputMarkupId(true));
       add(categoryPagingNavigator);
       add(categoryViewOrEditPanel.add(categoryViewOrEditPanel.new CategoryViewFragement()).setOutputMarkupId(true));

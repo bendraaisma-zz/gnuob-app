@@ -14,7 +14,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.User;
@@ -24,6 +23,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR, AppRoles.MANAGER })
 public class UserPanel extends Panel {
 
@@ -66,7 +66,7 @@ public class UserPanel extends Panel {
          paramItem.setModel(new CompoundPropertyModel<User>(paramItem.getModelObject()));
          paramItem.add(new Label("name"));
          paramItem.add(new Label("description"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+         paramItem.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
@@ -105,11 +105,10 @@ public class UserPanel extends Panel {
 
    private BootstrapPagingNavigator userPagingNavigator = new BootstrapPagingNavigator("userPagingNavigator", userDataview);
 
-   private UserViewOrEditPanel userViewOrEditPanel = new UserViewOrEditPanel("userViewOrEditPanel", new Model<User>(new User()));
+   private UserViewOrEditPanel userViewOrEditPanel = new UserViewOrEditPanel("userViewOrEditPanel", (IModel<User>) getDefaultModel());
 
    public UserPanel(final String id, final IModel<User> model) {
       super(id, model);
-      model.getObject().setActive(true);
    }
 
    @Override
@@ -118,7 +117,8 @@ public class UserPanel extends Panel {
       userDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       userDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       userDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      userDataProvider.setType((User) getDefaultModelObject());
+      userDataProvider.setType(new User());
+      userDataProvider.getType().setActive(true);
 
       add(new AddAjaxLink());
       add(orderByName);

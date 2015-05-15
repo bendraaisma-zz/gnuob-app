@@ -7,13 +7,14 @@ import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.image.NonCachingImage;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.request.resource.DynamicImageResource;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
@@ -60,14 +61,23 @@ public class ContentViewOrEditPanel extends Panel {
          contentEditForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
          contentEditForm.add(new TextField<String>("name"));
          contentEditForm.add(new TextField<String>("format"));
-         contentEditForm.add(new NonCachingImage("imagePreview", new DynamicImageResource() {
+         contentEditForm.add(new TextArea<String>("content.content", new Model<String>() {
 
-            private static final long serialVersionUID = -8506217031647332254L;
+            private static final long serialVersionUID = -5327965345786983877L;
 
             @Override
-            protected byte[] getImageData(Attributes paramAttributes) {
+            public String getObject() {
                Content content = (Content) getDefaultModelObject();
-               return content == null ? new byte[0] : content.getContent();
+               return content.getContent() != null ? new String(content.getContent()) : new String();
+            }
+
+            @Override
+            public void setObject(String object) {
+               if (object != null) {
+                  ((Content) getDefaultModelObject()).setContent(object.getBytes());
+               } else {
+                  ((Content) getDefaultModelObject()).setContent(null);
+               }
             }
          }));
 
@@ -93,16 +103,16 @@ public class ContentViewOrEditPanel extends Panel {
          contentViewForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
          contentViewForm.add(new Label("name"));
          contentViewForm.add(new Label("format"));
-         contentViewForm.add(new NonCachingImage("imagePreview", new DynamicImageResource() {
+         contentViewForm.add(new Label("content.content", new AbstractReadOnlyModel<String>() {
 
-            private static final long serialVersionUID = -8506217031647332254L;
+            private static final long serialVersionUID = -5951175997487496312L;
 
             @Override
-            protected byte[] getImageData(Attributes paramAttributes) {
+            public String getObject() {
                Content content = (Content) getDefaultModelObject();
-               return content == null ? new byte[0] : content.getContent();
+               return content.getContent() != null ? new String(content.getContent()) : new String();
             }
-         }));
+         }).setEscapeModelStrings(false));
 
          add(contentViewForm.setOutputMarkupId(true));
          add(new EditAjaxLink().setOutputMarkupId(true));
@@ -142,6 +152,7 @@ public class ContentViewOrEditPanel extends Panel {
             Content content = (Content) form.getDefaultModelObject();
 
             if (content.getId() == 0) {
+               content.setActive(true);
                contentDataProvider.persist(content);
             } else {
                contentDataProvider.merge(content);

@@ -14,7 +14,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Group;
@@ -24,6 +23,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR, AppRoles.MANAGER })
 public class GroupPanel extends Panel {
 
@@ -66,7 +66,7 @@ public class GroupPanel extends Panel {
          paramItem.setModel(new CompoundPropertyModel<Group>(paramItem.getModelObject()));
          paramItem.add(new Label("name"));
          paramItem.add(new Label("description"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+         paramItem.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
@@ -103,11 +103,10 @@ public class GroupPanel extends Panel {
 
    private BootstrapPagingNavigator groupPagingNavigator = new BootstrapPagingNavigator("groupPagingNavigator", groupDataview);
 
-   private GroupViewOrEditPanel groupViewOrEditPanel = new GroupViewOrEditPanel("groupViewOrEditPanel", new Model<Group>(new Group()));
+   private GroupViewOrEditPanel groupViewOrEditPanel = new GroupViewOrEditPanel("groupViewOrEditPanel", (IModel<Group>) getDefaultModel());
 
    public GroupPanel(final String id, final IModel<Group> model) {
       super(id, model);
-      model.getObject().setActive(true);
    }
 
    @Override
@@ -115,7 +114,8 @@ public class GroupPanel extends Panel {
       groupDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       groupDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       groupDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      groupDataProvider.setType((Group) getDefaultModelObject());
+      groupDataProvider.setType(new Group());
+      groupDataProvider.getType().setActive(true);
 
       add(new AddAjaxLink());
       add(orderByName);

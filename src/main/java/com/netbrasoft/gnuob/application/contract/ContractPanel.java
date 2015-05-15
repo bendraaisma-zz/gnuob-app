@@ -14,7 +14,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Contract;
@@ -24,6 +23,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class ContractPanel extends Panel {
 
@@ -67,7 +67,7 @@ public class ContractPanel extends Panel {
          paramItem.add(new Label("contractId"));
          paramItem.add(new Label("customer.firstName"));
          paramItem.add(new Label("customer.lastName"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+         paramItem.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
@@ -108,11 +108,10 @@ public class ContractPanel extends Panel {
 
    private BootstrapPagingNavigator contractPagingNavigator = new BootstrapPagingNavigator("contractPagingNavigator", contractDataview);
 
-   private ContractViewOrEditPanel contractViewOrEditPanel = new ContractViewOrEditPanel("contractViewOrEditPanel", new Model<Contract>(new Contract()));
+   private ContractViewOrEditPanel contractViewOrEditPanel = new ContractViewOrEditPanel("contractViewOrEditPanel", (IModel<Contract>) getDefaultModel());
 
    public ContractPanel(final String id, final IModel<Contract> model) {
       super(id, model);
-      model.getObject().setActive(true);
    }
 
    @Override
@@ -120,7 +119,8 @@ public class ContractPanel extends Panel {
       contractDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       contractDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       contractDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      contractDataProvider.setType((Contract) getDefaultModelObject());
+      contractDataProvider.setType(new Contract());
+      contractDataProvider.getType().setActive(true);
 
       add(new AddAjaxLink());
       add(orderByFirstName);

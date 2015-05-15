@@ -83,8 +83,6 @@ public class UserViewOrEditPanel extends Panel {
             User user = (User) form.getDefaultModelObject();
 
             if (user.getId() == 0) {
-               user.setActive(true);
-
                userDataProvider.persist(user);
             } else {
                userDataProvider.merge(user);

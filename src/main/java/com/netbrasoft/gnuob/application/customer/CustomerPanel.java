@@ -14,7 +14,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Customer;
@@ -24,6 +23,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class CustomerPanel extends Panel {
 
@@ -66,7 +66,7 @@ public class CustomerPanel extends Panel {
          paramItem.setModel(new CompoundPropertyModel<Customer>(paramItem.getModelObject()));
          paramItem.add(new Label("firstName"));
          paramItem.add(new Label("lastName"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+         paramItem.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
@@ -105,11 +105,10 @@ public class CustomerPanel extends Panel {
 
    private BootstrapPagingNavigator customerPagingNavigator = new BootstrapPagingNavigator("customerPagingNavigator", customerDataview);
 
-   private CustomerViewOrEditPanel customerViewOrEditPanel = new CustomerViewOrEditPanel("customerViewOrEditPanel", new Model<Customer>(new Customer()));
+   private CustomerViewOrEditPanel customerViewOrEditPanel = new CustomerViewOrEditPanel("customerViewOrEditPanel", (IModel<Customer>) getDefaultModel());
 
    public CustomerPanel(final String id, final IModel<Customer> model) {
       super(id, model);
-      model.getObject().setActive(true);
    }
 
    @Override
@@ -117,7 +116,8 @@ public class CustomerPanel extends Panel {
       customerDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       customerDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       customerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      customerDataProvider.setType((Customer) getDefaultModelObject());
+      customerDataProvider.setType(new Customer());
+      customerDataProvider.getType().setActive(true);
 
       add(new AddAjaxLink());
       add(orderByFirstName);

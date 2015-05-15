@@ -14,7 +14,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Order;
@@ -24,6 +23,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class OrderPanel extends Panel {
 
@@ -68,7 +68,7 @@ public class OrderPanel extends Panel {
          paramItem.add(new Label("contract.contractId"));
          paramItem.add(new Label("contract.customer.firstName"));
          paramItem.add(new Label("contract.customer.lastName"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+         paramItem.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
@@ -111,11 +111,10 @@ public class OrderPanel extends Panel {
 
    private BootstrapPagingNavigator orderPagingNavigator = new BootstrapPagingNavigator("orderPagingNavigator", orderDataview);
 
-   private OrderViewOrEditPanel orderViewOrEditPanel = new OrderViewOrEditPanel("orderViewOrEditPanel", new Model<Order>(new Order()));
+   private OrderViewOrEditPanel orderViewOrEditPanel = new OrderViewOrEditPanel("orderViewOrEditPanel", (IModel<Order>) getDefaultModel());
 
    public OrderPanel(final String id, final IModel<Order> model) {
       super(id, model);
-      model.getObject().setActive(true);
    }
 
    @Override
@@ -123,7 +122,8 @@ public class OrderPanel extends Panel {
       orderDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       orderDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       orderDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      orderDataProvider.setType((Order) getDefaultModelObject());
+      orderDataProvider.setType(new Order());
+      orderDataProvider.getType().setActive(true);
 
       add(new AddAjaxLinke());
       add(orderByFirstName);

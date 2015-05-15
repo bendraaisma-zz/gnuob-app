@@ -66,7 +66,7 @@ public class ProductPanel extends Panel {
          paramItem.setModel(new CompoundPropertyModel<Product>(paramItem.getModelObject()));
          paramItem.add(new Label("number"));
          paramItem.add(new Label("name"));
-         paramItem.add(new AjaxEventBehavior("onclick") {
+         paramItem.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
