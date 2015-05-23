@@ -17,6 +17,6 @@ public class GroupTab extends AbstractTab {
 
    @Override
    public WebMarkupContainer getPanel(final String panelId) {
-      return new GroupPanel(panelId, new Model<Group>(new Group()));
+      return new GroupPanel(panelId, Model.of(new Group()));
    }
 }

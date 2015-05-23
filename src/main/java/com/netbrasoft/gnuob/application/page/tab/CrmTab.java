@@ -19,10 +19,10 @@ public class CrmTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   private ITab contractTab = new ContractTab(new Model<String>("Contract"));
-   private ITab customerTab = new CustomerTab(new Model<String>("Customer"));
-   private ITab offerTab = new OfferTab(new Model<String>("Offer"));
-   private ITab orderTab = new OrderTab(new Model<String>("Order"));
+   private ITab contractTab = new ContractTab(Model.of("Contract"));
+   private ITab customerTab = new CustomerTab(Model.of("Customer"));
+   private ITab offerTab = new OfferTab(Model.of("Offer"));
+   private ITab orderTab = new OrderTab(Model.of("Order"));
 
    public CrmTab(final IModel<String> title) {
       super(title);

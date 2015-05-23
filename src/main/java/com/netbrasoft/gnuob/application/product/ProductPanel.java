@@ -62,17 +62,17 @@ public class ProductPanel extends Panel {
       }
 
       @Override
-      protected void populateItem(Item<Product> paramItem) {
-         paramItem.setModel(new CompoundPropertyModel<Product>(paramItem.getModelObject()));
-         paramItem.add(new Label("number"));
-         paramItem.add(new Label("name"));
-         paramItem.add(new AjaxEventBehavior("click") {
+      protected void populateItem(Item<Product> item) {
+         item.setModel(new CompoundPropertyModel<Product>(item.getModelObject()));
+         item.add(new Label("number"));
+         item.add(new Label("name"));
+         item.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
             @Override
             public void onEvent(AjaxRequestTarget target) {
-               productViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
+               productViewOrEditPanel.setDefaultModelObject(item.getModelObject());
                target.add(getPage());
             }
          });
@@ -105,7 +105,7 @@ public class ProductPanel extends Panel {
 
    private BootstrapPagingNavigator productPagingNavigator = new BootstrapPagingNavigator("productPagingNavigator", productDataview);
 
-   private ProductViewOrEditPanel productViewOrEditPanel = new ProductViewOrEditPanel("productViewOrEditPanel", new Model<Product>(new Product()));
+   private ProductViewOrEditPanel productViewOrEditPanel = new ProductViewOrEditPanel("productViewOrEditPanel", Model.of(new Product()));
 
    public ProductPanel(final String id, final IModel<Product> model) {
       super(id, model);

@@ -1,8 +1,6 @@
 package com.netbrasoft.gnuob.application.category;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.markup.html.basic.Label;
@@ -14,6 +12,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
@@ -23,19 +22,24 @@ import com.netbrasoft.gnuob.api.Category;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
+import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
 
 @SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class CategoryViewOrEditPanel extends Panel {
 
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class CancelAjaxLink extends AjaxLink<Void> {
+   class CancelAjaxLink extends BootstrapAjaxLink<String> {
 
       private static final long serialVersionUID = 4267535261864907719L;
 
       public CancelAjaxLink() {
-         super("cancel");
+         super("cancel", Model.of(CategoryViewOrEditPanel.this.getString("cancelMessage")), Buttons.Type.Default);
+         setSize(Buttons.Size.Small);
       }
 
       @Override
@@ -106,12 +110,14 @@ public class CategoryViewOrEditPanel extends Panel {
    }
 
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class EditAjaxLink extends AjaxLink<Void> {
+   class EditAjaxLink extends BootstrapAjaxLink<String> {
 
       private static final long serialVersionUID = 4267535261864907719L;
 
       public EditAjaxLink() {
-         super("edit");
+         super("edit", Model.of(CategoryViewOrEditPanel.this.getString("editMessage")), Buttons.Type.Primary);
+         setIconType(GlyphIconType.edit);
+         setSize(Buttons.Size.Small);
       }
 
       @Override
@@ -123,12 +129,13 @@ public class CategoryViewOrEditPanel extends Panel {
    }
 
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class SaveAjaxButton extends AjaxButton {
+   class SaveAjaxButton extends BootstrapAjaxButton {
 
       private static final long serialVersionUID = 2695394292963384938L;
 
       public SaveAjaxButton(Form<?> form) {
-         super("save", form);
+         super("save", Model.of(CategoryViewOrEditPanel.this.getString("saveAndCloseMessage")), form, Buttons.Type.Primary);
+         setSize(Buttons.Size.Small);
       }
 
       @Override

@@ -122,7 +122,7 @@ public class ContentViewOrEditPanel extends Panel {
 
    private BootstrapPagingNavigator contentPagingNavigator = new BootstrapPagingNavigator("contentPagingNavigator", contentDataview);
 
-   private ImageUploadPanel imageUploadPanel = new ImageUploadPanel("imageUploadPanel", new Model<Content>(new Content())) {
+   private ImageUploadPanel imageUploadPanel = new ImageUploadPanel("imageUploadPanel", Model.of(new Content())) {
 
       private static final long serialVersionUID = -7913720234767091477L;
 

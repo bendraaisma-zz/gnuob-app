@@ -17,6 +17,6 @@ public class CategoryTab extends AbstractTab {
 
    @Override
    public WebMarkupContainer getPanel(final String panelId) {
-      return new CategoryPanel(panelId, new Model<Category>(new Category()));
+      return new CategoryPanel(panelId, Model.of(new Category()));
    }
 }

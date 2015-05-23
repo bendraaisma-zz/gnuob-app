@@ -17,6 +17,6 @@ public class ContractTab extends AbstractTab {
 
    @Override
    public WebMarkupContainer getPanel(final String panelId) {
-      return new ContractPanel(panelId, new Model<Contract>(new Contract()));
+      return new ContractPanel(panelId, Model.of(new Contract()));
    }
 }

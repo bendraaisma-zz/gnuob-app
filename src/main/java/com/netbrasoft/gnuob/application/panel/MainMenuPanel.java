@@ -18,15 +18,15 @@ public class MainMenuPanel extends Panel {
 
    private static final long serialVersionUID = -1204513473673934094L;
 
-   private final ITab crmTab = new CrmTab(new Model<String>("CRM"));
+   private final ITab crmTab = new CrmTab(Model.of("CRM"));
 
-   private final ITab pmTab = new PmTab(new Model<String>("PM"));
+   private final ITab pmTab = new PmTab(Model.of("PM"));
 
-   private final ITab alertTab = new AlertTab(new Model<String>("Alerts"));
+   private final ITab alertTab = new AlertTab(Model.of("Alerts"));
 
-   private final ITab reportTab = new ReportTab(new Model<String>("Reports"));
+   private final ITab reportTab = new ReportTab(Model.of("Reports"));
 
-   private final ITab administrationTab = new AdministrationTab(new Model<String>("Administration"));
+   private final ITab administrationTab = new AdministrationTab(Model.of("Administration"));
 
    private final BootstrapTabbedPanel<ITab> mainMenuTabbedPanel = new BootstrapTabbedPanel<ITab>("mainMenuTabbedPanel", new ArrayList<ITab>());
 

@@ -3,7 +3,6 @@ package com.netbrasoft.gnuob.application.category;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
@@ -14,6 +13,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Category;
@@ -22,6 +22,9 @@ import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
+import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
 @SuppressWarnings("unchecked")
@@ -29,12 +32,14 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagi
 public class CategoryPanel extends Panel {
 
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class AddAjaxLink extends AjaxLink<Void> {
+   class AddAjaxLink extends BootstrapAjaxLink<String> {
 
       private static final long serialVersionUID = -8317730269644885290L;
 
       public AddAjaxLink() {
-         super("add");
+         super("add", Model.of(CategoryPanel.this.getString("addMessage")), Buttons.Type.Primary);
+         setIconType(GlyphIconType.plus);
+         setSize(Buttons.Size.Small);
       }
 
       @Override

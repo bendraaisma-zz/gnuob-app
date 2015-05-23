@@ -18,9 +18,9 @@ public class PmTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   private ITab categoryTab = new CategoryTab(new Model<String>("Category"));
-   private ITab contentTab = new ContentTab(new Model<String>("Content"));
-   private ITab productTab = new ProductTab(new Model<String>("Product"));
+   private ITab categoryTab = new CategoryTab(Model.of("Category"));
+   private ITab contentTab = new ContentTab(Model.of("Content"));
+   private ITab productTab = new ProductTab(Model.of("Product"));
 
    public PmTab(final IModel<String> title) {
       super(title);

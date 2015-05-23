@@ -372,7 +372,7 @@ public class SubCategoryViewOrEditPanel extends Panel {
 
       @Override
       public IModel<SubCategory> model(SubCategory object) {
-         return new Model<SubCategory>(object);
+         return Model.of(object);
       }
    }
 

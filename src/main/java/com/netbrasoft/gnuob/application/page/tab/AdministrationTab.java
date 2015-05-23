@@ -19,10 +19,10 @@ public class AdministrationTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   private ITab groupTab = new GroupTab(new Model<String>("Group"));
-   private ITab settingTab = new SettingTab(new Model<String>("Setting"));
-   private ITab siteTab = new SiteTab(new Model<String>("Site"));
-   private ITab userTab = new UserTab(new Model<String>("User"));
+   private ITab groupTab = new GroupTab(Model.of("Group"));
+   private ITab settingTab = new SettingTab(Model.of("Setting"));
+   private ITab siteTab = new SiteTab(Model.of("Site"));
+   private ITab userTab = new UserTab(Model.of("User"));
 
    public AdministrationTab(final IModel<String> title) {
       super(title);
