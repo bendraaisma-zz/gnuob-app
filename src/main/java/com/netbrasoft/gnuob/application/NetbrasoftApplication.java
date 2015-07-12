@@ -45,17 +45,18 @@ public class NetbrasoftApplication extends ServletContainerAuthenticatedWebAppli
    protected void init() {
       super.init();
 
-      BootstrapSettings bootstrapSettings = new BootstrapSettings();
+      final BootstrapSettings bootstrapSettings = new BootstrapSettings();
       bootstrapSettings.useCdnResources(true);
       Bootstrap.install(this, bootstrapSettings);
 
-      WebjarsSettings webjarsSettings = new WebjarsSettings();
+      final WebjarsSettings webjarsSettings = new WebjarsSettings();
       webjarsSettings.cdnUrl(System.getProperty("gnuob.site.cdn.url", "//cdnjs.cloudflare.com:80"));
       webjarsSettings.useCdnResources(true);
       WicketWebjars.install(this, webjarsSettings);
 
       getComponentInstantiationListeners().add(new SpringComponentInjector(this));
       getApplicationSettings().setUploadProgressUpdatesEnabled(true);
+      getApplicationSettings().setAccessDeniedPage(SignInPage.class);
       getSecuritySettings().setCryptFactory(new CachingSunJceCryptFactory(System.getProperty("gnuob.site.encryption.key", SecuritySettings.DEFAULT_ENCRYPTION_KEY)));
 
       if (getConfigurationType() == RuntimeConfigurationType.DEVELOPMENT) {
