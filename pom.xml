@@ -23,10 +23,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.war.plugin>2.1.1</version.war.plugin>
 		<version.jboss.maven.plugin>7.4.Final</version.jboss.maven.plugin>
-		<version.wicket.plugin>7.0.0-M6</version.wicket.plugin>
+		<version.wicket.plugin>7.0.0</version.wicket.plugin>
 		<version.wicketstuff.plugin>7.0.0-M6</version.wicketstuff.plugin>
 		<version.wicket-source.plugin>7.0.0</version.wicket-source.plugin>
-		<version.springframework.plugin>4.1.0.RELEASE</version.springframework.plugin>
+		<version.springframework.plugin>4.1.7.RELEASE</version.springframework.plugin>
 		<version.surefire.plugin>2.10</version.surefire.plugin>
 		<version.netbrasoft.gnuob>0.0.2-SNAPSHOT</version.netbrasoft.gnuob>
 		<version.javasimon>4.0.1</version.javasimon>
@@ -45,7 +45,7 @@
 			<dependency>
 				<groupId>org.wildfly.bom</groupId>
 				<artifactId>jboss-javaee-7.0-wildfly-with-tools</artifactId>
-				<version>9.0.0.Final</version>
+				<version>9.0.1.Final</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -243,35 +243,6 @@
 				<version>${version.jboss.maven.plugin}</version>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-war-plugin</artifactId>
-										<versionRange>[2.1.1,)</versionRange>
-										<goals>
-											<goal>war</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 
 	<profiles>
