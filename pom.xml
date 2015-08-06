@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.netbrasoft.gnuob</groupId>
@@ -18,6 +17,13 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
 		</license>
 	</licenses>
+
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -60,7 +66,7 @@
 			<groupId>org.jboss.spec.javax.servlet</groupId>
 			<artifactId>jboss-servlet-api_3.1_spec</artifactId>
 			<scope>provided</scope>
-		</dependency> 
+		</dependency>
 
 		<!-- WICKET -->
 
@@ -149,12 +155,12 @@
 		<!-- GNUOB -->
 
 		<dependency>
-			<groupId>com.netbrasoft.gnuob</groupId>
+			<groupId>com.github.bendraaisma</groupId>
 			<artifactId>gnuob-api</artifactId>
 			<version>${version.netbrasoft.gnuob}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.netbrasoft.gnuob</groupId>
+			<groupId>com.github.bendraaisma</groupId>
 			<artifactId>gnuob-login</artifactId>
 			<version>${version.netbrasoft.gnuob}</version>
 			<scope>provided</scope>
@@ -190,8 +196,7 @@
 	</dependencies>
 
 	<build>
-		<!-- Maven will append the version to the finalName (which is the name 
-			given to the generated war, and hence the context root) -->
+		<!-- Maven will append the version to the finalName (which is the name given to the generated war, and hence the context root) -->
 		<finalName>${project.artifactId}</finalName>
 		<resources>
 			<resource>
@@ -247,10 +252,8 @@
 
 	<profiles>
 		<profile>
-			<!-- The default profile skips all tests, though you can tune it to run 
-				just unit tests based on a custom pattern -->
-			<!-- Seperate profiles are provided for running all tests, including Arquillian 
-				tests that execute in the specified container -->
+			<!-- The default profile skips all tests, though you can tune it to run just unit tests based on a custom pattern -->
+			<!-- Seperate profiles are provided for running all tests, including Arquillian tests that execute in the specified container -->
 			<id>default</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
