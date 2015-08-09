@@ -1,7 +1,7 @@
 package com.netbrasoft.gnuob.application.image;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
@@ -14,7 +14,6 @@ import org.apache.wicket.util.lang.Bytes;
 
 import com.netbrasoft.gnuob.api.Content;
 
-@SuppressWarnings("unchecked")
 public abstract class ImageUploadPanel extends Panel {
 
    private static final long serialVersionUID = 3022054803231316826L;
@@ -26,7 +25,7 @@ public abstract class ImageUploadPanel extends Panel {
    public ImageUploadPanel(final String id, final IModel<Content> model) {
       super(id, model);
 
-      Form<Void> imageUploadForm = new Form<Void>("imageUploadForm") {
+      Form<Content> imageUploadForm = new Form<Content>("imageUploadForm", model) {
 
          private static final long serialVersionUID = 6739020979971170136L;
 
@@ -39,7 +38,7 @@ public abstract class ImageUploadPanel extends Panel {
       imageUploadForm.setMultiPart(true);
       imageUploadForm.setMaxSize(Bytes.megabytes(MAX_MEGA_BYTES));
       imageUploadForm.add(imageUploadLocation = new FileUploadField("imageUploadLocation"));
-      imageUploadForm.add(createImageUploadIndicatingAjaxButton());
+      imageUploadForm.add(createImageUploadIndicatingAjaxButton(imageUploadForm));
       imageUploadForm.add(imagePreview = new NonCachingImage("imagePreview", new DynamicImageResource() {
 
          private static final long serialVersionUID = -8506217031647332254L;
@@ -51,37 +50,37 @@ public abstract class ImageUploadPanel extends Panel {
       }));
 
       add(imageUploadForm.setOutputMarkupId(true));
-      add(createSaveAndCloseAjaxLink());
+      add(createSaveAndCloseAjaxLink(imageUploadForm));
    }
 
-   private IndicatingAjaxButton createImageUploadIndicatingAjaxButton() {
-      return new IndicatingAjaxButton("imageUpload") {
+   private IndicatingAjaxButton createImageUploadIndicatingAjaxButton(Form<Content> form) {
+      return new IndicatingAjaxButton("imageUpload", form) {
 
          private static final long serialVersionUID = 7065583221733867864L;
 
          @Override
          protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
             target.add(imagePreview);
-            target.appendJavaScript("$('#imagePreview').zoom({magnify:0.5});");
          }
       };
    }
 
-   private AjaxLink<Void> createSaveAndCloseAjaxLink() {
-      return new AjaxLink<Void>("saveAndClose") {
+   private AjaxButton createSaveAndCloseAjaxLink(Form<Content> form) {
+      return new AjaxButton("saveAndClose", form) {
 
          private static final long serialVersionUID = -822737148437189545L;
 
          @Override
-         public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
+         protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+            Content content = (Content) form.getDefaultModelObject();
+
             if (imageUpload != null) {
-               IModel<Content> model = (IModel<Content>) getDefaultModel();
 
-               model.getObject().setFormat(imageUpload.getContentType());
-               model.getObject().setName(imageUpload.getClientFileName());
-               model.getObject().setContent(imageUpload.getBytes());
+               content.setFormat(imageUpload.getContentType());
+               content.setName(imageUpload.getClientFileName());
+               content.setContent(imageUpload.getBytes());
 
-               uploadedImage(paramAjaxRequestTarget);
+               uploadedImage(target);
             }
          }
       };
@@ -90,7 +89,7 @@ public abstract class ImageUploadPanel extends Panel {
    @Override
    protected void onInitialize() {
       imagePreview.setOutputMarkupId(true);
-      
+
       setOutputMarkupId(true);
       super.onInitialize();
    }

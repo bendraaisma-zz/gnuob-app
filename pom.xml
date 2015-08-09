@@ -4,7 +4,7 @@
 
 	<groupId>com.netbrasoft.gnuob</groupId>
 	<artifactId>gnuob-app</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>GNU Open Business Platform</name>
 	<description>GNU Open Business Platform is a open source business framework</description>
@@ -18,20 +18,29 @@
 		</license>
 	</licenses>
 
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<version.war.plugin>2.1.1</version.war.plugin>
 		<version.jboss.maven.plugin>7.4.Final</version.jboss.maven.plugin>
-		<version.wicket.plugin>7.0.0-M5</version.wicket.plugin>
+		<version.wicket.plugin>7.0.0</version.wicket.plugin>
+		<version.wicketstuff.plugin>7.0.0-M6</version.wicketstuff.plugin>
 		<version.wicket-source.plugin>7.0.0</version.wicket-source.plugin>
-		<version.springframework.plugin>4.1.0.RELEASE</version.springframework.plugin>
+		<version.springframework.plugin>4.1.7.RELEASE</version.springframework.plugin>
 		<version.surefire.plugin>2.10</version.surefire.plugin>
-		<version.netbrasoft.gnuob>0.0.1-SNAPSHOT</version.netbrasoft.gnuob>
-		<javasimon.version>4.0.1</javasimon.version>
-		<wicket-dnd.version>0.6.0</wicket-dnd.version>
-		<wicket-bootstrap.version>0.10.1-SNAPSHOT</wicket-bootstrap.version>
-		<bootstrap-validator.version>0.8.1</bootstrap-validator.version>
-		<jquery.cookie.version>1.4.1</jquery.cookie.version>
+		<version.netbrasoft.gnuob>0.0.2-SNAPSHOT</version.netbrasoft.gnuob>
+		<version.javasimon>4.0.1</version.javasimon>
+		<version.wicket-dnd>0.6.0</version.wicket-dnd>
+		<version.wicket-bootstrap>0.10.2</version.wicket-bootstrap>
+		<version.bootstrap-validator>0.8.1</version.bootstrap-validator>
+		<version.jquery.cookie>1.4.1</version.jquery.cookie>
+		<version.bootstrap-3-datepicker>1.4.0</version.bootstrap-3-datepicker>
 
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -41,8 +50,8 @@
 		<dependencies>
 			<dependency>
 				<groupId>org.wildfly.bom</groupId>
-				<artifactId>jboss-javaee-7.0-with-all</artifactId>
-				<version>8.1.0.Final</version>
+				<artifactId>jboss-javaee-7.0-wildfly-with-tools</artifactId>
+				<version>9.0.1.Final</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -50,32 +59,17 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.arquillian.junit</groupId>
-			<artifactId>arquillian-junit-container</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.arquillian.protocol</groupId>
-			<artifactId>arquillian-protocol-servlet</artifactId>
-			<scope>test</scope>
-		</dependency>
+
+		<!-- JBOSS ETC. -->
+
 		<dependency>
 			<groupId>org.jboss.spec.javax.servlet</groupId>
 			<artifactId>jboss-servlet-api_3.1_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- WICKET -->
+
 		<dependency>
 			<groupId>net.ftlines.wicket-source</groupId>
 			<artifactId>wicket-source</artifactId>
@@ -107,35 +101,36 @@
 			<version>${version.wicket.plugin}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.wicketstuff</groupId>
+			<artifactId>wicketstuff-servlet3-auth</artifactId>
+			<version>${version.wicketstuff.plugin}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.github.svenmeier.wicket-dnd</groupId>
 			<artifactId>wicket-dnd</artifactId>
-			<version>${wicket-dnd.version}</version>
+			<version>${version.wicket-dnd}</version>
 		</dependency>
+
+		<!-- WICKET BOOTSTRAP -->
+
 		<dependency>
 			<groupId>de.agilecoders.wicket</groupId>
 			<artifactId>wicket-bootstrap-core</artifactId>
-			<version>${wicket-bootstrap.version}</version>
+			<version>${version.wicket-bootstrap}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.agilecoders.wicket</groupId>
 			<artifactId>wicket-bootstrap-extensions</artifactId>
-			<version>${wicket-bootstrap.version}</version>
+			<version>${version.wicket-bootstrap}</version>
 		</dependency>
 		<dependency>
 			<groupId>de.agilecoders.wicket</groupId>
 			<artifactId>wicket-bootstrap-themes</artifactId>
-			<version>${wicket-bootstrap.version}</version>
+			<version>${version.wicket-bootstrap}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.webjars.bower</groupId>
-			<artifactId>bootstrap-validator</artifactId>
-			<version>${bootstrap-validator.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars.bower</groupId>
-			<artifactId>jquery.cookie</artifactId>
-			<version>${jquery.cookie.version}</version>
-		</dependency>
+
+		<!-- SPRING -->
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -156,46 +151,47 @@
 			<artifactId>spring-web</artifactId>
 			<version>${version.springframework.plugin}</version>
 		</dependency>
+
+		<!-- GNUOB -->
+
 		<dependency>
-			<groupId>com.netbrasoft.gnuob</groupId>
+			<groupId>com.github.bendraaisma</groupId>
 			<artifactId>gnuob-api</artifactId>
 			<version>${version.netbrasoft.gnuob}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.netbrasoft.gnuob</groupId>
-			<artifactId>gnuob-wicket-bootstrap</artifactId>
-			<version>${version.netbrasoft.gnuob}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.netbrasoft.gnuob</groupId>
+			<groupId>com.github.bendraaisma</groupId>
 			<artifactId>gnuob-login</artifactId>
 			<version>${version.netbrasoft.gnuob}</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- SIMON -->
+
 		<dependency>
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-core</artifactId>
-			<version>${javasimon.version}</version>
+			<version>${version.javasimon}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-jdbc41</artifactId>
-			<version>${javasimon.version}</version>
+			<version>${version.javasimon}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-javaee</artifactId>
-			<version>${javasimon.version}</version>
+			<version>${version.javasimon}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-spring</artifactId>
-			<version>${javasimon.version}</version>
+			<version>${version.javasimon}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.javasimon</groupId>
 			<artifactId>javasimon-console-embed</artifactId>
-			<version>${javasimon.version}</version>
+			<version>${version.javasimon}</version>
 		</dependency>
 	</dependencies>
 
@@ -206,6 +202,16 @@
 			<resource>
 				<filtering>false</filtering>
 				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/resources</directory>
 				<includes>
 					<include>**/*</include>
 				</includes>
@@ -263,19 +269,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-		<profile>
-			<!-- An optional Arquillian testing profile that executes tests in your JBoss EAP instance -->
-			<!-- This profile will start a new JBoss EAP instance, and execute the test, shutting it down when done -->
-			<!-- Run with: mvn clean test -Parq-jbossas-managed -->
-			<id>arq-jbossas-managed</id>
-			<dependencies>
-				<dependency>
-					<groupId>org.wildfly</groupId>
-					<artifactId>wildfly-arquillian-container-remote</artifactId>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
 		</profile>
 		<profile>
 			<id>sonar</id>

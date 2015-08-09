@@ -3,6 +3,9 @@ package com.netbrasoft.gnuob.application.product;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
+import com.netbrasoft.gnuob.api.Product;
 
 public class ProductTab extends AbstractTab {
 
@@ -14,6 +17,8 @@ public class ProductTab extends AbstractTab {
 
    @Override
    public WebMarkupContainer getPanel(String panelId) {
-      return new ProductViewPanel(panelId);
+      Product product = new Product();
+      product.setActive(true);
+      return new ProductPanel(panelId, Model.of(product));
    }
 }

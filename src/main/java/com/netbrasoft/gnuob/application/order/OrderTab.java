@@ -3,17 +3,20 @@ package com.netbrasoft.gnuob.application.order;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+
+import com.netbrasoft.gnuob.api.Order;
 
 public class OrderTab extends AbstractTab {
 
    private static final long serialVersionUID = 4835579949680085443L;
 
-   public OrderTab(IModel<String> title) {
+   public OrderTab(final IModel<String> title) {
       super(title);
    }
 
    @Override
-   public WebMarkupContainer getPanel(String panelId) {
-      return new OrderViewPanel(panelId);
+   public WebMarkupContainer getPanel(final String panelId) {
+      return new OrderPanel(panelId, Model.of(new Order()));
    }
 }
