@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.netbrasoft.gnuob</groupId>
+	<groupId>com.netbrasoft</groupId>
 	<artifactId>gnuob-app</artifactId>
 	<version>0.0.3-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -37,7 +37,7 @@
 		<version.netbrasoft.gnuob>0.0.3-SNAPSHOT</version.netbrasoft.gnuob>
 		<version.javasimon>4.0.1</version.javasimon>
 		<version.wicket-dnd>0.6.0</version.wicket-dnd>
-		<version.wicket-bootstrap>0.10.2</version.wicket-bootstrap>
+		<version.wicket-bootstrap>0.10.3</version.wicket-bootstrap>
 		<version.bootstrap-validator>0.8.1</version.bootstrap-validator>
 		<version.jquery.cookie>1.4.1</version.jquery.cookie>
 		<version.bootstrap-3-datepicker>1.4.0</version.bootstrap-3-datepicker>
@@ -161,12 +161,12 @@
 		<!-- GNUOB -->
 
 		<dependency>
-			<groupId>com.github.bendraaisma</groupId>
+			<groupId>com.netbrasoft</groupId>
 			<artifactId>gnuob-api</artifactId>
 			<version>${version.netbrasoft.gnuob}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.bendraaisma</groupId>
+			<groupId>com.netbrasoft</groupId>
 			<artifactId>gnuob-login</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 			<scope>provided</scope>
