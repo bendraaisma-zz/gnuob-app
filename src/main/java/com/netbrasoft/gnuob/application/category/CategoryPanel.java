@@ -37,7 +37,7 @@ public class CategoryPanel extends Panel {
       private static final long serialVersionUID = -8317730269644885290L;
 
       public AddAjaxLink() {
-         super("add", Model.of(CategoryPanel.this.getString("addMessage")), Buttons.Type.Primary);
+         super("add", Model.of(CategoryPanel.this.getString("addMessage")), Buttons.Type.Primary, Model.of(CategoryPanel.this.getString("addMessage")));
          setIconType(GlyphIconType.plus);
          setSize(Buttons.Size.Small);
       }
@@ -60,7 +60,7 @@ public class CategoryPanel extends Panel {
 
       @Override
       protected Item<Category> newItem(String id, int index, IModel<Category> model) {
-         Item<Category> item = super.newItem(id, index, model);
+         final Item<Category> item = super.newItem(id, index, model);
 
          if (model.getObject().getId() == ((Category) categoryViewOrEditPanel.getDefaultModelObject()).getId()) {
             item.add(new AttributeModifier("class", "info"));
@@ -89,16 +89,16 @@ public class CategoryPanel extends Panel {
 
    private static final long serialVersionUID = 3703226064705246155L;
 
-   private CategoryDataview categoryDataview = new CategoryDataview();
+   private final CategoryDataview categoryDataview = new CategoryDataview();
 
    @SpringBean(name = "CategoryDataProvider", required = true)
    private GenericTypeDataProvider<Category> categoryDataProvider;
 
-   private OrderByBorder<String> orderByposition = new OrderByBorder<String>("orderByPosition", "position", categoryDataProvider);
+   private final OrderByBorder<String> orderByposition = new OrderByBorder<String>("orderByPosition", "position", categoryDataProvider);
 
-   private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", categoryDataProvider);
+   private final OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", categoryDataProvider);
 
-   private WebMarkupContainer categoryDataviewContainer = new WebMarkupContainer("categoryDataviewContainer") {
+   private final WebMarkupContainer categoryDataviewContainer = new WebMarkupContainer("categoryDataviewContainer") {
 
       private static final long serialVersionUID = -497527332092449028L;
 
@@ -109,9 +109,9 @@ public class CategoryPanel extends Panel {
       }
    };
 
-   private BootstrapPagingNavigator categoryPagingNavigator = new BootstrapPagingNavigator("categoryPagingNavigator", categoryDataview);
+   private final BootstrapPagingNavigator categoryPagingNavigator = new BootstrapPagingNavigator("categoryPagingNavigator", categoryDataview);
 
-   private CategoryViewOrEditPanel categoryViewOrEditPanel = new CategoryViewOrEditPanel("categoryViewOrEditPanel", (IModel<Category>) getDefaultModel());
+   private final CategoryViewOrEditPanel categoryViewOrEditPanel = new CategoryViewOrEditPanel("categoryViewOrEditPanel", (IModel<Category>) getDefaultModel());
 
    public CategoryPanel(final String id, final IModel<Category> model) {
       super(id, model);

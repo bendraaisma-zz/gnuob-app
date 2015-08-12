@@ -115,7 +115,7 @@ public class SubCategoryViewOrEditPanel extends Panel {
 
       @Override
       public boolean contains(Object object) {
-         SubCategory subCategory = (SubCategory) object;
+         final SubCategory subCategory = (SubCategory) object;
 
          if (inverse) {
             return !ids.contains(subCategory.getId());
@@ -146,7 +146,7 @@ public class SubCategoryViewOrEditPanel extends Panel {
 
       @Override
       public boolean remove(Object object) {
-         SubCategory subCategory = (SubCategory) object;
+         final SubCategory subCategory = (SubCategory) object;
 
          if (inverse) {
             return ids.add(subCategory.getId());
@@ -213,7 +213,7 @@ public class SubCategoryViewOrEditPanel extends Panel {
 
          @Override
          public void onDrag(AjaxRequestTarget target, Location location) {
-            SubCategory subCategory = location.getModelObject();
+            final SubCategory subCategory = location.getModelObject();
             if (SubCategoryTableTree.this.getState(subCategory) == State.COLLAPSED) {
                SubCategoryTableTree.this.expand(subCategory);
             }
@@ -221,8 +221,8 @@ public class SubCategoryViewOrEditPanel extends Panel {
 
          @Override
          public void onDrop(AjaxRequestTarget target, Transfer transfer, Location location) {
-            SubCategory subCategorySource = transfer.getData();
-            SubCategory subCategorytarget = location.getModelObject();
+            final SubCategory subCategorySource = transfer.getData();
+            final SubCategory subCategorytarget = location.getModelObject();
 
             switch (location.getAnchor()) {
             case CENTER:
@@ -308,17 +308,17 @@ public class SubCategoryViewOrEditPanel extends Panel {
       }
 
       public void add(SubCategory source, SubCategory target) {
-         List<SubCategory> subCategorySourceParent = getParent(source, ((Category) SubCategoryViewOrEditPanel.this.getDefaultModelObject()).getSubCategories());
+         final List<SubCategory> subCategorySourceParent = getParent(source, ((Category) SubCategoryViewOrEditPanel.this.getDefaultModelObject()).getSubCategories());
          target.getSubCategories().add(source);
          subCategorySourceParent.remove(source);
       }
 
       public void addAfter(SubCategory source, SubCategory target) {
-         List<SubCategory> subCategorySourceParent = getParent(source, ((Category) SubCategoryViewOrEditPanel.this.getDefaultModelObject()).getSubCategories());
-         List<SubCategory> subCategoryParent = getParent(target, ((Category) SubCategoryViewOrEditPanel.this.getDefaultModelObject()).getSubCategories());
+         final List<SubCategory> subCategorySourceParent = getParent(source, ((Category) SubCategoryViewOrEditPanel.this.getDefaultModelObject()).getSubCategories());
+         final List<SubCategory> subCategoryParent = getParent(target, ((Category) SubCategoryViewOrEditPanel.this.getDefaultModelObject()).getSubCategories());
 
          if (subCategoryParent != null) {
-            int index = subCategoryParent.indexOf(target);
+            final int index = subCategoryParent.indexOf(target);
             subCategoryParent.add(index + 1, source);
 
             subCategorySourceParent.remove(source);
@@ -326,11 +326,11 @@ public class SubCategoryViewOrEditPanel extends Panel {
       }
 
       public void addBefore(SubCategory source, SubCategory target) {
-         List<SubCategory> subCategorySourceParent = getParent(source, ((Category) SubCategoryViewOrEditPanel.this.getDefaultModelObject()).getSubCategories());
-         List<SubCategory> subCategoryParent = getParent(target, ((Category) SubCategoryViewOrEditPanel.this.getDefaultModelObject()).getSubCategories());
+         final List<SubCategory> subCategorySourceParent = getParent(source, ((Category) SubCategoryViewOrEditPanel.this.getDefaultModelObject()).getSubCategories());
+         final List<SubCategory> subCategoryParent = getParent(target, ((Category) SubCategoryViewOrEditPanel.this.getDefaultModelObject()).getSubCategories());
 
          if (subCategoryParent != null) {
-            int index = subCategoryParent.indexOf(target);
+            final int index = subCategoryParent.indexOf(target);
             subCategoryParent.add(index, source);
             subCategorySourceParent.remove(source);
          }
@@ -349,7 +349,7 @@ public class SubCategoryViewOrEditPanel extends Panel {
 
          List<SubCategory> results = new ArrayList<SubCategory>();
 
-         for (SubCategory sub : subCategories) {
+         for (final SubCategory sub : subCategories) {
             results = getParent(subCategory, sub.getSubCategories());
 
             if (results != null && results.contains(subCategory)) {
@@ -395,14 +395,14 @@ public class SubCategoryViewOrEditPanel extends Panel {
 
    private static final long serialVersionUID = 4492979061717676247L;
 
-   private SubCategoryTreeProvider subCategoryTreeProvider = new SubCategoryTreeProvider();
+   private final SubCategoryTreeProvider subCategoryTreeProvider = new SubCategoryTreeProvider();
 
    public SubCategoryViewOrEditPanel(final String id, final IModel<Category> model) {
       super(id, model);
    }
 
    private List<IColumn<SubCategory, String>> createColumns() {
-      List<IColumn<SubCategory, String>> columns = new ArrayList<IColumn<SubCategory, String>>();
+      final List<IColumn<SubCategory, String>> columns = new ArrayList<IColumn<SubCategory, String>>();
 
       columns.add(new TreeColumn<SubCategory, String>(Model.of("Name")) {
          private static final long serialVersionUID = -8544017108974205690L;
@@ -432,7 +432,7 @@ public class SubCategoryViewOrEditPanel extends Panel {
 
          @Override
          public void populateItem(Item<ICellPopulator<SubCategory>> cellItem, String componentId, IModel<SubCategory> rowModel) {
-            SubCategoryOperationPanel operationSubCategoryPanel = new SubCategoryOperationPanel(componentId, rowModel);
+            final SubCategoryOperationPanel operationSubCategoryPanel = new SubCategoryOperationPanel(componentId, rowModel);
             cellItem.add(operationSubCategoryPanel);
          }
       });
