@@ -38,7 +38,7 @@ public class CategoryViewOrEditPanel extends Panel {
       private static final long serialVersionUID = 4267535261864907719L;
 
       public CancelAjaxLink() {
-         super("cancel", Model.of(CategoryViewOrEditPanel.this.getString("cancelMessage")), Buttons.Type.Default);
+         super("cancel", Model.of(CategoryViewOrEditPanel.this.getString("cancelMessage")), Buttons.Type.Default, Model.of(CategoryViewOrEditPanel.this.getString("cancelMessage")));
          setSize(Buttons.Size.Small);
       }
 
@@ -60,10 +60,10 @@ public class CategoryViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Category>) getDefaultModel());
-         SubCategoryViewOrEditPanel subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Category>) getDefaultModel());
+         final ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Category>) getDefaultModel());
+         final SubCategoryViewOrEditPanel subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Category>) getDefaultModel());
 
-         Form<Category> categoryEditForm = new Form<Category>("categoryEditForm");
+         final Form<Category> categoryEditForm = new Form<Category>("categoryEditForm");
 
          categoryEditForm.setModel(new CompoundPropertyModel<Category>((IModel<Category>) getDefaultModel()));
          categoryEditForm.add(new NumberTextField<Integer>("position"));
@@ -91,9 +91,9 @@ public class CategoryViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Category>) getDefaultModel());
-         SubCategoryViewOrEditPanel subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Category>) getDefaultModel());
-         Form<Category> categoryViewForm = new Form<Category>("categoryViewForm");
+         final ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Category>) getDefaultModel());
+         final SubCategoryViewOrEditPanel subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Category>) getDefaultModel());
+         final Form<Category> categoryViewForm = new Form<Category>("categoryViewForm");
 
          categoryViewForm.setModel(new CompoundPropertyModel<Category>((IModel<Category>) getDefaultModel()));
          categoryViewForm.add(new NumberTextField<Integer>("position"));
@@ -115,7 +115,7 @@ public class CategoryViewOrEditPanel extends Panel {
       private static final long serialVersionUID = 4267535261864907719L;
 
       public EditAjaxLink() {
-         super("edit", Model.of(CategoryViewOrEditPanel.this.getString("editMessage")), Buttons.Type.Primary);
+         super("edit", Model.of(CategoryViewOrEditPanel.this.getString("editMessage")), Buttons.Type.Primary, Model.of(CategoryViewOrEditPanel.this.getString("editMessage")));
          setIconType(GlyphIconType.edit);
          setSize(Buttons.Size.Small);
       }
@@ -141,7 +141,7 @@ public class CategoryViewOrEditPanel extends Panel {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
          try {
-            Category category = (Category) form.getDefaultModelObject();
+            final Category category = (Category) form.getDefaultModelObject();
 
             if (category.getId() == 0) {
                category.setActive(true);
@@ -152,11 +152,11 @@ public class CategoryViewOrEditPanel extends Panel {
 
             CategoryViewOrEditPanel.this.removeAll();
             CategoryViewOrEditPanel.this.add(new CategoryViewFragement().setOutputMarkupId(true));
-         } catch (RuntimeException e) {
+         } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
 
-            String[] messages = e.getMessage().split(": ");
-            String message = messages[messages.length - 1];
+            final String[] messages = e.getMessage().split(": ");
+            final String message = messages[messages.length - 1];
 
             warn(message.substring(0, 1).toUpperCase() + message.substring(1));
          } finally {
