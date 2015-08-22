@@ -52,7 +52,7 @@ public class OrderPanel extends Panel {
 
       @Override
       protected Item<Order> newItem(String id, int index, IModel<Order> model) {
-         Item<Order> item = super.newItem(id, index, model);
+         final Item<Order> item = super.newItem(id, index, model);
 
          if (model.getObject().getId() == ((Order) orderViewOrEditPanel.getDefaultModelObject()).getId()) {
             item.add(new AttributeModifier("class", "info"));
@@ -88,17 +88,17 @@ public class OrderPanel extends Panel {
    @SpringBean(name = "OrderDataProvider", required = true)
    private GenericTypeDataProvider<Order> orderDataProvider;
 
-   private OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", orderDataProvider);
+   private final OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "contract.customer.firstName", orderDataProvider);
 
-   private OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", orderDataProvider);
+   private final OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "contract.customer.lastName", orderDataProvider);
 
-   private OrderByBorder<String> orderByOrderId = new OrderByBorder<String>("orderByOrderId", "orderId", orderDataProvider);
+   private final OrderByBorder<String> orderByOrderId = new OrderByBorder<String>("orderByOrderId", "orderId", orderDataProvider);
 
-   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", orderDataProvider);
+   private final OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contract.contractId", orderDataProvider);
 
-   private OrderDataview orderDataview = new OrderDataview();
+   private final OrderDataview orderDataview = new OrderDataview();
 
-   private WebMarkupContainer orderDataviewContainer = new WebMarkupContainer("orderDataviewContainer") {
+   private final WebMarkupContainer orderDataviewContainer = new WebMarkupContainer("orderDataviewContainer") {
 
       private static final long serialVersionUID = -497527332092449028L;
 
@@ -109,9 +109,9 @@ public class OrderPanel extends Panel {
       }
    };
 
-   private BootstrapPagingNavigator orderPagingNavigator = new BootstrapPagingNavigator("orderPagingNavigator", orderDataview);
+   private final BootstrapPagingNavigator orderPagingNavigator = new BootstrapPagingNavigator("orderPagingNavigator", orderDataview);
 
-   private OrderViewOrEditPanel orderViewOrEditPanel = new OrderViewOrEditPanel("orderViewOrEditPanel", (IModel<Order>) getDefaultModel());
+   private final OrderViewOrEditPanel orderViewOrEditPanel = new OrderViewOrEditPanel("orderViewOrEditPanel", (IModel<Order>) getDefaultModel());
 
    public OrderPanel(final String id, final IModel<Order> model) {
       super(id, model);

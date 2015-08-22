@@ -53,7 +53,7 @@ public class CustomerViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         Form<Customer> customerEditForm = new Form<Customer>("customerEditForm");
+         final Form<Customer> customerEditForm = new Form<Customer>("customerEditForm");
          customerEditForm.setModel(new CompoundPropertyModel<Customer>((IModel<Customer>) getDefaultModel()));
          customerEditForm.add(new TextField<String>("salutation"));
          customerEditForm.add(new TextField<String>("suffix"));
@@ -93,7 +93,7 @@ public class CustomerViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         Form<Customer> customerViewForm = new Form<Customer>("customerViewForm");
+         final Form<Customer> customerViewForm = new Form<Customer>("customerViewForm");
          customerViewForm.setModel(new CompoundPropertyModel<Customer>((IModel<Customer>) getDefaultModel()));
          customerViewForm.add(new Label("salutation"));
          customerViewForm.add(new Label("suffix"));
@@ -150,7 +150,7 @@ public class CustomerViewOrEditPanel extends Panel {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
          try {
-            Customer customer = (Customer) form.getDefaultModelObject();
+            final Customer customer = (Customer) form.getDefaultModelObject();
 
             if (customer.getId() == 0) {
                customerDataProvider.persist(customer);
@@ -160,11 +160,11 @@ public class CustomerViewOrEditPanel extends Panel {
 
             CustomerViewOrEditPanel.this.removeAll();
             CustomerViewOrEditPanel.this.add(new CustomerViewFragement().setOutputMarkupId(true));
-         } catch (RuntimeException e) {
+         } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
 
-            String[] messages = e.getMessage().split(": ");
-            String message = messages[messages.length - 1];
+            final String[] messages = e.getMessage().split(": ");
+            final String message = messages[messages.length - 1];
 
             warn(message.substring(0, 1).toUpperCase() + message.substring(1));
          } finally {

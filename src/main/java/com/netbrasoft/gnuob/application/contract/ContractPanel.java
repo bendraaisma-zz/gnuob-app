@@ -52,7 +52,7 @@ public class ContractPanel extends Panel {
 
       @Override
       protected Item<Contract> newItem(String id, int index, IModel<Contract> model) {
-         Item<Contract> item = super.newItem(id, index, model);
+         final Item<Contract> item = super.newItem(id, index, model);
 
          if (model.getObject().getId() == ((Contract) contractViewOrEditPanel.getDefaultModelObject()).getId()) {
             item.add(new AttributeModifier("class", "info"));
@@ -87,15 +87,15 @@ public class ContractPanel extends Panel {
    @SpringBean(name = "ContractDataProvider", required = true)
    private GenericTypeDataProvider<Contract> contractDataProvider;
 
-   private OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", contractDataProvider);
+   private final OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "customer.firstName", contractDataProvider);
 
-   private OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", contractDataProvider);
+   private final OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "customer.lastName", contractDataProvider);
 
-   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", contractDataProvider);
+   private final OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", contractDataProvider);
 
-   private DataView<Contract> contractDataview = new ContractDataview();
+   private final DataView<Contract> contractDataview = new ContractDataview();
 
-   private WebMarkupContainer contractDataviewContainer = new WebMarkupContainer("contractDataviewContainer") {
+   private final WebMarkupContainer contractDataviewContainer = new WebMarkupContainer("contractDataviewContainer") {
 
       private static final long serialVersionUID = -497527332092449028L;
 
@@ -106,9 +106,9 @@ public class ContractPanel extends Panel {
       }
    };
 
-   private BootstrapPagingNavigator contractPagingNavigator = new BootstrapPagingNavigator("contractPagingNavigator", contractDataview);
+   private final BootstrapPagingNavigator contractPagingNavigator = new BootstrapPagingNavigator("contractPagingNavigator", contractDataview);
 
-   private ContractViewOrEditPanel contractViewOrEditPanel = new ContractViewOrEditPanel("contractViewOrEditPanel", (IModel<Contract>) getDefaultModel());
+   private final ContractViewOrEditPanel contractViewOrEditPanel = new ContractViewOrEditPanel("contractViewOrEditPanel", (IModel<Contract>) getDefaultModel());
 
    public ContractPanel(final String id, final IModel<Contract> model) {
       super(id, model);

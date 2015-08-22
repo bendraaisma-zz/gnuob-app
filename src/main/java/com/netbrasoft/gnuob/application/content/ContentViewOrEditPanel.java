@@ -25,6 +25,7 @@ import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
+import wicket.contrib.tinymce4.TinyMceBehavior;
 
 @SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
@@ -57,7 +58,7 @@ public class ContentViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         Form<Content> contentEditForm = new Form<Content>("contentEditForm");
+         final Form<Content> contentEditForm = new Form<Content>("contentEditForm");
          contentEditForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
          contentEditForm.add(new TextField<String>("name"));
          contentEditForm.add(new TextField<String>("format"));
@@ -67,7 +68,7 @@ public class ContentViewOrEditPanel extends Panel {
 
             @Override
             public String getObject() {
-               Content content = (Content) getDefaultModelObject();
+               final Content content = (Content) getDefaultModelObject();
                return content.getContent() != null ? new String(content.getContent()) : new String();
             }
 
@@ -79,7 +80,7 @@ public class ContentViewOrEditPanel extends Panel {
                   ((Content) getDefaultModelObject()).setContent(null);
                }
             }
-         }));
+         }).add(new TinyMceBehavior()));
 
          add(contentEditForm.setOutputMarkupId(true));
          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
@@ -99,7 +100,7 @@ public class ContentViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         Form<Content> contentViewForm = new Form<Content>("contentViewForm");
+         final Form<Content> contentViewForm = new Form<Content>("contentViewForm");
          contentViewForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
          contentViewForm.add(new Label("name"));
          contentViewForm.add(new Label("format"));
@@ -109,7 +110,7 @@ public class ContentViewOrEditPanel extends Panel {
 
             @Override
             public String getObject() {
-               Content content = (Content) getDefaultModelObject();
+               final Content content = (Content) getDefaultModelObject();
                return content.getContent() != null ? new String(content.getContent()) : new String();
             }
          }).setEscapeModelStrings(false));
@@ -149,7 +150,7 @@ public class ContentViewOrEditPanel extends Panel {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
          try {
-            Content content = (Content) form.getDefaultModelObject();
+            final Content content = (Content) form.getDefaultModelObject();
 
             if (content.getId() == 0) {
                content.setActive(true);
@@ -160,11 +161,11 @@ public class ContentViewOrEditPanel extends Panel {
 
             ContentViewOrEditPanel.this.removeAll();
             ContentViewOrEditPanel.this.add(new ContentViewFragement().setOutputMarkupId(true));
-         } catch (RuntimeException e) {
+         } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
 
-            String[] messages = e.getMessage().split(": ");
-            String message = messages[messages.length - 1];
+            final String[] messages = e.getMessage().split(": ");
+            final String message = messages[messages.length - 1];
 
             warn(message.substring(0, 1).toUpperCase() + message.substring(1));
          } finally {

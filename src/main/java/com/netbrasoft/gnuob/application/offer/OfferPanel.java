@@ -52,7 +52,7 @@ public class OfferPanel extends Panel {
 
       @Override
       protected Item<Offer> newItem(String id, int index, IModel<Offer> model) {
-         Item<Offer> item = super.newItem(id, index, model);
+         final Item<Offer> item = super.newItem(id, index, model);
 
          if (model.getObject().getId() == ((Offer) offerViewOrEditPanel.getDefaultModelObject()).getId()) {
             item.add(new AttributeModifier("class", "info"));
@@ -87,15 +87,15 @@ public class OfferPanel extends Panel {
    @SpringBean(name = "OfferDataProvider", required = true)
    private GenericTypeDataProvider<Offer> offerDataProvider;
 
-   private OrderByBorder<String> orderByOfferId = new OrderByBorder<String>("orderByOfferId", "offerId", offerDataProvider);
+   private final OrderByBorder<String> orderByOfferId = new OrderByBorder<String>("orderByOfferId", "offerId", offerDataProvider);
 
-   private OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", offerDataProvider);
+   private final OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contract.contractId", offerDataProvider);
 
-   private OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "payerId", offerDataProvider);
+   private final OrderByBorder<String> orderByPayerId = new OrderByBorder<String>("orderByPayerId", "contract.customer.payerId", offerDataProvider);
 
-   private OfferDataview offerDataview = new OfferDataview();
+   private final OfferDataview offerDataview = new OfferDataview();
 
-   private WebMarkupContainer offerDataviewContainer = new WebMarkupContainer("offerDataviewContainer") {
+   private final WebMarkupContainer offerDataviewContainer = new WebMarkupContainer("offerDataviewContainer") {
 
       private static final long serialVersionUID = -497527332092449028L;
 
@@ -106,9 +106,9 @@ public class OfferPanel extends Panel {
       }
    };
 
-   private BootstrapPagingNavigator offerPagingNavigator = new BootstrapPagingNavigator("offerPagingNavigator", offerDataview);
+   private final BootstrapPagingNavigator offerPagingNavigator = new BootstrapPagingNavigator("offerPagingNavigator", offerDataview);
 
-   private OfferViewOrEditPanel offerViewOrEditPanel = new OfferViewOrEditPanel("offerViewOrEditPanel", (IModel<Offer>) getDefaultModel());
+   private final OfferViewOrEditPanel offerViewOrEditPanel = new OfferViewOrEditPanel("offerViewOrEditPanel", (IModel<Offer>) getDefaultModel());
 
    public OfferPanel(final String id, final IModel<Offer> model) {
       super(id, model);
