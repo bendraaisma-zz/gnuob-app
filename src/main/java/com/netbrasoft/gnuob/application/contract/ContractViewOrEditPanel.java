@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
@@ -22,18 +23,22 @@ import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.content.ContentViewOrEditPanel;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 
 @SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class ContractViewOrEditPanel extends Panel {
 
-   class CancelAjaxLink extends AjaxLink<Void> {
+   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
+   class CancelAjaxLink extends BootstrapAjaxLink<String> {
 
       private static final long serialVersionUID = 4267535261864907719L;
 
       public CancelAjaxLink() {
-         super("cancel");
+         super("cancel", Model.of(ContractViewOrEditPanel.this.getString("cancelMessage")), Buttons.Type.Default, Model.of(ContractViewOrEditPanel.this.getString("cancelMessage")));
+         setSize(Buttons.Size.Small);
       }
 
       @Override
@@ -54,7 +59,7 @@ public class ContractViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         Form<Contract> contractEditForm = new Form<Contract>("contractEditForm");
+         final Form<Contract> contractEditForm = new Form<Contract>("contractEditForm");
          contractEditForm.setModel(new CompoundPropertyModel<Contract>((IModel<Contract>) getDefaultModel()));
          contractEditForm.add(new TextField<String>("contractId"));
          contractEditForm.add(new TextField<String>("customer.friendlyName"));
@@ -86,7 +91,7 @@ public class ContractViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-         Form<Contract> contractViewForm = new Form<Contract>("contractViewForm");
+         final Form<Contract> contractViewForm = new Form<Contract>("contractViewForm");
          contractViewForm.setModel(new CompoundPropertyModel<Contract>((IModel<Contract>) getDefaultModel()));
          contractViewForm.add(new Label("contractId"));
          contractViewForm.add(new Label("customer.friendlyName"));
@@ -135,7 +140,7 @@ public class ContractViewOrEditPanel extends Panel {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
          try {
-            Contract contract = (Contract) form.getDefaultModelObject();
+            final Contract contract = (Contract) form.getDefaultModelObject();
 
             if (contract.getId() == 0) {
                contractDataProvider.persist(contract);
@@ -145,11 +150,11 @@ public class ContractViewOrEditPanel extends Panel {
 
             ContractViewOrEditPanel.this.removeAll();
             ContractViewOrEditPanel.this.add(new ContractViewFragement().setOutputMarkupId(true));
-         } catch (RuntimeException e) {
+         } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
 
-            String[] messages = e.getMessage().split(": ");
-            String message = messages[messages.length - 1];
+            final String[] messages = e.getMessage().split(": ");
+            final String message = messages[messages.length - 1];
 
             warn(message.substring(0, 1).toUpperCase() + message.substring(1));
          } finally {

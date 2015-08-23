@@ -1,32 +1,49 @@
 package com.netbrasoft.gnuob.application.page;
 
+import java.util.List;
+
 import org.apache.commons.lang3.text.WordUtils;
-import org.apache.wicket.markup.head.CssContentHeaderItem;
-import org.apache.wicket.markup.head.CssReferenceHeaderItem;
+import org.apache.wicket.markup.head.HeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
-import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
+import org.apache.wicket.markup.head.filter.FilteredHeaderItem;
+import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
 
+import com.google.common.collect.Lists;
 import com.netbrasoft.gnuob.application.NetbrasoftApplication;
 
-import de.agilecoders.wicket.webjars.request.resource.WebjarsCssResourceReference;
-import de.agilecoders.wicket.webjars.request.resource.WebjarsJavaScriptResourceReference;
+import de.agilecoders.wicket.core.Bootstrap;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationBehavior;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.references.JQueryCookieJsReference;
 
 public abstract class BasePage extends WebPage {
+
+   class NetbrasoftApplicationJavaScript extends JavaScriptResourceReference {
+
+      private static final long serialVersionUID = 62421909883685410L;
+
+      private NetbrasoftApplicationJavaScript() {
+         super(ConfirmationBehavior.class, "bootstrap-confirmation.js");
+      }
+
+      @Override
+      public List<HeaderItem> getDependencies() {
+         final List<HeaderItem> dependencies = Lists.newArrayList(super.getDependencies());
+
+         dependencies.add(JavaScriptHeaderItem.forReference(JQueryCookieJsReference.INSTANCE));
+         dependencies.add(JavaScriptHeaderItem.forReference(NetbrasoftApplication.get().getJavaScriptLibrarySettings().getJQueryReference()));
+         dependencies.add(JavaScriptHeaderItem.forReference(Bootstrap.getSettings().getJsResourceReference()));
+
+         return dependencies;
+      }
+   }
 
    private static final long serialVersionUID = 8192334293970678397L;
 
    private static final String GNUOB_SITE_TITLE_PROPERTY = "gnuob.site.title";
-
-   private static final JavaScriptReferenceHeaderItem JS_JQUERY_COOKIE = JavaScriptHeaderItem.forReference(new WebjarsJavaScriptResourceReference("/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"));
-
-   private static final JavaScriptReferenceHeaderItem JS_BOOTSTRAP_3_DATEPICKER = JavaScriptHeaderItem.forReference(new WebjarsJavaScriptResourceReference("/ajax/libs/bootstrap-datepicker/1.4.0/js/bootstrap-datepicker.min.js"));
-
-   private static final CssReferenceHeaderItem CSS_BOOTSTRAP_3_DATEPICKER = CssContentHeaderItem.forReference(new WebjarsCssResourceReference("/ajax/libs/bootstrap-datepicker/1.4.0/css/bootstrap-datepicker.min.css"));
-
-   private static final JavaScriptReferenceHeaderItem JS_JQUERY = JavaScriptHeaderItem.forReference(NetbrasoftApplication.get().getJavaScriptLibrarySettings().getJQueryReference());
 
    @Override
    protected void onInitialize() {
@@ -34,18 +51,14 @@ public abstract class BasePage extends WebPage {
       final String title = site.replaceFirst("www.", "").split("\\.")[0];
 
       add(new Label(GNUOB_SITE_TITLE_PROPERTY, System.getProperty(GNUOB_SITE_TITLE_PROPERTY, WordUtils.capitalize(title))));
+      add(new HeaderResponseContainer("netbrasoft-application-javascript-container", "netbrasoft-application-javascript-container"));
 
       super.onInitialize();
    }
 
    @Override
    public void renderHead(IHeaderResponse response) {
-      response.render(JS_JQUERY);
-      response.render(JS_JQUERY_COOKIE);
-      //TODO: BD use wicket bootstrap data picker.
-      response.render(JS_BOOTSTRAP_3_DATEPICKER);
-      response.render(CSS_BOOTSTRAP_3_DATEPICKER);
-
+      response.render(new FilteredHeaderItem(JavaScriptHeaderItem.forReference(new NetbrasoftApplicationJavaScript()), "netbrasoft-application-javascript-container"));
       super.renderHead(response);
    }
 }
