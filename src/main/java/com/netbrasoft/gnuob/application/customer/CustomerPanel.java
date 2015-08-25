@@ -19,6 +19,9 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Customer;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
@@ -27,6 +30,7 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
+import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationBehavior;
@@ -96,7 +100,9 @@ public class CustomerPanel extends Panel {
 
             @Override
             public void renderHead(Component component, IHeaderResponse response) {
-               response.render($(component).chain("confirmation", new ConfirmationConfig().withTitle(getString("confirmationTitleMessage")).withSingleton(true).withPopout(true).withBtnOkLabel(getString("confirmMessage")).withBtnCancelLabel(getString("cancelMessage"))).asDomReadyScript());
+               response.render($(component)
+                     .chain("confirmation", new ConfirmationConfig().withTitle(getString("confirmationTitleMessage")).withSingleton(true).withPopout(true).withBtnOkLabel(getString("confirmMessage")).withBtnCancelLabel(getString("cancelMessage")))
+                     .asDomReadyScript());
             }
          }));
       }
@@ -115,19 +121,24 @@ public class CustomerPanel extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-         final Customer customer = getModelObject();
-         customer.setActive(false);
-
-         customerDataProvider.merge(customer);
-
-         customerViewOrEditPanel.setDefaultModelObject(new Customer());
-         target.add(customerViewOrEditPanel.setOutputMarkupId(true));
+         try {
+            getModelObject().setActive(false);
+            customerDataProvider.merge(getModelObject());
+            customerViewOrEditPanel.setDefaultModelObject(new Customer());
+         } catch (final RuntimeException e) {
+            LOGGER.warn(e.getMessage(), e);
+            warn(e.getLocalizedMessage());
+         } finally {
+            target.add(getPage());
+         }
       }
    }
 
    private static final long serialVersionUID = 3703226064705246155L;
 
    private static final int ITEMS_PER_PAGE = 10;
+
+   private static final Logger LOGGER = LoggerFactory.getLogger(CustomerPanel.class);
 
    @SpringBean(name = "CustomerDataProvider", required = true)
    private GenericTypeDataProvider<Customer> customerDataProvider;
@@ -171,6 +182,8 @@ public class CustomerPanel extends Panel {
       add(customerDataviewContainer.setOutputMarkupId(true));
       add(customerPagingNavigator.setOutputMarkupId(true));
       add(customerViewOrEditPanel.setOutputMarkupId(true));
+
+      add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
 
       super.onInitialize();
    }

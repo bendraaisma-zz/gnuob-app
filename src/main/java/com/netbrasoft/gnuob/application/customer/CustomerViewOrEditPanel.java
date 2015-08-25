@@ -251,6 +251,7 @@ public class CustomerViewOrEditPanel extends Panel {
             // FIXME: BD change this to configuration or geonames etc.
             customer.getAddress().setCountry("BR");
             customer.setActive(true);
+
             if (customer.getId() == 0) {
                CustomerViewOrEditPanel.this.setDefaultModel(Model.of(customerDataProvider.findById(customerDataProvider.persist(customer))));
             } else {
