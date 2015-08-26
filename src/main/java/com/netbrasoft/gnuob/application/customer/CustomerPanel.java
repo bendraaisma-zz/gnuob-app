@@ -74,6 +74,11 @@ public class CustomerPanel extends Panel {
          if (model.getObject().getId() == ((Customer) customerViewOrEditPanel.getDefaultModelObject()).getId()) {
             // FIXME BD: use wicket bootstrap for this attribute / table.
             item.add(new AttributeModifier("class", "info"));
+         } else {
+            if (index == 0 && ((Customer) customerViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
+               // FIXME BD: use wicket bootstrap for this attribute / table.
+               item.add(new AttributeModifier("class", "info"));
+            }
          }
 
          return item;
@@ -91,7 +96,8 @@ public class CustomerPanel extends Panel {
             @Override
             public void onEvent(AjaxRequestTarget target) {
                customerViewOrEditPanel.setDefaultModelObject(item.getModelObject());
-               target.add(getPage());
+               target.add(customerDataviewContainer.setOutputMarkupId(true));
+               target.add(customerViewOrEditPanel.setOutputMarkupId(true));
             }
          });
          item.add(new RemoveAjaxLink(item.getModel()).add(new ConfirmationBehavior() {
@@ -105,6 +111,10 @@ public class CustomerPanel extends Panel {
                      .asDomReadyScript());
             }
          }));
+
+         if (item.getIndex() == 0 && ((Customer) customerViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
+            customerViewOrEditPanel.setDefaultModelObject(item.getModelObject());
+         }
       }
    }
 
@@ -143,29 +153,36 @@ public class CustomerPanel extends Panel {
    @SpringBean(name = "CustomerDataProvider", required = true)
    private GenericTypeDataProvider<Customer> customerDataProvider;
 
-   private final OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", customerDataProvider);
+   private final OrderByBorder<String> orderByFirstName;
 
-   private final OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", customerDataProvider);
+   private final OrderByBorder<String> orderByLastName;
 
-   private final DataView<Customer> customerDataview = new CustomerDataview();
+   private final DataView<Customer> customerDataview;
 
-   private final WebMarkupContainer customerDataviewContainer = new WebMarkupContainer("customerDataviewContainer") {
+   private final WebMarkupContainer customerDataviewContainer;
 
-      private static final long serialVersionUID = -497527332092449028L;
+   private final BootstrapPagingNavigator customerPagingNavigator;
 
-      @Override
-      protected void onInitialize() {
-         add(customerDataview.setOutputMarkupId(true));
-         super.onInitialize();
-      }
-   };
-
-   private final BootstrapPagingNavigator customerPagingNavigator = new BootstrapPagingNavigator("customerPagingNavigator", customerDataview);
-
-   private final CustomerViewOrEditPanel customerViewOrEditPanel = new CustomerViewOrEditPanel("customerViewOrEditPanel", (IModel<Customer>) getDefaultModel());
+   private final CustomerViewOrEditPanel customerViewOrEditPanel;
 
    public CustomerPanel(final String id, final IModel<Customer> model) {
       super(id, model);
+
+      orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", customerDataProvider);
+      orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", customerDataProvider);
+      customerDataview = new CustomerDataview();
+      customerDataviewContainer = new WebMarkupContainer("customerDataviewContainer") {
+
+         private static final long serialVersionUID = -497527332092449028L;
+
+         @Override
+         protected void onInitialize() {
+            add(customerDataview.setOutputMarkupId(true));
+            super.onInitialize();
+         }
+      };
+      customerPagingNavigator = new BootstrapPagingNavigator("customerPagingNavigator", customerDataview);
+      customerViewOrEditPanel = new CustomerViewOrEditPanel("customerViewOrEditPanel", (IModel<Customer>) getDefaultModel());
    }
 
    @Override
@@ -181,7 +198,7 @@ public class CustomerPanel extends Panel {
       add(orderByLastName.setOutputMarkupId(true));
       add(customerDataviewContainer.setOutputMarkupId(true));
       add(customerPagingNavigator.setOutputMarkupId(true));
-      add(customerViewOrEditPanel.setOutputMarkupId(true));
+      add(customerViewOrEditPanel.add(customerViewOrEditPanel.new CustomerViewFragement()).setOutputMarkupId(true));
 
       add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
 

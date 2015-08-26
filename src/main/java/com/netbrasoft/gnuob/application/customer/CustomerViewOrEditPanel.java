@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.netbrasoft.gnuob.api.Customer;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.api.generic.XMLGregorianCalendarConverter;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;
@@ -63,6 +64,11 @@ public class CustomerViewOrEditPanel extends Panel {
       public void onClick(AjaxRequestTarget target) {
          CustomerViewOrEditPanel.this.removeAll();
          CustomerViewOrEditPanel.this.add(new CustomerViewFragement()).setOutputMarkupId(true);
+
+         if (((Customer) CustomerViewOrEditPanel.this.getDefaultModelObject()).getId() > 0) {
+            CustomerViewOrEditPanel.this.setDefaultModelObject(customerDataProvider.findById((Customer) CustomerViewOrEditPanel.this.getDefaultModelObject()));
+         }
+
          target.add(target.getPage());
       }
    }
@@ -116,12 +122,13 @@ public class CustomerViewOrEditPanel extends Panel {
       @Override
       protected void onInitialize() {
          final Form<Customer> customerEditForm = new Form<Customer>("customerEditForm");
+
          customerEditForm.setModel(new CompoundPropertyModel<Customer>((IModel<Customer>) getDefaultModel()));
-         customerEditForm.add(new TextField<String>("salutation").add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new TextField<String>("suffix").add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new RequiredTextField<String>("firstName").setLabel(Model.of(getString("firstNameMessage"))).add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new TextField<String>("middleName").add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new RequiredTextField<String>("lastName").setLabel(Model.of(getString("lastNameMessage"))).add(StringValidator.maximumLength(40)));
+         customerEditForm.add(new TextField<String>("salutation").add(StringValidator.maximumLength(20)));
+         customerEditForm.add(new TextField<String>("suffix").add(StringValidator.maximumLength(20)));
+         customerEditForm.add(new RequiredTextField<String>("firstName").setLabel(Model.of(getString("firstNameMessage"))).add(StringValidator.maximumLength(64)));
+         customerEditForm.add(new TextField<String>("middleName").add(StringValidator.maximumLength(64)));
+         customerEditForm.add(new RequiredTextField<String>("lastName").setLabel(Model.of(getString("lastNameMessage"))).add(StringValidator.maximumLength(64)));
          customerEditForm.add(new DatetimePicker("dateOfBirth", new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat("dd-MM-YYYY")) {
 
             private static final long serialVersionUID = 1209354725150726556L;
@@ -135,26 +142,27 @@ public class CustomerViewOrEditPanel extends Panel {
                }
             }
          });
-         customerEditForm.add(new RequiredTextField<String>("buyerEmail").setLabel(Model.of(getString("buyerEmailMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(60)));
-         //FIXME: BD get this from geonames how to format ZIP code.
-         customerEditForm.add(new RequiredTextField<String>("address.postalCode").setLabel(Model.of(getString("postalCodeMessage"))).add(new PatternValidator("([0-9]){5}([-])([0-9]){3}")));
+         customerEditForm.add(new RequiredTextField<String>("buyerEmail").setLabel(Model.of(getString("buyerEmailMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
+         // FIXME: BD get this from geonames how to format ZIP code.
+         customerEditForm.add(new RequiredTextField<String>("address.postalCode").setLabel(Model.of(getString("postalCodeMessage"))).add(new PatternValidator("([0-9]){5}([-])([0-9]){3}")).add(StringValidator.maximumLength(20)));
          customerEditForm.add(new TextField<String>("address.number").add(StringValidator.maximumLength(10)));
-         customerEditForm.add(new TextField<String>("address.country", Model.of("Brasil")).setLabel(Model.of(getString("countryNameMessage"))).setEnabled(false));
-         customerEditForm.add(new RequiredTextField<String>("address.street1").setLabel(Model.of(getString("street1Message"))).add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new TextField<String>("address.street2").add(StringValidator.maximumLength(40)));
+         customerEditForm.add(new TextField<String>("address.country", Model.of("Brasil")).setLabel(Model.of(getString("countryNameMessage"))).add(StringValidator.maximumLength(40)).setEnabled(false));
+         customerEditForm.add(new RequiredTextField<String>("address.street1").setLabel(Model.of(getString("street1Message"))).add(StringValidator.maximumLength(100)));
+         customerEditForm.add(new TextField<String>("address.street2").add(StringValidator.maximumLength(100)));
          customerEditForm.add(new TextField<String>("address.complement").add(StringValidator.maximumLength(40)));
          customerEditForm.add(new TextField<String>("address.district").add(StringValidator.maximumLength(40)));
          customerEditForm.add(new RequiredTextField<String>("address.cityName").setLabel(Model.of(getString("cityNameMessage"))).add(StringValidator.maximumLength(40)));
          customerEditForm.add(new DropDownChoice<State>("address.stateOrProvince", getStatesOfBrazil(), new ChoiceRenderer<State>("name", "")).setRequired(true).setLabel(Model.of(getString("stateOrProvinceMessage"))));
          customerEditForm.add(new TextField<String>("address.countryName").add(StringValidator.maximumLength(40)));
          customerEditForm.add(new TextField<String>("address.internationalStreet").add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new TextField<String>("address.internationalStateAndCity").add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new TextField<String>("address.phone").add(StringValidator.maximumLength(40)));
+         customerEditForm.add(new TextField<String>("address.internationalStateAndCity").add(StringValidator.maximumLength(80)));
+         customerEditForm.add(new TextField<String>("address.phone").add(StringValidator.maximumLength(20)));
 
          add(customerEditForm.setOutputMarkupId(true));
          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new SaveAjaxButton(customerEditForm).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
+
          super.onInitialize();
       }
    }
@@ -171,6 +179,7 @@ public class CustomerViewOrEditPanel extends Panel {
       @Override
       protected void onInitialize() {
          final Form<Customer> customerViewForm = new Form<Customer>("customerViewForm");
+
          customerViewForm.setModel(new CompoundPropertyModel<Customer>((IModel<Customer>) getDefaultModel()));
          customerViewForm.add(new Label("salutation"));
          customerViewForm.add(new Label("suffix"));
@@ -203,6 +212,7 @@ public class CustomerViewOrEditPanel extends Panel {
 
          add(new EditAjaxLink().setOutputMarkupId(true));
          add(customerViewForm.setOutputMarkupId(true));
+
          super.onInitialize();
       }
    }
@@ -282,7 +292,12 @@ public class CustomerViewOrEditPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      add(new CustomerViewFragement().setOutputMarkupId(true));
+      customerDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      customerDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      customerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
+      customerDataProvider.setType(new Customer());
+      customerDataProvider.getType().setActive(true);
+
       super.onInitialize();
    }
 }

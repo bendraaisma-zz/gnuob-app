@@ -75,6 +75,11 @@ public class ContractPanel extends Panel {
          if (model.getObject().getId() == ((Contract) contractViewOrEditPanel.getDefaultModelObject()).getId()) {
             // FIXME BD: use wicket bootstrap for this attribute / table.
             item.add(new AttributeModifier("class", "info"));
+         } else {
+            if (index == 0 && ((Contract) contractViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
+               // FIXME BD: use wicket bootstrap for this attribute / table.
+               item.add(new AttributeModifier("class", "info"));
+            }
          }
 
          return item;
@@ -93,7 +98,8 @@ public class ContractPanel extends Panel {
             @Override
             public void onEvent(AjaxRequestTarget target) {
                contractViewOrEditPanel.setDefaultModelObject(item.getModelObject());
-               target.add(getPage());
+               target.add(contractDataviewContainer.setOutputMarkupId(true));
+               target.add(contractViewOrEditPanel.setOutputMarkupId(true));
             }
          });
          item.add(new RemoveAjaxLink(item.getModel()).add(new ConfirmationBehavior() {
@@ -107,6 +113,10 @@ public class ContractPanel extends Panel {
                      .asDomReadyScript());
             }
          }));
+
+         if (item.getIndex() == 0 && ((Contract) contractViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
+            contractViewOrEditPanel.setDefaultModelObject(item.getModelObject());
+         }
       }
    }
 
@@ -145,31 +155,39 @@ public class ContractPanel extends Panel {
    @SpringBean(name = "ContractDataProvider", required = true)
    private GenericTypeDataProvider<Contract> contractDataProvider;
 
-   private final OrderByBorder<String> orderByFirstName = new OrderByBorder<String>("orderByFirstName", "customer.firstName", contractDataProvider);
+   private final OrderByBorder<String> orderByFirstName;
 
-   private final OrderByBorder<String> orderByLastName = new OrderByBorder<String>("orderByLastName", "customer.lastName", contractDataProvider);
+   private final OrderByBorder<String> orderByLastName;
 
-   private final OrderByBorder<String> orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", contractDataProvider);
+   private final OrderByBorder<String> orderByContractId;
 
-   private final DataView<Contract> contractDataview = new ContractDataview();
+   private final DataView<Contract> contractDataview;
 
-   private final WebMarkupContainer contractDataviewContainer = new WebMarkupContainer("contractDataviewContainer") {
+   private final WebMarkupContainer contractDataviewContainer;
 
-      private static final long serialVersionUID = -497527332092449028L;
+   private final BootstrapPagingNavigator contractPagingNavigator;
 
-      @Override
-      protected void onInitialize() {
-         add(contractDataview.setOutputMarkupId(true));
-         super.onInitialize();
-      }
-   };
-
-   private final BootstrapPagingNavigator contractPagingNavigator = new BootstrapPagingNavigator("contractPagingNavigator", contractDataview);
-
-   private final ContractViewOrEditPanel contractViewOrEditPanel = new ContractViewOrEditPanel("contractViewOrEditPanel", (IModel<Contract>) getDefaultModel());
+   private final ContractViewOrEditPanel contractViewOrEditPanel;
 
    public ContractPanel(final String id, final IModel<Contract> model) {
       super(id, model);
+
+      orderByFirstName = new OrderByBorder<String>("orderByFirstName", "customer.firstName", contractDataProvider);
+      orderByLastName = new OrderByBorder<String>("orderByLastName", "customer.lastName", contractDataProvider);
+      orderByContractId = new OrderByBorder<String>("orderByContractId", "contractId", contractDataProvider);
+      contractDataview = new ContractDataview();
+      contractDataviewContainer = new WebMarkupContainer("contractDataviewContainer") {
+
+         private static final long serialVersionUID = -497527332092449028L;
+
+         @Override
+         protected void onInitialize() {
+            add(contractDataview.setOutputMarkupId(true));
+            super.onInitialize();
+         }
+      };
+      contractPagingNavigator = new BootstrapPagingNavigator("contractPagingNavigator", contractDataview);
+      contractViewOrEditPanel = new ContractViewOrEditPanel("contractViewOrEditPanel", (IModel<Contract>) getDefaultModel());
    }
 
    @Override

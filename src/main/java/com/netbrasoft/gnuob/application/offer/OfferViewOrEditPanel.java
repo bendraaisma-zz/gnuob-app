@@ -1,58 +1,73 @@
 package com.netbrasoft.gnuob.application.offer;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.NumberTextField;
+import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Offer;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
+import de.agilecoders.wicket.core.markup.html.bootstrap.button.LoadingBehavior;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
+import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.TooltipValidation;
 
 @SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
 public class OfferViewOrEditPanel extends Panel {
 
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class CancelAjaxLink extends AjaxLink<Void> {
+   class CancelAjaxLink extends BootstrapAjaxLink<String> {
 
       private static final long serialVersionUID = 4267535261864907719L;
 
       public CancelAjaxLink() {
-         super("cancel");
+         super("cancel", Model.of(OfferViewOrEditPanel.this.getString("cancelMessage")), Buttons.Type.Default, Model.of(OfferViewOrEditPanel.this.getString("cancelMessage")));
+         setSize(Buttons.Size.Small);
       }
 
       @Override
       public void onClick(AjaxRequestTarget target) {
          OfferViewOrEditPanel.this.removeAll();
          OfferViewOrEditPanel.this.add(new OfferViewFragement()).setOutputMarkupId(true);
+
+         if (((Offer) OfferViewOrEditPanel.this.getDefaultModelObject()).getId() > 0) {
+            OfferViewOrEditPanel.this.setDefaultModelObject(offerDataProvider.findById((Offer) OfferViewOrEditPanel.this.getDefaultModelObject()));
+         }
+
          target.add(target.getPage());
       }
    }
 
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class EditAjaxLink extends AjaxLink<Void> {
+   class EditAjaxLink extends BootstrapAjaxLink<String> {
 
       private static final long serialVersionUID = 4267535261864907719L;
 
       public EditAjaxLink() {
-         super("edit");
+         super("edit", Model.of(OfferViewOrEditPanel.this.getString("editMessage")), Buttons.Type.Primary, Model.of(OfferViewOrEditPanel.this.getString("editMessage")));
+         setIconType(GlyphIconType.edit);
+         setSize(Buttons.Size.Small);
       }
 
       @Override
@@ -63,56 +78,63 @@ public class OfferViewOrEditPanel extends Panel {
       }
    }
 
+   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
    class OfferEditFragement extends Fragment {
 
       private static final long serialVersionUID = -5645656866901827543L;
 
+      private final OfferRecordPanel offerRecordPanel;
+
       public OfferEditFragement() {
          super("offerViewOrEditFragement", "offerEditFragement", OfferViewOrEditPanel.this, OfferViewOrEditPanel.this.getDefaultModel());
+         offerRecordPanel = new OfferRecordPanel("offerRecordPanel", (IModel<Offer>) getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
-         OfferRecordViewOrEditPanel offerRecordViewOrEditPanel = new OfferRecordViewOrEditPanel("offerRecordViewOrEditPanel", (IModel<Offer>) getDefaultModel());
-         Form<Offer> offerEditForm = new Form<Offer>("offerEditForm");
-         offerEditForm.setModel(new CompoundPropertyModel<Offer>((IModel<Offer>) getDefaultModel()));
+         final Form<Offer> offerEditForm = new Form<Offer>("offerEditForm");
 
-         offerEditForm.add(new TextField<String>("offerId"));
-         offerEditForm.add(new TextField<String>("contract.contractId"));
+         offerEditForm.setModel(new CompoundPropertyModel<Offer>((IModel<Offer>) getDefaultModel()));
+         offerEditForm.add(new RequiredTextField<String>("offerId").add(StringValidator.maximumLength(64)));
+         offerEditForm.add(new RequiredTextField<String>("contract.contractId").add(StringValidator.maximumLength(127)));
          offerEditForm.add(new NumberTextField<Integer>("itemTotal"));
-         offerEditForm.add(new TextArea<String>("offerDescription"));
-         offerEditForm.add(new NumberTextField<Integer>("extraAmount"));
+         offerEditForm.add(new TextArea<String>("offerDescription").add(StringValidator.maximumLength(127)));
+         offerEditForm.add(new NumberTextField<Integer>("extraAmount").setRequired(true));
          offerEditForm.add(new NumberTextField<Integer>("discountTotal"));
-         offerEditForm.add(new NumberTextField<Integer>("handlingTotal"));
+         offerEditForm.add(new NumberTextField<Integer>("handlingTotal").setRequired(true));
          offerEditForm.add(new NumberTextField<Integer>("shippingTotal"));
-         offerEditForm.add(new NumberTextField<Integer>("insuranceTotal"));
-         offerEditForm.add(new NumberTextField<Integer>("shippingDiscount"));
+         offerEditForm.add(new NumberTextField<Integer>("insuranceTotal").setRequired(true));
+         offerEditForm.add(new NumberTextField<Integer>("shippingDiscount").setRequired(true));
          offerEditForm.add(new NumberTextField<Integer>("taxTotal"));
          offerEditForm.add(new NumberTextField<Integer>("offerTotal"));
 
          add(offerEditForm.setOutputMarkupId(true));
-         add(offerRecordViewOrEditPanel.add(offerRecordViewOrEditPanel.new OfferRecordEditFragement()).setOutputMarkupId(true));
+         add(offerRecordPanel.add(offerRecordPanel.new OfferRecordEditFragement()).setOutputMarkupId(true));
          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
          add(new CancelAjaxLink().setOutputMarkupId(true));
          add(new SaveAjaxButton(offerEditForm).setOutputMarkupId(true));
+
          super.onInitialize();
       }
    }
 
+   @AuthorizeAction(action = Action.ENABLE, roles = { AppRoles.MANAGER })
    class OfferViewFragement extends Fragment {
 
       private static final long serialVersionUID = 2134263849806147209L;
 
+      private final OfferRecordPanel offerRecordPanel;
+
       public OfferViewFragement() {
          super("offerViewOrEditFragement", "offerViewFragement", OfferViewOrEditPanel.this, OfferViewOrEditPanel.this.getDefaultModel());
+         offerRecordPanel = new OfferRecordPanel("offerRecordPanel", (IModel<Offer>) getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
-         OfferRecordViewOrEditPanel offerRecordViewOrEditPanel = new OfferRecordViewOrEditPanel("offerRecordViewOrEditPanel", (IModel<Offer>) getDefaultModel());
-         Form<Offer> offerViewForm = new Form<Offer>("offerViewForm");
-         offerViewForm.setModel(new CompoundPropertyModel<Offer>((IModel<Offer>) getDefaultModel()));
+         final Form<Offer> offerViewForm = new Form<Offer>("offerViewForm");
 
+         offerViewForm.setModel(new CompoundPropertyModel<Offer>((IModel<Offer>) getDefaultModel()));
          offerViewForm.add(new Label("offerId"));
          offerViewForm.add(new Label("contract.contractId"));
          offerViewForm.add(new Label("itemTotal"));
@@ -128,40 +150,47 @@ public class OfferViewOrEditPanel extends Panel {
 
          add(new EditAjaxLink().setOutputMarkupId(true));
          add(offerViewForm.setOutputMarkupId(true));
-         add(offerRecordViewOrEditPanel.add(offerRecordViewOrEditPanel.new OfferRecordViewFragement()).setOutputMarkupId(true));
+         add(offerRecordPanel.add(offerRecordPanel.new OfferRecordViewFragement()).setOutputMarkupId(true));
+
          super.onInitialize();
       }
    }
 
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class SaveAjaxButton extends AjaxButton {
+   class SaveAjaxButton extends BootstrapAjaxButton {
 
       private static final long serialVersionUID = 2695394292963384938L;
 
       public SaveAjaxButton(Form<?> form) {
-         super("save", form);
+         super("save", Model.of(OfferViewOrEditPanel.this.getString("saveAndCloseMessage")), form, Buttons.Type.Primary);
+         setSize(Buttons.Size.Small);
+         add(new LoadingBehavior(Model.of(OfferViewOrEditPanel.this.getString("saveAndCloseMessage"))));
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, Form<?> form) {
+         form.add(new TooltipValidation());
+         target.add(form);
+         target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(OfferViewOrEditPanel.this.getString("saveAndCloseMessage")))));
       }
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
          try {
-            Offer offer = (Offer) form.getDefaultModelObject();
+            final Offer offer = (Offer) form.getDefaultModelObject();
+            offer.setActive(true);
 
             if (offer.getId() == 0) {
-               offerDataProvider.persist(offer);
+               OfferViewOrEditPanel.this.setDefaultModelObject(offerDataProvider.findById(offerDataProvider.persist(offer)));
             } else {
-               offerDataProvider.merge(offer);
+               OfferViewOrEditPanel.this.setDefaultModelObject(offerDataProvider.findById(offerDataProvider.merge(offer)));
             }
 
             OfferViewOrEditPanel.this.removeAll();
             OfferViewOrEditPanel.this.add(new OfferViewFragement().setOutputMarkupId(true));
-         } catch (RuntimeException e) {
+         } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
-
-            String[] messages = e.getMessage().split(": ");
-            String message = messages[messages.length - 1];
-
-            warn(message.substring(0, 1).toUpperCase() + message.substring(1));
+            warn(e.getLocalizedMessage());
          } finally {
             target.add(target.getPage());
          }
@@ -181,7 +210,12 @@ public class OfferViewOrEditPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      add(new OfferViewFragement().setOutputMarkupId(true));
+      offerDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      offerDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      offerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
+      offerDataProvider.setType(new Offer());
+      offerDataProvider.getType().setActive(true);
+
       super.onInitialize();
    }
 }

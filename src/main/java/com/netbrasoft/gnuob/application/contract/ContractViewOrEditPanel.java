@@ -50,6 +50,11 @@ public class ContractViewOrEditPanel extends Panel {
       public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
          ContractViewOrEditPanel.this.removeAll();
          ContractViewOrEditPanel.this.add(new ContractViewFragement()).setOutputMarkupId(true);
+
+         if (((Contract) ContractViewOrEditPanel.this.getDefaultModelObject()).getId() > 0) {
+            ContractViewOrEditPanel.this.setDefaultModelObject(contractDataProvider.findById((Contract) ContractViewOrEditPanel.this.getDefaultModelObject()));
+         }
+
          paramAjaxRequestTarget.add(paramAjaxRequestTarget.getPage());
       }
    }
@@ -67,16 +72,16 @@ public class ContractViewOrEditPanel extends Panel {
       protected void onInitialize() {
          final Form<Contract> contractEditForm = new Form<Contract>("contractEditForm");
          contractEditForm.setModel(new CompoundPropertyModel<Contract>((IModel<Contract>) getDefaultModel()));
-         contractEditForm.add(new TextField<String>("contractId").add(StringValidator.maximumLength(40)));
-         contractEditForm.add(new RequiredTextField<String>("customer.friendlyName").add(StringValidator.maximumLength(40)));
-         contractEditForm.add(new TextField<String>("customer.buyerMarketingEmail").setLabel(Model.of(getString("buyerMarketingEmailMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(60)));
-         contractEditForm.add(new TextField<String>("customer.contactPhone").add(StringValidator.maximumLength(40)));
-         contractEditForm.add(new TextField<String>("customer.payer").setLabel(Model.of(getString("payerMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(60)));
-         contractEditForm.add(new TextField<String>("customer.payerBusiness").setLabel(Model.of(getString("payerBusinessMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(60)));
-         contractEditForm.add(new TextField<String>("customer.payerId").add(StringValidator.maximumLength(40)));
-         contractEditForm.add(new TextField<String>("customer.payerStatus").add(StringValidator.maximumLength(40)));
-         contractEditForm.add(new TextField<String>("customer.taxId").add(StringValidator.maximumLength(40)));
-         contractEditForm.add(new TextField<String>("customer.taxIdType").add(StringValidator.maximumLength(40)));
+         contractEditForm.add(new RequiredTextField<String>("contractId").add(StringValidator.maximumLength(127)));
+         contractEditForm.add(new TextField<String>("customer.friendlyName").add(StringValidator.maximumLength(128)));
+         contractEditForm.add(new TextField<String>("customer.buyerMarketingEmail").setLabel(Model.of(getString("buyerMarketingEmailMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
+         contractEditForm.add(new TextField<String>("customer.contactPhone").add(StringValidator.maximumLength(20)));
+         contractEditForm.add(new TextField<String>("customer.payer").setLabel(Model.of(getString("payerMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
+         contractEditForm.add(new TextField<String>("customer.payerBusiness").setLabel(Model.of(getString("payerBusinessMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
+         contractEditForm.add(new TextField<String>("customer.payerId").add(StringValidator.maximumLength(20)));
+         contractEditForm.add(new TextField<String>("customer.payerStatus").add(StringValidator.maximumLength(20)));
+         contractEditForm.add(new TextField<String>("customer.taxId").add(StringValidator.maximumLength(20)));
+         contractEditForm.add(new TextField<String>("customer.taxIdType").add(StringValidator.maximumLength(20)));
 
          add(contractEditForm.setOutputMarkupId(true));
          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
