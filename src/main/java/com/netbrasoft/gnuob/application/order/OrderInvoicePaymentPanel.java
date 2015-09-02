@@ -21,12 +21,14 @@ import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Order;
-import com.netbrasoft.gnuob.api.OrderRecord;
+import com.netbrasoft.gnuob.api.Payment;
+import com.netbrasoft.gnuob.api.generic.XMLGregorianCalendarConverter;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
@@ -41,7 +43,7 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationConfig;
 
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
-public class OrderRecordPanel extends Panel {
+public class OrderInvoicePaymentPanel extends Panel {
 
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
    class AddAjaxLink extends BootstrapAjaxLink<String> {
@@ -49,20 +51,52 @@ public class OrderRecordPanel extends Panel {
       private static final long serialVersionUID = 9191172039973638020L;
 
       public AddAjaxLink() {
-         super("add", Model.of(OrderRecordPanel.this.getString("addMessage")), Buttons.Type.Primary, Model.of(OrderRecordPanel.this.getString("addMessage")));
+         super("add", Model.of(OrderInvoicePaymentPanel.this.getString("addMessage")), Buttons.Type.Primary, Model.of(OrderInvoicePaymentPanel.this.getString("addMessage")));
          setIconType(GlyphIconType.plus);
          setSize(Buttons.Size.Small);
       }
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-         orderRecordViewOrEditPanel.setDefaultModelObject(new OrderRecord());
-         target.add(orderRecordViewOrEditPanel.setOutputMarkupId(true));
+         orderInvoicePaymentViewOrEditPanel.setDefaultModelObject(new Payment());
+         target.add(orderInvoicePaymentViewOrEditPanel.setOutputMarkupId(true));
+      }
+   }
+
+   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
+   class OrderInvoicePaymentEditFragement extends Fragment {
+
+      private static final long serialVersionUID = 3709791409078428685L;
+
+      public OrderInvoicePaymentEditFragement() {
+         super("orderInvoicePaymentViewOrEditFragement", "orderInvoicePaymentEditFragement", OrderInvoicePaymentPanel.this, OrderInvoicePaymentPanel.this.getDefaultModel());
+      }
+
+      @Override
+      protected void onInitialize() {
+         add(paymentEditTable.setOutputMarkupId(true));
+         super.onInitialize();
       }
    }
 
    @AuthorizeAction(action = Action.ENABLE, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
-   class OrderRecordDataview extends DataView<OrderRecord> {
+   class OrderInvoicePaymentViewFragement extends Fragment {
+
+      private static final long serialVersionUID = 3709791409078428685L;
+
+      public OrderInvoicePaymentViewFragement() {
+         super("orderInvoicePaymentViewOrEditFragement", "orderInvoicePaymentViewFragement", OrderInvoicePaymentPanel.this, OrderInvoicePaymentPanel.this.getDefaultModel());
+      }
+
+      @Override
+      protected void onInitialize() {
+         add(paymentViewTable.setOutputMarkupId(true));
+         super.onInitialize();
+      }
+   }
+
+   @AuthorizeAction(action = Action.ENABLE, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
+   class PaymentDataview extends DataView<Payment> {
 
       private static final long serialVersionUID = 8996562822101409998L;
 
@@ -70,8 +104,8 @@ public class OrderRecordPanel extends Panel {
 
       private long selectedObjectId;
 
-      protected OrderRecordDataview() {
-         super("orderRecordDataview", orderRecordListDataProvider, ITEMS_PER_PAGE);
+      protected PaymentDataview() {
+         super("paymentDataview", paymentListDataProvider, ITEMS_PER_PAGE);
       }
 
       public boolean isRemoveAjaxLinkVisable() {
@@ -79,9 +113,9 @@ public class OrderRecordPanel extends Panel {
       }
 
       @Override
-      protected Item<OrderRecord> newItem(String id, int index, IModel<OrderRecord> model) {
-         final Item<OrderRecord> item = super.newItem(id, index, model);
-         final long modelObjectId = ((OrderRecord) orderRecordViewOrEditPanel.getDefaultModelObject()).getId();
+      protected Item<Payment> newItem(String id, int index, IModel<Payment> model) {
+         final Item<Payment> item = super.newItem(id, index, model);
+         final long modelObjectId = ((Payment) orderInvoicePaymentViewOrEditPanel.getDefaultModelObject()).getId();
 
          if ((model.getObject().getId() == modelObjectId) || modelObjectId == 0) {
             item.add(new BootstrapBaseBehavior() {
@@ -99,28 +133,37 @@ public class OrderRecordPanel extends Panel {
 
       @Override
       protected void onConfigure() {
-         if (selectedObjectId != ((Order) OrderRecordPanel.this.getDefaultModelObject()).getId()) {
-            selectedObjectId = ((Order) OrderRecordPanel.this.getDefaultModelObject()).getId();
-            orderRecordViewOrEditPanel.setDefaultModelObject(new OrderRecord());
+         if (selectedObjectId != ((Order) OrderInvoicePaymentPanel.this.getDefaultModelObject()).getId()) {
+            selectedObjectId = ((Order) OrderInvoicePaymentPanel.this.getDefaultModelObject()).getId();
+            orderInvoicePaymentViewOrEditPanel.setDefaultModelObject(new Payment());
          }
          super.onConfigure();
       }
 
       @Override
-      protected void populateItem(Item<OrderRecord> item) {
-         final IModel<OrderRecord> compound = new CompoundPropertyModel<OrderRecord>(item.getModelObject());
+      protected void populateItem(Item<Payment> item) {
+         final IModel<Payment> compound = new CompoundPropertyModel<Payment>(item.getModelObject());
          item.setModel(compound);
-         item.add(new Label("name"));
-         item.add(new Label("description"));
+         item.add(new Label("paymentDate") {
+
+            private static final long serialVersionUID = 3621260522785287715L;
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public <C> IConverter<C> getConverter(final Class<C> type) {
+               return (IConverter<C>) new XMLGregorianCalendarConverter();
+            }
+         });
+         item.add(new Label("paymentStatus"));
          item.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
 
             @Override
             public void onEvent(AjaxRequestTarget target) {
-               orderRecordViewOrEditPanel.setDefaultModelObject(item.getModelObject());
-               target.add(orderRecordDataviewContainer.setOutputMarkupId(true));
-               target.add(orderRecordViewOrEditPanel.setOutputMarkupId(true));
+               orderInvoicePaymentViewOrEditPanel.setDefaultModelObject(item.getModelObject());
+               target.add(paymentDataviewContainer.setOutputMarkupId(true));
+               target.add(orderInvoicePaymentViewOrEditPanel.setOutputMarkupId(true));
             }
          });
          item.add(new RemoveAjaxLink(item.getModel()).add(new ConfirmationBehavior() {
@@ -135,8 +178,8 @@ public class OrderRecordPanel extends Panel {
             }
          }).setVisible(isRemoveAjaxLinkVisable()));
 
-         if (item.getIndex() == 0 && ((OrderRecord) orderRecordViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
-            orderRecordViewOrEditPanel.setDefaultModelObject(item.getModelObject());
+         if (item.getIndex() == 0 && ((Payment) orderInvoicePaymentViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
+            orderInvoicePaymentViewOrEditPanel.setDefaultModelObject(item.getModelObject());
          }
       }
 
@@ -145,55 +188,23 @@ public class OrderRecordPanel extends Panel {
       }
    }
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class OrderRecordEditFragement extends Fragment {
-
-      private static final long serialVersionUID = 3709791409078428685L;
-
-      public OrderRecordEditFragement() {
-         super("orderRecordViewOrEditFragement", "orderRecordEditFragement", OrderRecordPanel.this, OrderRecordPanel.this.getDefaultModel());
-      }
-
-      @Override
-      protected void onInitialize() {
-         add(orderRecordEditTable.setOutputMarkupId(true));
-         super.onInitialize();
-      }
-   }
-
-   class OrderRecordListDataProvider extends ListDataProvider<OrderRecord> {
+   class PaymentListDataProvider extends ListDataProvider<Payment> {
 
       private static final long serialVersionUID = 5259243752700177690L;
 
       @Override
-      protected List<OrderRecord> getData() {
-         return ((Order) OrderRecordPanel.this.getDefaultModelObject()).getRecords();
-      }
-   }
-
-   @AuthorizeAction(action = Action.ENABLE, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
-   class OrderRecordViewFragement extends Fragment {
-
-      private static final long serialVersionUID = 3709791409078428685L;
-
-      public OrderRecordViewFragement() {
-         super("orderRecordViewOrEditFragement", "orderRecordViewFragement", OrderRecordPanel.this, OrderRecordPanel.this.getDefaultModel());
-      }
-
-      @Override
-      protected void onInitialize() {
-         add(orderRecordViewTable.setOutputMarkupId(true));
-         super.onInitialize();
+      protected List<Payment> getData() {
+         return ((Order) OrderInvoicePaymentPanel.this.getDefaultModelObject()).getInvoice().getPayments();
       }
    }
 
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class RemoveAjaxLink extends BootstrapAjaxLink<OrderRecord> {
+   class RemoveAjaxLink extends BootstrapAjaxLink<Payment> {
 
       private static final long serialVersionUID = -6950515027229520882L;
 
-      public RemoveAjaxLink(final IModel<OrderRecord> model) {
-         super("remove", model, Buttons.Type.Default, Model.of(OrderRecordPanel.this.getString("removeMessage")));
+      public RemoveAjaxLink(final IModel<Payment> model) {
+         super("remove", model, Buttons.Type.Default, Model.of(OrderInvoicePaymentPanel.this.getString("removeMessage")));
          setIconType(GlyphIconType.remove);
          setSize(Buttons.Size.Mini);
       }
@@ -201,12 +212,12 @@ public class OrderRecordPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
          try {
-            orderRecordListDataProvider.getData().remove(getDefaultModelObject());
+            paymentListDataProvider.getData().remove(getDefaultModelObject());
          } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             warn(e.getLocalizedMessage());
          } finally {
-            target.add(orderRecordDataviewContainer.setOutputMarkupId(true));
+            target.add(paymentDataviewContainer.setOutputMarkupId(true));
          }
       }
    }
@@ -217,66 +228,66 @@ public class OrderRecordPanel extends Panel {
 
    private static final long ITEMS_PER_PAGE = 10;
 
-   private final WebMarkupContainer orderRecordDataviewContainer;
+   private final WebMarkupContainer paymentDataviewContainer;
 
-   private final OrderRecordDataview orderRecordDataview;
+   private final PaymentDataview paymentDataview;
 
-   private final BootstrapPagingNavigator orderRecordPagingNavigator;
+   private final BootstrapPagingNavigator paymentPagingNavigator;
 
-   private final OrderRecordListDataProvider orderRecordListDataProvider;
+   private final PaymentListDataProvider paymentListDataProvider;
 
-   private final OrderRecordViewOrEditPanel orderRecordViewOrEditPanel;
+   private final OrderInvoicePaymentViewOrEditPanel orderInvoicePaymentViewOrEditPanel;
 
-   private final WebMarkupContainer orderRecordEditTable;
+   private final WebMarkupContainer paymentEditTable;
 
-   private final WebMarkupContainer orderRecordViewTable;
+   private final WebMarkupContainer paymentViewTable;
 
-   public OrderRecordPanel(final String id, final IModel<Order> model) {
+   public OrderInvoicePaymentPanel(final String id, final IModel<Order> model) {
       super(id, model);
-      orderRecordListDataProvider = new OrderRecordListDataProvider();
-      orderRecordDataview = new OrderRecordDataview();
-      orderRecordPagingNavigator = new BootstrapPagingNavigator("orderRecordPagingNavigator", orderRecordDataview);
-      orderRecordDataviewContainer = new WebMarkupContainer("orderRecordDataviewContainer") {
+      paymentListDataProvider = new PaymentListDataProvider();
+      paymentDataview = new PaymentDataview();
+      paymentPagingNavigator = new BootstrapPagingNavigator("paymentPagingNavigator", paymentDataview);
+      paymentDataviewContainer = new WebMarkupContainer("paymentDataviewContainer") {
 
          private static final long serialVersionUID = 1L;
 
          @Override
          protected void onInitialize() {
-            add(orderRecordDataview);
+            add(paymentDataview);
             super.onInitialize();
          }
       };
-      orderRecordEditTable = new WebMarkupContainer("orderRecordEditTable", getDefaultModel()) {
+      paymentEditTable = new WebMarkupContainer("paymentEditTable", getDefaultModel()) {
 
          private static final long serialVersionUID = 459122691621477233L;
 
          @Override
          protected void onInitialize() {
-            orderRecordDataview.setRemoveAjaxLinkVisable(true);
+            paymentDataview.setRemoveAjaxLinkVisable(true);
             add(new AddAjaxLink().setOutputMarkupId(true));
-            add(orderRecordPagingNavigator.setOutputMarkupId(true));
-            add(orderRecordDataviewContainer.setOutputMarkupId(true));
+            add(paymentPagingNavigator.setOutputMarkupId(true));
+            add(paymentDataviewContainer.setOutputMarkupId(true));
             add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-            add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordEditFragement()).setOutputMarkupId(true));
+            add(orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
             add(new TableBehavior());
             super.onInitialize();
          }
       };
-      orderRecordViewTable = new WebMarkupContainer("orderRecordViewTable", getDefaultModel()) {
+      paymentViewTable = new WebMarkupContainer("paymentViewTable", getDefaultModel()) {
 
          private static final long serialVersionUID = 8276100341510505878L;
 
          @Override
          protected void onInitialize() {
-            orderRecordDataview.setRemoveAjaxLinkVisable(false);
-            add(orderRecordPagingNavigator.setOutputMarkupId(true));
-            add(orderRecordDataviewContainer.setOutputMarkupId(true));
+            paymentDataview.setRemoveAjaxLinkVisable(false);
+            add(paymentPagingNavigator.setOutputMarkupId(true));
+            add(paymentDataviewContainer.setOutputMarkupId(true));
             add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-            add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordViewFragement()).setOutputMarkupId(true));
+            add(orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentViewFragement()).setOutputMarkupId(true));
             add(new TableBehavior());
             super.onInitialize();
          }
       };
-      orderRecordViewOrEditPanel = new OrderRecordViewOrEditPanel("orderRecordViewOrEditPanel", Model.of(new OrderRecord()), orderRecordEditTable);
+      orderInvoicePaymentViewOrEditPanel = new OrderInvoicePaymentViewOrEditPanel("paymentViewOrEditPanel", Model.of(new Payment()), paymentEditTable);
    }
 }

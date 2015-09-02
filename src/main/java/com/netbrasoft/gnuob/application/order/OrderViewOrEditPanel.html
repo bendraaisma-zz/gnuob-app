@@ -61,12 +61,6 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<small><label class="col-sm-2 control-label"><wicket:message key="itemTotalMessage" /></label></small>
-									<div class="col-sm-10">
-										<input wicket:id="itemTotal" class="form-control input-sm" type="number" />
-									</div>
-								</div>
-								<div class="form-group">
 									<small><label class="col-sm-2 control-label"><wicket:message key="orderDescriptionMessage" /></label></small>
 									<div class="col-sm-10">
 										<textarea wicket:id="orderDescription" class="form-control input-sm" style="resize: vertical;" rows="3" cols=""></textarea>
@@ -93,6 +87,18 @@
 							</div>
 							<div class="panel-heading">
 								<h3 class="panel-title">
+									<wicket:message key="orderRecordMessage" />
+								</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<div class="col-sm-12">
+										<wicket:container wicket:id="orderRecordPanel" />
+									</div>
+								</div>
+							</div>
+							<div class="panel-heading">
+								<h3 class="panel-title">
 									<wicket:message key="priceMessage" />
 								</h3>
 							</div>
@@ -105,6 +111,17 @@
 												<wicket:message key="currencyMessage" />
 											</div>
 											<input wicket:id="orderTotal" class="form-control input-sm" type="number" />
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="itemTotalMessage" /></label></small>
+									<div class="col-sm-10">
+										<div class="input-group">
+											<div class="input-group-addon">
+												<wicket:message key="currencyMessage" />
+											</div>
+											<input wicket:id="itemTotal" class="form-control input-sm" type="number" />
 										</div>
 									</div>
 								</div>
@@ -194,6 +211,18 @@
 											</div>
 											<input wicket:id="discountTotal" class="form-control input-sm" type="number" />
 										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									<wicket:message key="invoiceMessage" />
+								</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<div class="col-sm-12">
+										<wicket:container wicket:id="orderInvoicePaymentPanel" />
 									</div>
 								</div>
 							</div>
@@ -326,24 +355,6 @@
 						</form>
 					</td>
 				</tr>
-				<tr>
-					<td style="border-top: none;">
-						<div class="form-horizontal">
-							<div class="panel-heading">
-								<h3 class="panel-title">
-									<wicket:message key="orderRecordMessage" />
-								</h3>
-							</div>
-							<div class="panel-body">
-								<div class="form-group">
-									<div class="col-sm-12">
-										<wicket:container wicket:id="orderRecordPanel" />
-									</div>
-								</div>
-							</div>
-						</div>
-					</td>
-				</tr>
 			</tbody>
 			<tfoot>
 				<tr>
@@ -421,12 +432,6 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<small><label class="col-sm-2 control-label"><wicket:message key="itemTotalMessage" /></label></small>
-									<div class="col-sm-10">
-										<small><span wicket:id="itemTotal" class="form-control input-sm"></span></small>
-									</div>
-								</div>
-								<div class="form-group">
 									<small><label class="col-sm-2 control-label"><wicket:message key="orderDescriptionMessage" /></label></small>
 									<div class="col-sm-10">
 										<small><span wicket:id="orderDescription" class="form-control input-sm" style="resize: vertical;"></span></small>
@@ -453,6 +458,18 @@
 							</div>
 							<div class="panel-heading">
 								<h3 class="panel-title">
+									<wicket:message key="orderRecordMessage" />
+								</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<div class="col-sm-12">
+										<wicket:container wicket:id="orderRecordPanel" />
+									</div>
+								</div>
+							</div>
+							<div class="panel-heading">
+								<h3 class="panel-title">
 									<wicket:message key="priceMessage" />
 								</h3>
 							</div>
@@ -465,6 +482,17 @@
 												<wicket:message key="currencyMessage" />
 											</div>
 											<small><span wicket:id="orderTotal" class="form-control input-sm"></span></small>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="itemTotalMessage" /></label></small>
+									<div class="col-sm-10">
+										<div class="input-group">
+											<div class="input-group-addon">
+												<wicket:message key="currencyMessage" />
+											</div>
+											<small><span wicket:id="itemTotal" class="form-control input-sm"></span></small>
 										</div>
 									</div>
 								</div>
@@ -554,6 +582,110 @@
 											</div>
 											<small><span wicket:id="discountTotal" class="form-control input-sm"></span></small>
 										</div>
+									</div>
+								</div>
+							</div>
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									<wicket:message key="invoiceMessage" />
+								</h3>
+							</div>
+							<div class="panel-body">
+
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="invoiceIdMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.invoiceId" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="postalCodeMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.postalCode" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="numberMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.number" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="countryMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.country" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="street1Message" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.street1" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="street2Message" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.street2" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="complementMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.complement" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="districtMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.district" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="cityNameMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.cityName" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="stateOrProvinceMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.stateOrProvince" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="countryNameMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.countryName" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="internationalStreetMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.internationalStreet" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="internationalStateAndCityMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.internationalStateAndCity" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+								<div class="form-group">
+									<small><label class="col-sm-2 control-label"><wicket:message key="phoneMessage" /></label></small>
+									<div class="col-sm-10">
+										<small><span wicket:id="invoice.address.phone" class="form-control input-sm"></span></small>
+									</div>
+								</div>
+							</div>
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									<wicket:message key="paymentMessage" />
+								</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<div class="col-sm-12">
+										<wicket:container wicket:id="orderInvoicePaymentPanel" />
 									</div>
 								</div>
 							</div>
@@ -684,24 +816,6 @@
 								</div>
 							</div>
 						</form>
-					</td>
-				</tr>
-				<tr>
-					<td style="border-top: none;">
-						<div class="form-horizontal">
-							<div class="panel-heading">
-								<h3 class="panel-title">
-									<wicket:message key="orderRecordMessage" />
-								</h3>
-							</div>
-							<div class="panel-body">
-								<div class="form-group">
-									<div class="col-sm-12">
-										<wicket:container wicket:id="orderRecordPanel" />
-									</div>
-								</div>
-							</div>
-						</div>
 					</td>
 				</tr>
 			</tbody>

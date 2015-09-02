@@ -1,10 +1,13 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
 	<wicket:container wicket:id="offerRecordViewOrEditFragement" />
 	<wicket:fragment wicket:id="offerRecordEditFragement">
-		<table class="table">
+		<table wicket:id="offerRecordEditTable">
 			<thead>
 				<tr>
-					<td colspan="3" align="left"><span class="glyphicon glyphicon-plus"></span>&nbsp;<wicket:message key="addMessage">[Add Message]</wicket:message></td>
+					<td style="border-top: none;" colspan="3"><span wicket:id="feedback"></span></td>
+				</tr>
+				<tr>
+					<td style="border-top: none;" colspan="3" align="left"><a wicket:id="add"><wicket:message key="addMessage" /></a></td>
 				</tr>
 				<tr>
 					<th><small><wicket:message key="nameMessage" /></small></th>
@@ -24,18 +27,21 @@
 					<td colspan="3" align="right"><ul wicket:id="offerRecordPagingNavigator"></ul></td>
 				</tr>
 				<tr>
-					<td style="border-top: none;"><span wicket:id="feedback"></span></td>
+					<td colspan="3" style="border-top: none;"><div wicket:id="offerRecordViewOrEditPanel"></div></td>
 				</tr>
 			</tfoot>
 		</table>
 	</wicket:fragment>
 	<wicket:fragment wicket:id="offerRecordViewFragement">
-		<table class="table">
+		<table wicket:id="offerRecordViewTable">
 			<thead>
 				<tr>
-					<th><small><wicket:message key="nameMessage" /></small></th>
-					<th><small><wicket:message key="descriptionMessage" /></small></th>
-					<th><small><wicket:message key="operationMessage" /></small></th>
+					<td style="border-top: none;" colspan="3"><span wicket:id="feedback"></span></td>
+				</tr>
+				<tr>
+					<th style="border-top: none;"><small><wicket:message key="nameMessage" /></small></th>
+					<th style="border-top: none;"><small><wicket:message key="descriptionMessage" /></small></th>
+					<th style="border-top: none;"><small><wicket:message key="operationMessage" /></small></th>
 				</tr>
 			</thead>
 			<tbody wicket:id="offerRecordDataviewContainer">
@@ -50,7 +56,7 @@
 					<td colspan="3" align="right"><ul wicket:id="offerRecordPagingNavigator"></ul></td>
 				</tr>
 				<tr>
-					<td style="border-top: none;"><span wicket:id="feedback"></span></td>
+					<td colspan="3" style="border-top: none;"><div wicket:id="offerRecordViewOrEditPanel"></div></td>
 				</tr>
 			</tfoot>
 		</table>

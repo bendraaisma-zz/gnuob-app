@@ -100,6 +100,8 @@ public class OrderViewOrEditPanel extends Panel {
 
       private final OrderRecordPanel orderRecordPanel;
 
+      private final OrderInvoicePaymentPanel orderInvoicePaymentPanel;
+
       public OrderEditFragment() {
          super("orderViewOrEditFragement", "orderEditFragement", OrderViewOrEditPanel.this, OrderViewOrEditPanel.this.getDefaultModel());
 
@@ -164,9 +166,10 @@ public class OrderViewOrEditPanel extends Panel {
                orderEditForm.add(new TextField<String>("shipment.address.internationalStreet").add(StringValidator.maximumLength(40)));
                orderEditForm.add(new TextField<String>("shipment.address.internationalStateAndCity").add(StringValidator.maximumLength(80)));
                orderEditForm.add(new TextField<String>("shipment.address.phone").add(StringValidator.maximumLength(20)));
+               orderEditForm.add(orderRecordPanel.add(orderRecordPanel.new OrderRecordEditFragement()).setOutputMarkupId(true));
+               orderEditForm.add(orderInvoicePaymentPanel.add(orderInvoicePaymentPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
                add(orderEditForm.setOutputMarkupId(true));
                add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-               add(orderRecordPanel.add(orderRecordPanel.new OrderRecordEditFragement()).setOutputMarkupId(true));
                add(new CancelAjaxLink().setOutputMarkupId(true));
                add(new SaveAjaxButton(orderEditForm).setOutputMarkupId(true));
                add(new TableBehavior());
@@ -175,6 +178,7 @@ public class OrderViewOrEditPanel extends Panel {
 
          };
          orderRecordPanel = new OrderRecordPanel("orderRecordPanel", (IModel<Order>) getDefaultModel());
+         orderInvoicePaymentPanel = new OrderInvoicePaymentPanel("orderInvoicePaymentPanel", (IModel<Order>) getDefaultModel());
       }
 
       @Override
@@ -193,6 +197,8 @@ public class OrderViewOrEditPanel extends Panel {
 
       private final OrderRecordPanel orderRecordPanel;
 
+      private final OrderInvoicePaymentPanel orderInvoicePaymentPanel;
+
       public OrderViewFragement() {
          super("orderViewOrEditFragement", "orderViewFragement", OrderViewOrEditPanel.this, OrderViewOrEditPanel.this.getDefaultModel());
 
@@ -206,7 +212,15 @@ public class OrderViewOrEditPanel extends Panel {
                orderViewForm.setModel(new CompoundPropertyModel<Order>((IModel<Order>) getDefaultModel()));
                orderViewForm.add(new Label("orderId"));
                orderViewForm.add(new Label("contract.contractId"));
-               orderViewForm.add(new Label("orderDate"));
+               orderViewForm.add(new Label("orderDate") {
+
+                  private static final long serialVersionUID = 3621260522785287715L;
+
+                  @Override
+                  public <C> IConverter<C> getConverter(final Class<C> type) {
+                     return (IConverter<C>) new XMLGregorianCalendarConverter();
+                  }
+               });
                orderViewForm.add(new Label("token"));
                orderViewForm.add(new Label("transactionId"));
                orderViewForm.add(new Label("billingAgreementId"));
@@ -226,6 +240,20 @@ public class OrderViewOrEditPanel extends Panel {
                orderViewForm.add(new Label("shippingDiscount"));
                orderViewForm.add(new Label("taxTotal"));
                orderViewForm.add(new Label("orderTotal"));
+               orderViewForm.add(new Label("invoice.invoiceId"));
+               orderViewForm.add(new Label("invoice.address.postalCode"));
+               orderViewForm.add(new Label("invoice.address.number"));
+               orderViewForm.add(new Label("invoice.address.country"));
+               orderViewForm.add(new Label("invoice.address.street1"));
+               orderViewForm.add(new Label("invoice.address.street2"));
+               orderViewForm.add(new Label("invoice.address.complement"));
+               orderViewForm.add(new Label("invoice.address.district"));
+               orderViewForm.add(new Label("invoice.address.cityName"));
+               orderViewForm.add(new Label("invoice.address.stateOrProvince"));
+               orderViewForm.add(new Label("invoice.address.countryName"));
+               orderViewForm.add(new Label("invoice.address.internationalStreet"));
+               orderViewForm.add(new Label("invoice.address.internationalStateAndCity"));
+               orderViewForm.add(new Label("invoice.address.phone"));
                orderViewForm.add(new Label("giftMessageEnable"));
                orderViewForm.add(new Label("giftReceiptEnable"));
                orderViewForm.add(new Label("giftWrapEnable"));
@@ -245,15 +273,17 @@ public class OrderViewOrEditPanel extends Panel {
                orderViewForm.add(new Label("shipment.address.internationalStreet"));
                orderViewForm.add(new Label("shipment.address.internationalStateAndCity"));
                orderViewForm.add(new Label("shipment.address.phone"));
+               orderViewForm.add(orderRecordPanel.add(orderRecordPanel.new OrderRecordViewFragement()).setOutputMarkupId(true));
+               orderViewForm.add(orderInvoicePaymentPanel.add(orderInvoicePaymentPanel.new OrderInvoicePaymentViewFragement()).setOutputMarkupId(true));
                add(new EditAjaxLink().setOutputMarkupId(true));
                add(orderViewForm.setOutputMarkupId(true));
-               add(orderRecordPanel.add(orderRecordPanel.new OrderRecordViewFragement()).setOutputMarkupId(true));
                add(new TableBehavior());
                super.onInitialize();
             }
 
          };
-         orderRecordPanel = new OrderRecordPanel("orderRecordPanel", (IModel<Order>) OrderViewOrEditPanel.this.getDefaultModel());
+         orderRecordPanel = new OrderRecordPanel("orderRecordPanel", (IModel<Order>) getDefaultModel());
+         orderInvoicePaymentPanel = new OrderInvoicePaymentPanel("orderInvoicePaymentPanel", (IModel<Order>) getDefaultModel());
       }
 
       @Override

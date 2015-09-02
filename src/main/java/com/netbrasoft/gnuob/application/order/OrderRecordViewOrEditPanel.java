@@ -130,7 +130,15 @@ public class OrderRecordViewOrEditPanel extends Panel {
                final Form<OrderRecord> orderRecorViewForm = new Form<OrderRecord>("orderRecordViewForm");
                orderRecorViewForm.setModel(new CompoundPropertyModel<OrderRecord>((IModel<OrderRecord>) getDefaultModel()));
                orderRecorViewForm.add(new Label("orderRecordId"));
-               orderRecorViewForm.add(new Label("deliveryDate"));
+               orderRecorViewForm.add(new Label("deliveryDate") {
+
+                  private static final long serialVersionUID = 3621260522785287715L;
+
+                  @Override
+                  public <C> IConverter<C> getConverter(final Class<C> type) {
+                     return (IConverter<C>) new XMLGregorianCalendarConverter();
+                  }
+               });
                orderRecorViewForm.add(new Label("productNumber"));
                orderRecorViewForm.add(new Label("name"));
                orderRecorViewForm.add(new Label("option"));

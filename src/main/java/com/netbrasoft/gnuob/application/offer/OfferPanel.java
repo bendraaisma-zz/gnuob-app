@@ -2,13 +2,13 @@ package com.netbrasoft.gnuob.application.offer;
 
 import static de.agilecoders.wicket.jquery.JQuery.$;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -28,11 +28,17 @@ import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
+import de.agilecoders.wicket.core.markup.html.bootstrap.block.WellBehavior;
+import de.agilecoders.wicket.core.markup.html.bootstrap.block.WellBehavior.Size;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
+import de.agilecoders.wicket.core.markup.html.bootstrap.layout.col.MediumSpanType;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
+import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
+import de.agilecoders.wicket.core.util.Attributes;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationConfig;
 
@@ -41,11 +47,11 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 public class OfferPanel extends Panel {
 
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class AddAjaxLinke extends BootstrapAjaxLink<String> {
+   class AddAjaxLink extends BootstrapAjaxLink<String> {
 
       private static final long serialVersionUID = 9191172039973638020L;
 
-      public AddAjaxLinke() {
+      public AddAjaxLink() {
          super("add", Model.of(OfferPanel.this.getString("addMessage")), Buttons.Type.Primary, Model.of(OfferPanel.this.getString("addMessage")));
          setIconType(GlyphIconType.plus);
          setSize(Buttons.Size.Small);
@@ -63,6 +69,8 @@ public class OfferPanel extends Panel {
 
       private static final long serialVersionUID = -5039874949058607907L;
 
+      private long selectedObjectId;
+
       protected OfferDataview() {
          super("offerDataview", offerDataProvider, ITEMS_PER_PAGE);
       }
@@ -70,18 +78,30 @@ public class OfferPanel extends Panel {
       @Override
       protected Item<Offer> newItem(String id, int index, IModel<Offer> model) {
          final Item<Offer> item = super.newItem(id, index, model);
+         final long modelObjectId = ((Offer) offerViewOrEditPanel.getDefaultModelObject()).getId();
 
-         if (model.getObject().getId() == ((Offer) offerViewOrEditPanel.getDefaultModelObject()).getId()) {
-            // FIXME BD: use wicket bootstrap for this attribute / table.
-            item.add(new AttributeModifier("class", "info"));
-         } else {
-            if (index == 0 && ((Offer) offerViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
-               // FIXME BD: use wicket bootstrap for this attribute / table.
-               item.add(new AttributeModifier("class", "info"));
-            }
+         if ((model.getObject().getId() == modelObjectId) || modelObjectId == 0) {
+            item.add(new BootstrapBaseBehavior() {
+
+               private static final long serialVersionUID = -4903722864597601489L;
+
+               @Override
+               public void onComponentTag(Component component, ComponentTag tag) {
+                  Attributes.addClass(tag, "info");
+               }
+            });
          }
 
          return item;
+      }
+
+      @Override
+      protected void onConfigure() {
+         if(selectedObjectId  != ((Offer)OfferPanel.this.getDefaultModelObject()).getId()) {
+            selectedObjectId = ((Offer)OfferPanel.this.getDefaultModelObject()).getId();
+         }
+
+         super.onConfigure();
       }
 
       @Override
@@ -89,7 +109,8 @@ public class OfferPanel extends Panel {
          item.setModel(new CompoundPropertyModel<Offer>(item.getModelObject()));
          item.add(new Label("offerId"));
          item.add(new Label("contract.contractId"));
-         item.add(new Label("contract.customer.payerId"));
+         item.add(new Label("contract.customer.firstName"));
+         item.add(new Label("contract.customer.lastName"));
          item.add(new AjaxEventBehavior("click") {
 
             private static final long serialVersionUID = 1L;
@@ -154,13 +175,19 @@ public class OfferPanel extends Panel {
    @SpringBean(name = "OfferDataProvider", required = true)
    private GenericTypeDataProvider<Offer> offerDataProvider;
 
+   private final OrderByBorder<String> orderByFirstName;
+
+   private final OrderByBorder<String> orderByLastName;
+
    private final OrderByBorder<String> orderByOfferId;
 
    private final OrderByBorder<String> orderByContractId;
 
-   private final OrderByBorder<String> orderByPayerId;
-
    private final OfferDataview offerDataview;
+
+   private final WebMarkupContainer offerPanelContainer;
+
+   private final WebMarkupContainer offerTableContainer;
 
    private final WebMarkupContainer offerDataviewContainer;
 
@@ -171,22 +198,70 @@ public class OfferPanel extends Panel {
    public OfferPanel(final String id, final IModel<Offer> model) {
       super(id, model);
 
-      orderByOfferId = new OrderByBorder<String>("orderByOfferId", "offerId", offerDataProvider);
+      orderByFirstName = new OrderByBorder<String>("orderByFirstName", "contract.customer.firstName", offerDataProvider);
+      orderByLastName = new OrderByBorder<String>("orderByLastName", "contract.customer.lastName", offerDataProvider);
+      orderByOfferId = new OrderByBorder<String>("orderByOfferId", "orderId", offerDataProvider);
       orderByContractId = new OrderByBorder<String>("orderByContractId", "contract.contractId", offerDataProvider);
-      orderByPayerId = new OrderByBorder<String>("orderByPayerId", "contract.customer.payerId", offerDataProvider);
       offerDataview = new OfferDataview();
-      offerDataviewContainer = new WebMarkupContainer("offerDataviewContainer") {
+      offerPagingNavigator = new BootstrapPagingNavigator("offerPagingNavigator", offerDataview);
+      offerDataviewContainer = new WebMarkupContainer("offerDataviewContainer", getDefaultModel()) {
 
          private static final long serialVersionUID = -497527332092449028L;
 
          @Override
          protected void onInitialize() {
-            add(offerDataview);
+            add(offerDataview.setOutputMarkupId(true));
             super.onInitialize();
          }
       };
-      offerPagingNavigator = new BootstrapPagingNavigator("offerPagingNavigator", offerDataview);
-      offerViewOrEditPanel = new OfferViewOrEditPanel("offerViewOrEditPanel", (IModel<Offer>) getDefaultModel());
+      offerTableContainer = new WebMarkupContainer("offerTableContainer", getDefaultModel()) {
+
+         private static final long serialVersionUID = -497527332092449028L;
+
+         @Override
+         protected void onInitialize() {
+            add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
+            add(new AddAjaxLink().setOutputMarkupId(true));
+            add(orderByFirstName.setOutputMarkupId(true));
+            add(orderByLastName.setOutputMarkupId(true));
+            add(orderByOfferId.setOutputMarkupId(true));
+            add(orderByContractId.setOutputMarkupId(true));
+            add(offerDataviewContainer.setOutputMarkupId(true));
+            add(offerPagingNavigator.setOutputMarkupId(true));
+            add(new TableBehavior().hover());
+            super.onInitialize();
+         }
+      };
+      offerPanelContainer = new WebMarkupContainer("offerPanelContainer", getDefaultModel()) {
+
+         private static final long serialVersionUID = -497527332092449028L;
+
+         @Override
+         protected void onInitialize() {
+            add(offerTableContainer.setOutputMarkupId(true));
+            add(offerViewOrEditPanel.add(offerViewOrEditPanel.new OfferViewFragement()).setOutputMarkupId(true));
+            add(new BootstrapBaseBehavior() {
+
+               private static final long serialVersionUID = -4903722864597601489L;
+
+               @Override
+               public void onComponentTag(Component component, ComponentTag tag) {
+                  Attributes.addClass(tag, MediumSpanType.SPAN10);
+               }
+            });
+            super.onInitialize();
+         }
+      };
+      offerViewOrEditPanel = new OfferViewOrEditPanel("offerViewOrEditPanel", (IModel<Offer>) getDefaultModel()) {
+
+         private static final long serialVersionUID = -8723947139234708667L;
+
+         @Override
+         protected void onInitialize() {
+            add(new WellBehavior(Size.Small));
+            super.onInitialize();
+         }
+      };
    }
 
    @Override
@@ -196,17 +271,7 @@ public class OfferPanel extends Panel {
       offerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       offerDataProvider.setType(new Offer());
       offerDataProvider.getType().setActive(true);
-
-      add(new AddAjaxLinke());
-      add(orderByOfferId.setOutputMarkupId(true));
-      add(orderByContractId.setOutputMarkupId(true));
-      add(orderByPayerId.setOutputMarkupId(true));
-      add(offerDataviewContainer.setOutputMarkupId(true));
-      add(offerPagingNavigator.setOutputMarkupId(true));
-      add(offerViewOrEditPanel.add(offerViewOrEditPanel.new OfferViewFragement()).setOutputMarkupId(true));
-
-      add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-
+      add(offerPanelContainer.setOutputMarkupId(true));
       super.onInitialize();
    }
 }
