@@ -1,7 +1,7 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
 	<wicket:container wicket:id="contractViewOrEditFragement" />
 	<wicket:fragment wicket:id="contractEditFragement">
-		<table class="table" style="border-top: none;">
+		<table wicket:id="contractEditTable">
 			<tbody>
 				<tr>
 					<td style="border-top: none;">
@@ -88,7 +88,7 @@
 		</table>
 	</wicket:fragment>
 	<wicket:fragment wicket:id="contractViewFragement">
-		<table class="table" style="border-top: none;">
+		<table wicket:id="contractViewTable">
 			<thead>
 				<tr>
 					<td colspan="1" align="left"><a wicket:id="edit"></a></td>

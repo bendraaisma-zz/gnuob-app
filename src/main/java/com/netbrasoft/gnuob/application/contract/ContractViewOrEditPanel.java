@@ -3,6 +3,7 @@ package com.netbrasoft.gnuob.application.contract;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Contract;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.content.ContentViewOrEditPanel;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
@@ -30,6 +32,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.LoadingBehavior;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
+import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.TooltipValidation;
 
 @SuppressWarnings("unchecked")
@@ -47,7 +50,7 @@ public class ContractViewOrEditPanel extends Panel {
       }
 
       @Override
-      public void onClick(AjaxRequestTarget paramAjaxRequestTarget) {
+      public void onClick(AjaxRequestTarget target) {
          ContractViewOrEditPanel.this.removeAll();
          ContractViewOrEditPanel.this.add(new ContractViewFragement()).setOutputMarkupId(true);
 
@@ -55,7 +58,7 @@ public class ContractViewOrEditPanel extends Panel {
             ContractViewOrEditPanel.this.setDefaultModelObject(contractDataProvider.findById((Contract) ContractViewOrEditPanel.this.getDefaultModelObject()));
          }
 
-         paramAjaxRequestTarget.add(paramAjaxRequestTarget.getPage());
+         target.add(target.getPage());
       }
    }
 
@@ -64,29 +67,42 @@ public class ContractViewOrEditPanel extends Panel {
 
       private static final long serialVersionUID = 4702333788976660894L;
 
+      private final WebMarkupContainer contractEditTable;
+
       public ContractEditFragement() {
          super("contractViewOrEditFragement", "contractEditFragement", ContractViewOrEditPanel.this, ContractViewOrEditPanel.this.getDefaultModel());
+
+         contractEditTable = new WebMarkupContainer("contractEditTable", getDefaultModel()) {
+
+            private static final long serialVersionUID = -7661119812141655082L;
+
+            @Override
+            protected void onInitialize() {
+               final Form<Contract> contractEditForm = new Form<Contract>("contractEditForm");
+               contractEditForm.setModel(new CompoundPropertyModel<Contract>((IModel<Contract>) getDefaultModel()));
+               contractEditForm.add(new RequiredTextField<String>("contractId").add(StringValidator.maximumLength(127)));
+               contractEditForm.add(new TextField<String>("customer.friendlyName").add(StringValidator.maximumLength(128)));
+               contractEditForm.add(new TextField<String>("customer.buyerMarketingEmail").setLabel(Model.of(getString("buyerMarketingEmailMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
+               contractEditForm.add(new TextField<String>("customer.contactPhone").add(StringValidator.maximumLength(20)));
+               contractEditForm.add(new TextField<String>("customer.payer").setLabel(Model.of(getString("payerMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
+               contractEditForm.add(new TextField<String>("customer.payerBusiness").setLabel(Model.of(getString("payerBusinessMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
+               contractEditForm.add(new TextField<String>("customer.payerId").add(StringValidator.maximumLength(20)));
+               contractEditForm.add(new TextField<String>("customer.payerStatus").add(StringValidator.maximumLength(20)));
+               contractEditForm.add(new TextField<String>("customer.taxId").add(StringValidator.maximumLength(20)));
+               contractEditForm.add(new TextField<String>("customer.taxIdType").add(StringValidator.maximumLength(20)));
+               add(contractEditForm.setOutputMarkupId(true));
+               add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
+               add(new SaveAjaxButton(contractEditForm).setOutputMarkupId(true));
+               add(new CancelAjaxLink().setOutputMarkupId(true));
+               add(new TableBehavior());
+               super.onInitialize();
+            }
+         };
       }
 
       @Override
       protected void onInitialize() {
-         final Form<Contract> contractEditForm = new Form<Contract>("contractEditForm");
-         contractEditForm.setModel(new CompoundPropertyModel<Contract>((IModel<Contract>) getDefaultModel()));
-         contractEditForm.add(new RequiredTextField<String>("contractId").add(StringValidator.maximumLength(127)));
-         contractEditForm.add(new TextField<String>("customer.friendlyName").add(StringValidator.maximumLength(128)));
-         contractEditForm.add(new TextField<String>("customer.buyerMarketingEmail").setLabel(Model.of(getString("buyerMarketingEmailMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
-         contractEditForm.add(new TextField<String>("customer.contactPhone").add(StringValidator.maximumLength(20)));
-         contractEditForm.add(new TextField<String>("customer.payer").setLabel(Model.of(getString("payerMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
-         contractEditForm.add(new TextField<String>("customer.payerBusiness").setLabel(Model.of(getString("payerBusinessMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
-         contractEditForm.add(new TextField<String>("customer.payerId").add(StringValidator.maximumLength(20)));
-         contractEditForm.add(new TextField<String>("customer.payerStatus").add(StringValidator.maximumLength(20)));
-         contractEditForm.add(new TextField<String>("customer.taxId").add(StringValidator.maximumLength(20)));
-         contractEditForm.add(new TextField<String>("customer.taxIdType").add(StringValidator.maximumLength(20)));
-
-         add(contractEditForm.setOutputMarkupId(true));
-         add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-         add(new SaveAjaxButton(contractEditForm).setOutputMarkupId(true));
-         add(new CancelAjaxLink().setOutputMarkupId(true));
+         add(contractEditTable.setOutputMarkupId(true));
          super.onInitialize();
       }
    }
@@ -96,27 +112,40 @@ public class ContractViewOrEditPanel extends Panel {
 
       private static final long serialVersionUID = 4702333788976660894L;
 
+      private final WebMarkupContainer contractViewTable;
+
       public ContractViewFragement() {
          super("contractViewOrEditFragement", "contractViewFragement", ContractViewOrEditPanel.this, ContractViewOrEditPanel.this.getDefaultModel());
+
+         contractViewTable = new WebMarkupContainer("contractViewTable", getDefaultModel()) {
+
+            private static final long serialVersionUID = 5655019574636840658L;
+
+            @Override
+            protected void onInitialize() {
+               final Form<Contract> contractViewForm = new Form<Contract>("contractViewForm");
+               contractViewForm.setModel(new CompoundPropertyModel<Contract>((IModel<Contract>) getDefaultModel()));
+               contractViewForm.add(new Label("contractId"));
+               contractViewForm.add(new Label("customer.friendlyName"));
+               contractViewForm.add(new Label("customer.buyerMarketingEmail"));
+               contractViewForm.add(new Label("customer.contactPhone"));
+               contractViewForm.add(new Label("customer.payer"));
+               contractViewForm.add(new Label("customer.payerBusiness"));
+               contractViewForm.add(new Label("customer.payerId"));
+               contractViewForm.add(new Label("customer.payerStatus"));
+               contractViewForm.add(new Label("customer.taxId"));
+               contractViewForm.add(new Label("customer.taxIdType"));
+               add(new EditAjaxLink());
+               add(contractViewForm.setOutputMarkupId(true));
+               add(new TableBehavior());
+               super.onInitialize();
+            }
+         };
       }
 
       @Override
       protected void onInitialize() {
-         final Form<Contract> contractViewForm = new Form<Contract>("contractViewForm");
-         contractViewForm.setModel(new CompoundPropertyModel<Contract>((IModel<Contract>) getDefaultModel()));
-         contractViewForm.add(new Label("contractId"));
-         contractViewForm.add(new Label("customer.friendlyName"));
-         contractViewForm.add(new Label("customer.buyerMarketingEmail"));
-         contractViewForm.add(new Label("customer.contactPhone"));
-         contractViewForm.add(new Label("customer.payer"));
-         contractViewForm.add(new Label("customer.payerBusiness"));
-         contractViewForm.add(new Label("customer.payerId"));
-         contractViewForm.add(new Label("customer.payerStatus"));
-         contractViewForm.add(new Label("customer.taxId"));
-         contractViewForm.add(new Label("customer.taxIdType"));
-
-         add(new EditAjaxLink());
-         add(contractViewForm.setOutputMarkupId(true));
+         add(contractViewTable.setOutputMarkupId(true));
          super.onInitialize();
       }
    }
@@ -194,7 +223,11 @@ public class ContractViewOrEditPanel extends Panel {
 
    @Override
    protected void onInitialize() {
-      add(new ContractViewFragement().setOutputMarkupId(true));
+      contractDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+      contractDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+      contractDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
+      contractDataProvider.setType(new Contract());
+      contractDataProvider.getType().setActive(true);
       super.onInitialize();
    }
 }
