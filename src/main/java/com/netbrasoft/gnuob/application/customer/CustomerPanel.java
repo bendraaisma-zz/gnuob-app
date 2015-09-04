@@ -2,13 +2,13 @@ package com.netbrasoft.gnuob.application.customer;
 
 import static de.agilecoders.wicket.jquery.JQuery.$;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -28,11 +28,17 @@ import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
+import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
+import de.agilecoders.wicket.core.markup.html.bootstrap.block.WellBehavior;
+import de.agilecoders.wicket.core.markup.html.bootstrap.block.WellBehavior.Size;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
+import de.agilecoders.wicket.core.markup.html.bootstrap.layout.col.MediumSpanType;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
+import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
+import de.agilecoders.wicket.core.util.Attributes;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationConfig;
 
@@ -63,6 +69,8 @@ public class CustomerPanel extends Panel {
 
       private static final long serialVersionUID = -5039874949058607907L;
 
+      private long selectedObjectId;
+
       protected CustomerDataview() {
          super("customerDataview", customerDataProvider, ITEMS_PER_PAGE);
       }
@@ -70,18 +78,30 @@ public class CustomerPanel extends Panel {
       @Override
       protected Item<Customer> newItem(String id, int index, final IModel<Customer> model) {
          final Item<Customer> item = super.newItem(id, index, model);
+         final long modelObjectId = ((Customer) customerViewOrEditPanel.getDefaultModelObject()).getId();
 
-         if (model.getObject().getId() == ((Customer) customerViewOrEditPanel.getDefaultModelObject()).getId()) {
-            // FIXME BD: use wicket bootstrap for this attribute / table.
-            item.add(new AttributeModifier("class", "info"));
-         } else {
-            if (index == 0 && ((Customer) customerViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
-               // FIXME BD: use wicket bootstrap for this attribute / table.
-               item.add(new AttributeModifier("class", "info"));
-            }
+         if ((model.getObject().getId() == modelObjectId) || modelObjectId == 0) {
+            item.add(new BootstrapBaseBehavior() {
+
+               private static final long serialVersionUID = -4903722864597601489L;
+
+               @Override
+               public void onComponentTag(Component component, ComponentTag tag) {
+                  Attributes.addClass(tag, "info");
+               }
+            });
          }
 
          return item;
+      }
+
+      @Override
+      protected void onConfigure() {
+         if(selectedObjectId  != ((Customer)CustomerPanel.this.getDefaultModelObject()).getId()) {
+            selectedObjectId = ((Customer)CustomerPanel.this.getDefaultModelObject()).getId();
+         }
+
+         super.onConfigure();
       }
 
       @Override
@@ -161,6 +181,10 @@ public class CustomerPanel extends Panel {
 
    private final WebMarkupContainer customerDataviewContainer;
 
+   private final WebMarkupContainer customerPanelContainer;
+
+   private final WebMarkupContainer customerTableContainer;
+
    private final BootstrapPagingNavigator customerPagingNavigator;
 
    private final CustomerViewOrEditPanel customerViewOrEditPanel;
@@ -171,6 +195,7 @@ public class CustomerPanel extends Panel {
       orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", customerDataProvider);
       orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", customerDataProvider);
       customerDataview = new CustomerDataview();
+      customerPagingNavigator = new BootstrapPagingNavigator("customerPagingNavigator", customerDataview);
       customerDataviewContainer = new WebMarkupContainer("customerDataviewContainer") {
 
          private static final long serialVersionUID = -497527332092449028L;
@@ -181,8 +206,52 @@ public class CustomerPanel extends Panel {
             super.onInitialize();
          }
       };
-      customerPagingNavigator = new BootstrapPagingNavigator("customerPagingNavigator", customerDataview);
-      customerViewOrEditPanel = new CustomerViewOrEditPanel("customerViewOrEditPanel", (IModel<Customer>) getDefaultModel());
+      customerTableContainer = new WebMarkupContainer("customerTableContainer", getDefaultModel()) {
+
+         private static final long serialVersionUID = -497527332092449028L;
+
+         @Override
+         protected void onInitialize() {
+            add(new AddAjaxLink().setOutputMarkupId(true));
+            add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
+            add(orderByFirstName.setOutputMarkupId(true));
+            add(orderByLastName.setOutputMarkupId(true));
+            add(customerDataviewContainer.setOutputMarkupId(true));
+            add(customerPagingNavigator.setOutputMarkupId(true));
+            add(new TableBehavior().hover());
+            super.onInitialize();
+         }
+      };
+      customerPanelContainer = new WebMarkupContainer("customerPanelContainer", getDefaultModel()) {
+
+         private static final long serialVersionUID = -497527332092449028L;
+
+         @Override
+         protected void onInitialize() {
+            add(customerTableContainer.setOutputMarkupId(true));
+            add(customerViewOrEditPanel.add(customerViewOrEditPanel.new CustomerViewFragement()).setOutputMarkupId(true));
+            add(new BootstrapBaseBehavior() {
+
+               private static final long serialVersionUID = -4903722864597601489L;
+
+               @Override
+               public void onComponentTag(Component component, ComponentTag tag) {
+                  Attributes.addClass(tag, MediumSpanType.SPAN10);
+               }
+            });
+            super.onInitialize();
+         }
+      };
+      customerViewOrEditPanel = new CustomerViewOrEditPanel("customerViewOrEditPanel", (IModel<Customer>) getDefaultModel()) {
+
+         private static final long serialVersionUID = -8723947139234708667L;
+
+         @Override
+         protected void onInitialize() {
+            add(new WellBehavior(Size.Small));
+            super.onInitialize();
+         }
+      };
    }
 
    @Override
@@ -192,16 +261,7 @@ public class CustomerPanel extends Panel {
       customerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       customerDataProvider.setType(new Customer());
       customerDataProvider.getType().setActive(true);
-
-      add(new AddAjaxLink().setOutputMarkupId(true));
-      add(orderByFirstName.setOutputMarkupId(true));
-      add(orderByLastName.setOutputMarkupId(true));
-      add(customerDataviewContainer.setOutputMarkupId(true));
-      add(customerPagingNavigator.setOutputMarkupId(true));
-      add(customerViewOrEditPanel.add(customerViewOrEditPanel.new CustomerViewFragement()).setOutputMarkupId(true));
-
-      add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-
+      add(customerPanelContainer.setOutputMarkupId(true));
       super.onInitialize();
    }
 }

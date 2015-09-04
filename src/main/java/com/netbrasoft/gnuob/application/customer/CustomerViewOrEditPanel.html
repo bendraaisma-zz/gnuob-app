@@ -1,7 +1,7 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
 	<wicket:container wicket:id="customerViewOrEditFragement" />
 	<wicket:fragment wicket:id="customerEditFragement">
-		<table class="table" style="border-top: none;">
+		<table wicket:id="customerEditTable">
 			<tbody>
 				<tr>
 					<td style="border-top: none;">
@@ -112,7 +112,7 @@
 								<div class="form-group">
 									<small><label class="col-sm-2 control-label"><wicket:message key="stateOrProvinceMessage" /></label></small>
 									<div class="col-sm-10">
-										<select wicket:id="address.stateOrProvince" class="form-control input-sm"></select>
+										<input wicket:id="address.stateOrProvince" class="form-control input-sm" />
 									</div>
 								</div>
 								<div class="form-group">
@@ -155,7 +155,7 @@
 		</table>
 	</wicket:fragment>
 	<wicket:fragment wicket:id="customerViewFragement">
-		<table class="table" style="border-top: none;">
+		<table wicket:id="customerViewTable">
 			<thead>
 				<tr>
 					<td colspan="1" align="left"><a wicket:id="edit"></a></td>

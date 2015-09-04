@@ -1,7 +1,5 @@
 package com.netbrasoft.gnuob.application.customer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -9,9 +7,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
@@ -22,7 +19,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.io.IClusterable;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -42,6 +38,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.LoadingBehavior;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
+import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.datetime.DatetimePicker;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.datetime.DatetimePickerConfig;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.TooltipValidation;
@@ -76,93 +73,67 @@ public class CustomerViewOrEditPanel extends Panel {
    @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
    class CustomerEditFragement extends Fragment {
 
-      class State implements IClusterable {
-
-         private static final long serialVersionUID = -318735320199663283L;
-
-         private final String code;
-         private final String name;
-
-         public State(String code, String name) {
-            this.code = code;
-            this.name = name;
-         }
-
-         public String getName() {
-            return name;
-         }
-
-         @Override
-         public String toString() {
-            return code;
-         }
-      }
-
       private static final long serialVersionUID = 4702333788976660894L;
+
+      private final WebMarkupContainer customerEditTable;
 
       public CustomerEditFragement() {
          super("customerViewOrEditFragement", "customerEditFragement", CustomerViewOrEditPanel.this, CustomerViewOrEditPanel.this.getDefaultModel());
-      }
 
-      // FIXME BD: get this information from http://www.geonames.org/ to support
-      // all counties and address formats etc.
-      public List<State> getStatesOfBrazil() {
-         final List<State> states = new ArrayList<>();
-         final String[][] statesOfBrazil = new String[][] { { "AC", "Acre" }, { "AL", "Alagoas" }, { "AP", "Amapá" }, { "AM", "Amazonas" }, { "BA", "Bahia" }, { "CE", "Ceará" }, { "ES", "Espírito Santo" }, { "GO", "Goiás" }, { "MA", "Maranhão" },
-               { "MT", "Mato Grosso" }, { "MS", "Mato Grosso do Sul" }, { "MG", "Minas Gerais" }, { "PA", "Pará" }, { "PB", "Paraíba" }, { "PR", "Paraná" }, { "PE", "Pernambuco" }, { "PI", "Piauí" }, { "RJ", "Rio de Janeiro" },
-               { "RN", "Rio Grande do Norte" }, { "RS", "Rio Grande do Sul" }, { "RO", "Rondônia" }, { "RR", "Roraima" }, { "SC", "Santa Catarina" }, { "SP", "São Paulo" }, { "SE", "Sergipe" }, { "TO", "Tocantins" } };
+         customerEditTable = new WebMarkupContainer("customerEditTable", getDefaultModel()) {
 
-         for (final String[] state : statesOfBrazil) {
-            states.add(new State(state[0], state[1]));
-         }
+            private static final long serialVersionUID = -7661119812141655082L;
 
-         return states;
+            @Override
+            protected void onInitialize() {
+               final Form<Customer> customerEditForm = new Form<Customer>("customerEditForm");
+
+               customerEditForm.setModel(new CompoundPropertyModel<Customer>((IModel<Customer>) getDefaultModel()));
+               customerEditForm.add(new TextField<String>("salutation").add(StringValidator.maximumLength(20)));
+               customerEditForm.add(new TextField<String>("suffix").add(StringValidator.maximumLength(20)));
+               customerEditForm.add(new RequiredTextField<String>("firstName").setLabel(Model.of(getString("firstNameMessage"))).add(StringValidator.maximumLength(64)));
+               customerEditForm.add(new TextField<String>("middleName").add(StringValidator.maximumLength(64)));
+               customerEditForm.add(new RequiredTextField<String>("lastName").setLabel(Model.of(getString("lastNameMessage"))).add(StringValidator.maximumLength(64)));
+               customerEditForm.add(new DatetimePicker("dateOfBirth", new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat("dd-MM-YYYY")) {
+
+                  private static final long serialVersionUID = 1209354725150726556L;
+
+                  @Override
+                  public <C> IConverter<C> getConverter(final Class<C> type) {
+                     if (XMLGregorianCalendar.class.isAssignableFrom(type)) {
+                        return (IConverter<C>) new XMLGregorianCalendarConverter();
+                     } else {
+                        return super.getConverter(type);
+                     }
+                  }
+               });
+               customerEditForm.add(new RequiredTextField<String>("buyerEmail").setLabel(Model.of(getString("buyerEmailMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
+               customerEditForm.add(new RequiredTextField<String>("address.postalCode").setLabel(Model.of(getString("postalCodeMessage"))).add(new PatternValidator("([0-9]){5}([-])([0-9]){3}")).add(StringValidator.maximumLength(20)));
+               customerEditForm.add(new TextField<String>("address.number").add(StringValidator.maximumLength(10)));
+               customerEditForm.add(new TextField<String>("address.country", Model.of("Brasil")).setLabel(Model.of(getString("countryNameMessage"))).add(StringValidator.maximumLength(40)).setEnabled(false));
+               customerEditForm.add(new RequiredTextField<String>("address.street1").setLabel(Model.of(getString("street1Message"))).add(StringValidator.maximumLength(100)));
+               customerEditForm.add(new TextField<String>("address.street2").add(StringValidator.maximumLength(100)));
+               customerEditForm.add(new TextField<String>("address.complement").add(StringValidator.maximumLength(40)));
+               customerEditForm.add(new TextField<String>("address.district").add(StringValidator.maximumLength(40)));
+               customerEditForm.add(new RequiredTextField<String>("address.cityName").setLabel(Model.of(getString("cityNameMessage"))).add(StringValidator.maximumLength(40)));
+               customerEditForm.add(new RequiredTextField<String>("address.stateOrProvince").setLabel(Model.of(getString("stateOrProvinceMessage"))));
+               customerEditForm.add(new TextField<String>("address.countryName").add(StringValidator.maximumLength(40)));
+               customerEditForm.add(new TextField<String>("address.internationalStreet").add(StringValidator.maximumLength(40)));
+               customerEditForm.add(new TextField<String>("address.internationalStateAndCity").add(StringValidator.maximumLength(80)));
+               customerEditForm.add(new TextField<String>("address.phone").add(StringValidator.maximumLength(20)));
+               add(customerEditForm.setOutputMarkupId(true));
+               add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
+               add(new SaveAjaxButton(customerEditForm).setOutputMarkupId(true));
+               add(new CancelAjaxLink().setOutputMarkupId(true));
+               add(new TableBehavior());
+               super.onInitialize();
+            }
+         };
       }
 
       @Override
       protected void onInitialize() {
-         final Form<Customer> customerEditForm = new Form<Customer>("customerEditForm");
-
-         customerEditForm.setModel(new CompoundPropertyModel<Customer>((IModel<Customer>) getDefaultModel()));
-         customerEditForm.add(new TextField<String>("salutation").add(StringValidator.maximumLength(20)));
-         customerEditForm.add(new TextField<String>("suffix").add(StringValidator.maximumLength(20)));
-         customerEditForm.add(new RequiredTextField<String>("firstName").setLabel(Model.of(getString("firstNameMessage"))).add(StringValidator.maximumLength(64)));
-         customerEditForm.add(new TextField<String>("middleName").add(StringValidator.maximumLength(64)));
-         customerEditForm.add(new RequiredTextField<String>("lastName").setLabel(Model.of(getString("lastNameMessage"))).add(StringValidator.maximumLength(64)));
-         customerEditForm.add(new DatetimePicker("dateOfBirth", new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat("dd-MM-YYYY")) {
-
-            private static final long serialVersionUID = 1209354725150726556L;
-
-            @Override
-            public <C> IConverter<C> getConverter(final Class<C> type) {
-               if (XMLGregorianCalendar.class.isAssignableFrom(type)) {
-                  return (IConverter<C>) new XMLGregorianCalendarConverter();
-               } else {
-                  return super.getConverter(type);
-               }
-            }
-         });
-         customerEditForm.add(new RequiredTextField<String>("buyerEmail").setLabel(Model.of(getString("buyerEmailMessage"))).add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)));
-         // FIXME: BD get this from geonames how to format ZIP code.
-         customerEditForm.add(new RequiredTextField<String>("address.postalCode").setLabel(Model.of(getString("postalCodeMessage"))).add(new PatternValidator("([0-9]){5}([-])([0-9]){3}")).add(StringValidator.maximumLength(20)));
-         customerEditForm.add(new TextField<String>("address.number").add(StringValidator.maximumLength(10)));
-         customerEditForm.add(new TextField<String>("address.country", Model.of("Brasil")).setLabel(Model.of(getString("countryNameMessage"))).add(StringValidator.maximumLength(40)).setEnabled(false));
-         customerEditForm.add(new RequiredTextField<String>("address.street1").setLabel(Model.of(getString("street1Message"))).add(StringValidator.maximumLength(100)));
-         customerEditForm.add(new TextField<String>("address.street2").add(StringValidator.maximumLength(100)));
-         customerEditForm.add(new TextField<String>("address.complement").add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new TextField<String>("address.district").add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new RequiredTextField<String>("address.cityName").setLabel(Model.of(getString("cityNameMessage"))).add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new DropDownChoice<State>("address.stateOrProvince", getStatesOfBrazil(), new ChoiceRenderer<State>("name", "")).setRequired(true).setLabel(Model.of(getString("stateOrProvinceMessage"))));
-         customerEditForm.add(new TextField<String>("address.countryName").add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new TextField<String>("address.internationalStreet").add(StringValidator.maximumLength(40)));
-         customerEditForm.add(new TextField<String>("address.internationalStateAndCity").add(StringValidator.maximumLength(80)));
-         customerEditForm.add(new TextField<String>("address.phone").add(StringValidator.maximumLength(20)));
-
-         add(customerEditForm.setOutputMarkupId(true));
-         add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-         add(new SaveAjaxButton(customerEditForm).setOutputMarkupId(true));
-         add(new CancelAjaxLink().setOutputMarkupId(true));
-
+         add(customerEditTable.setOutputMarkupId(true));
          super.onInitialize();
       }
    }
@@ -172,47 +143,59 @@ public class CustomerViewOrEditPanel extends Panel {
 
       private static final long serialVersionUID = 4702333788976660894L;
 
+      private final WebMarkupContainer customerViewTable;
+
       public CustomerViewFragement() {
          super("customerViewOrEditFragement", "customerViewFragement", CustomerViewOrEditPanel.this, CustomerViewOrEditPanel.this.getDefaultModel());
+
+         customerViewTable = new WebMarkupContainer("customerViewTable", getDefaultModel()) {
+
+            private static final long serialVersionUID = 5873771045655249852L;
+
+            @Override
+            protected void onInitialize() {
+               final Form<Customer> customerViewForm = new Form<Customer>("customerViewForm");
+
+               customerViewForm.setModel(new CompoundPropertyModel<Customer>((IModel<Customer>) getDefaultModel()));
+               customerViewForm.add(new Label("salutation"));
+               customerViewForm.add(new Label("suffix"));
+               customerViewForm.add(new Label("firstName"));
+               customerViewForm.add(new Label("middleName"));
+               customerViewForm.add(new Label("lastName"));
+               customerViewForm.add(new Label("dateOfBirth") {
+
+                  private static final long serialVersionUID = 3621260522785287715L;
+
+                  @Override
+                  public <C> IConverter<C> getConverter(final Class<C> type) {
+                     return (IConverter<C>) new XMLGregorianCalendarConverter();
+                  }
+               });
+               customerViewForm.add(new Label("buyerEmail"));
+               customerViewForm.add(new Label("address.postalCode"));
+               customerViewForm.add(new Label("address.number"));
+               customerViewForm.add(new Label("address.country"));
+               customerViewForm.add(new Label("address.street1"));
+               customerViewForm.add(new Label("address.street2"));
+               customerViewForm.add(new Label("address.complement"));
+               customerViewForm.add(new Label("address.district"));
+               customerViewForm.add(new Label("address.cityName"));
+               customerViewForm.add(new Label("address.stateOrProvince"));
+               customerViewForm.add(new Label("address.countryName"));
+               customerViewForm.add(new Label("address.internationalStreet"));
+               customerViewForm.add(new Label("address.internationalStateAndCity"));
+               customerViewForm.add(new Label("address.phone"));
+               add(new EditAjaxLink().setOutputMarkupId(true));
+               add(customerViewForm.setOutputMarkupId(true));
+               add(new TableBehavior());
+               super.onInitialize();
+            }
+         };
       }
 
       @Override
       protected void onInitialize() {
-         final Form<Customer> customerViewForm = new Form<Customer>("customerViewForm");
-
-         customerViewForm.setModel(new CompoundPropertyModel<Customer>((IModel<Customer>) getDefaultModel()));
-         customerViewForm.add(new Label("salutation"));
-         customerViewForm.add(new Label("suffix"));
-         customerViewForm.add(new Label("firstName"));
-         customerViewForm.add(new Label("middleName"));
-         customerViewForm.add(new Label("lastName"));
-         customerViewForm.add(new Label("dateOfBirth") {
-
-            private static final long serialVersionUID = 3621260522785287715L;
-
-            @Override
-            public <C> IConverter<C> getConverter(final Class<C> type) {
-               return (IConverter<C>) new XMLGregorianCalendarConverter();
-            }
-         });
-         customerViewForm.add(new Label("buyerEmail"));
-         customerViewForm.add(new Label("address.postalCode"));
-         customerViewForm.add(new Label("address.number"));
-         customerViewForm.add(new Label("address.country"));
-         customerViewForm.add(new Label("address.street1"));
-         customerViewForm.add(new Label("address.street2"));
-         customerViewForm.add(new Label("address.complement"));
-         customerViewForm.add(new Label("address.district"));
-         customerViewForm.add(new Label("address.cityName"));
-         customerViewForm.add(new Label("address.stateOrProvince"));
-         customerViewForm.add(new Label("address.countryName"));
-         customerViewForm.add(new Label("address.internationalStreet"));
-         customerViewForm.add(new Label("address.internationalStateAndCity"));
-         customerViewForm.add(new Label("address.phone"));
-
-         add(new EditAjaxLink().setOutputMarkupId(true));
-         add(customerViewForm.setOutputMarkupId(true));
-
+         add(customerViewTable.setOutputMarkupId(true));
          super.onInitialize();
       }
    }
@@ -297,7 +280,6 @@ public class CustomerViewOrEditPanel extends Panel {
       customerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       customerDataProvider.setType(new Customer());
       customerDataProvider.getType().setActive(true);
-
       super.onInitialize();
    }
 }

@@ -1,20 +1,20 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
-	<div class="col-md-10">
+	<div wicket:id="customerPanelContainer">
 		<h1>
 			<small><wicket:message key="definitionMessage" /></small>
 		</h1>
-		<table class="table table-hover">
+		<table wicket:id="customerTableContainer">
 			<thead>
 				<tr>
 					<td style="border-top: none;"><span wicket:id="feedback"></span></td>
 				</tr>
 				<tr>
-					<td colspan="3" align="left"><a wicket:id="add"><wicket:message key="addMessage" /></a></td>
+					<td style="border-top: none;" colspan="3" align="left"><a wicket:id="add"><wicket:message key="addMessage" /></a></td>
 				</tr>
 				<tr>
-					<th wicket:id="orderByFirstName"><small><wicket:message key="firstNameMessage" /></small></th>
-					<th wicket:id="orderByLastName"><small><wicket:message key="lastNameMessage" /></small></th>
-					<th><small><wicket:message key="operationMessage" /></small></th>
+					<th style="border-top: none;" wicket:id="orderByFirstName"><small><wicket:message key="firstNameMessage" /></small></th>
+					<th style="border-top: none;" wicket:id="orderByLastName"><small><wicket:message key="lastNameMessage" /></small></th>
+					<th style="border-top: none;"><small><wicket:message key="operationMessage" /></small></th>
 				</tr>
 			</thead>
 			<tbody wicket:id="customerDataviewContainer">
@@ -41,8 +41,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="well well-sm">
-			<div wicket:id="customerViewOrEditPanel"></div>
-		</div>
+		<div wicket:id="customerViewOrEditPanel"></div>
 	</div>
 </wicket:panel>
