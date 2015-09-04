@@ -3,6 +3,7 @@ package com.netbrasoft.gnuob.application.page;
 import java.util.List;
 
 import org.apache.commons.lang3.text.WordUtils;
+import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.HeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
@@ -19,7 +20,7 @@ import de.agilecoders.wicket.core.Bootstrap;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.references.JQueryCookieJsReference;
 
-public abstract class BasePage extends WebPage {
+public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
 
    class NetbrasoftApplicationJavaScript extends JavaScriptResourceReference {
 
@@ -44,6 +45,13 @@ public abstract class BasePage extends WebPage {
    private static final long serialVersionUID = 8192334293970678397L;
 
    private static final String GNUOB_SITE_TITLE_PROPERTY = "gnuob.site.title";
+
+   private static final String VEIL_HEX_LOADING = "veil-hex-loading";
+
+   @Override
+   public String getAjaxIndicatorMarkupId() {
+      return VEIL_HEX_LOADING;
+   }
 
    @Override
    protected void onInitialize() {
