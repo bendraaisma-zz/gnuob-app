@@ -78,7 +78,7 @@ public class OrderRecordViewOrEditPanel extends Panel {
                      }
                   }
                });
-               orderRecordEditForm.add(new RequiredTextField<String>("productNumber").add(StringValidator.maximumLength(62)));
+               orderRecordEditForm.add(new RequiredTextField<String>("productNumber").add(StringValidator.maximumLength(64)));
                orderRecordEditForm.add(new RequiredTextField<String>("name").add(StringValidator.maximumLength(128)));
                orderRecordEditForm.add(new TextField<String>("option").add(StringValidator.maximumLength(128)));
                orderRecordEditForm.add(new TextArea<String>("description").add(StringValidator.maximumLength(128)));
@@ -96,9 +96,9 @@ public class OrderRecordViewOrEditPanel extends Panel {
                orderRecordEditForm.add(new TextField<String>("itemWeightUnit").add(StringValidator.maximumLength(20)));
                orderRecordEditForm.add(new NumberTextField<Integer>("itemWidth"));
                orderRecordEditForm.add(new TextField<String>("itemWidthUnit").add(StringValidator.maximumLength(20)));
+               orderRecordEditForm.add(new SaveAjaxButton(orderRecordEditForm).setOutputMarkupId(true));
                add(orderRecordEditForm.setOutputMarkupId(true));
                add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-               add(new SaveAjaxButton(orderRecordEditForm).setOutputMarkupId(true));
                add(new TableBehavior());
                super.onInitialize();
             }

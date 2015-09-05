@@ -91,9 +91,9 @@ public class OrderInvoicePaymentViewOrEditPanel extends Panel {
                paymentEditForm.add(new NumberTextField<Integer>("settleAmount"));
                paymentEditForm.add(new NumberTextField<Integer>("feeAmount"));
                paymentEditForm.add(new NumberTextField<Integer>("taxAmount"));
+               paymentEditForm.add(new SaveAjaxButton(paymentEditForm).setOutputMarkupId(true));
                add(paymentEditForm.setOutputMarkupId(true));
                add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-               add(new SaveAjaxButton(paymentEditForm).setOutputMarkupId(true));
                add(new TableBehavior());
                super.onInitialize();
             }
@@ -184,10 +184,10 @@ public class OrderInvoicePaymentViewOrEditPanel extends Panel {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
          try {
-            final Payment paymentForm = (Payment) form.getDefaultModelObject();
+            final Payment payment = (Payment) form.getDefaultModelObject();
 
-            if (paymentForm.getId() == 0) {
-               ((Order) markupContainer.getDefaultModelObject()).getInvoice().getPayments().add(paymentForm);
+            if (payment.getId() == 0) {
+               ((Order) markupContainer.getDefaultModelObject()).getInvoice().getPayments().add(payment);
             }
          } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);

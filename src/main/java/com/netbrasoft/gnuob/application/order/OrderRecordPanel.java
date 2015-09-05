@@ -204,7 +204,7 @@ public class OrderRecordPanel extends Panel {
             orderRecordListDataProvider.getData().remove(getDefaultModelObject());
          } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
-            warn(e.getLocalizedMessage());
+            orderRecordEditTable.warn(e.getLocalizedMessage());
          } finally {
             target.add(orderRecordDataviewContainer.setOutputMarkupId(true));
          }
@@ -236,7 +236,7 @@ public class OrderRecordPanel extends Panel {
       orderRecordListDataProvider = new OrderRecordListDataProvider();
       orderRecordDataview = new OrderRecordDataview();
       orderRecordPagingNavigator = new BootstrapPagingNavigator("orderRecordPagingNavigator", orderRecordDataview);
-      orderRecordDataviewContainer = new WebMarkupContainer("orderRecordDataviewContainer") {
+      orderRecordDataviewContainer = new WebMarkupContainer("orderRecordDataviewContainer", getDefaultModel()) {
 
          private static final long serialVersionUID = 1L;
 

@@ -57,7 +57,7 @@ public class OfferRecordViewOrEditPanel extends Panel {
                final Form<OfferRecord> offerRecordEditForm = new Form<OfferRecord>("offerRecordEditForm");
                offerRecordEditForm.setModel(new CompoundPropertyModel<OfferRecord>((IModel<OfferRecord>) getDefaultModel()));
                offerRecordEditForm.add(new RequiredTextField<String>("offerRecordId").add(StringValidator.maximumLength(64)));
-               offerRecordEditForm.add(new RequiredTextField<String>("productNumber").add(StringValidator.maximumLength(62)));
+               offerRecordEditForm.add(new RequiredTextField<String>("productNumber").add(StringValidator.maximumLength(64)));
                offerRecordEditForm.add(new RequiredTextField<String>("name").add(StringValidator.maximumLength(128)));
                offerRecordEditForm.add(new TextField<String>("option").add(StringValidator.maximumLength(128)));
                offerRecordEditForm.add(new TextArea<String>("description").add(StringValidator.maximumLength(128)));
@@ -75,9 +75,9 @@ public class OfferRecordViewOrEditPanel extends Panel {
                offerRecordEditForm.add(new TextField<String>("itemWeightUnit").add(StringValidator.maximumLength(20)));
                offerRecordEditForm.add(new NumberTextField<Integer>("itemWidth"));
                offerRecordEditForm.add(new TextField<String>("itemWidthUnit").add(StringValidator.maximumLength(20)));
+               offerRecordEditForm.add(new SaveAjaxButton(offerRecordEditForm).setOutputMarkupId(true));
                add(offerRecordEditForm.setOutputMarkupId(true));
                add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-               add(new SaveAjaxButton(offerRecordEditForm).setOutputMarkupId(true));
                add(new TableBehavior());
                super.onInitialize();
             }

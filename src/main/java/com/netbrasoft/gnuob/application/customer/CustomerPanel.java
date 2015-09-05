@@ -157,9 +157,9 @@ public class CustomerPanel extends Panel {
             customerViewOrEditPanel.setDefaultModelObject(new Customer());
          } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
-            warn(e.getLocalizedMessage());
+            customerTableContainer.warn(e.getLocalizedMessage());
          } finally {
-            target.add(getPage());
+            target.add(customerTableContainer);
          }
       }
    }

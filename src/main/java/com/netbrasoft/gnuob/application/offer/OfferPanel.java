@@ -91,7 +91,6 @@ public class OfferPanel extends Panel {
                }
             });
          }
-
          return item;
       }
 
@@ -100,7 +99,6 @@ public class OfferPanel extends Panel {
          if(selectedObjectId  != ((Offer)OfferPanel.this.getDefaultModelObject()).getId()) {
             selectedObjectId = ((Offer)OfferPanel.this.getDefaultModelObject()).getId();
          }
-
          super.onConfigure();
       }
 

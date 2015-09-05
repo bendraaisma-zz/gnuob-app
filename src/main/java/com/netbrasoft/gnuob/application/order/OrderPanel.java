@@ -159,9 +159,9 @@ public class OrderPanel extends Panel {
             orderViewOrEditPanel.setDefaultModelObject(new Order());
          } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
-            warn(e.getLocalizedMessage());
+            orderTableContainer.warn(e.getLocalizedMessage());
          } finally {
-            target.add(getPage());
+            target.add(orderTableContainer);
          }
       }
    }

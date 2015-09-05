@@ -92,16 +92,14 @@ public class ContractPanel extends Panel {
                }
             });
          }
-
          return item;
       }
 
       @Override
       protected void onConfigure() {
-         if(selectedObjectId  != ((Contract)ContractPanel.this.getDefaultModelObject()).getId()) {
-            selectedObjectId = ((Contract)ContractPanel.this.getDefaultModelObject()).getId();
+         if (selectedObjectId != ((Contract) ContractPanel.this.getDefaultModelObject()).getId()) {
+            selectedObjectId = ((Contract) ContractPanel.this.getDefaultModelObject()).getId();
          }
-
          super.onConfigure();
       }
 
@@ -159,9 +157,9 @@ public class ContractPanel extends Panel {
             contractViewOrEditPanel.setDefaultModelObject(new Contract());
          } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
-            warn(e.getLocalizedMessage());
+            contractTableContainer.warn(e.getLocalizedMessage());
          } finally {
-            target.add(getPage());
+            target.add(contractTableContainer);
          }
       }
    }
@@ -248,7 +246,7 @@ public class ContractPanel extends Panel {
             super.onInitialize();
          }
       };
-      contractViewOrEditPanel = new ContractViewOrEditPanel("contractViewOrEditPanel", (IModel<Contract>) getDefaultModel()){
+      contractViewOrEditPanel = new ContractViewOrEditPanel("contractViewOrEditPanel", (IModel<Contract>) getDefaultModel()) {
 
          private static final long serialVersionUID = -8723947139234708667L;
 

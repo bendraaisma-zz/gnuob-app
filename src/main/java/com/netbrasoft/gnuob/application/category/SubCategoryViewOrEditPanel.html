@@ -1,9 +1,95 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
-	<wicket:container wicket:id="subCategoryViewOrEditFragement"></wicket:container>
-	<wicket:fragment wicket:id="subCategoryEditFragement">
-		<div wicket:id="subCategoriesTableTree"></div>
-	</wicket:fragment>
-	<wicket:fragment wicket:id="subCategoryViewFragement">
-		<div wicket:id="subCategoriesTableTree"></div>
-	</wicket:fragment>
+	<tr>
+		<td colspan="3" style="border-top: none;">
+			<wicket:container wicket:id="subCategoryViewOrEditFragement" /> 
+			<wicket:fragment wicket:id="subCategoryEditFragement">
+				<table wicket:id="subCategoryEditTable">
+					<thead>
+						<tr>
+							<td style="border-top: none;"><span wicket:id="feedback"></span></td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td style="border-top: none;">
+								<form wicket:id="subCategoryEditForm" class="form-horizontal" action="">
+									<div class="panel-body">
+										<div class="form-group">
+											<small><label class="col-sm-2 control-label"><wicket:message key="nameMessage" /></label></small>
+											<div class="col-sm-10">
+												<input wicket:id="name" class="form-control input-sm" type="text" />
+											</div>
+										</div>
+										<div class="form-group">
+											<small><label class="col-sm-2 control-label"><wicket:message key="descriptionMessage" /></label></small>
+											<div class="col-sm-10">
+												<textarea wicket:id="description" class="form-control input-sm" style="resize: vertical;" rows="10" cols=""></textarea>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-sm-offset-2 col-sm-10">
+												<a wicket:id="save"></a>
+											</div>
+										</div>
+									</div>
+									<hr>
+									<div class="panel-heading">
+										<h3 class="panel-title">
+											<wicket:message key="contentMessage" />
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div class="form-group">
+											<div class="col-sm-12">
+												<wicket:container wicket:id="contentViewOrEditPanel" />
+											</div>
+										</div>
+									</div>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</wicket:fragment> 
+			<wicket:fragment wicket:id="subCategoryViewFragement">
+				<table wicket:id="subCategoryViewTable">
+					<tbody>
+						<tr>
+							<td style="border-top: none;">
+								<form wicket:id="subCategoryViewForm" class="form-horizontal" action="">
+									<div class="panel-body">
+										<div class="form-group">
+											<small><label class="col-sm-2 control-label"><wicket:message key="nameMessage" /></label></small>
+											<div class="col-sm-10">
+												<small><input wicket:id="name" class="form-control input-sm" style="background-color: white;" type="text" readonly="readonly" /></small>
+											</div>
+										</div>
+										<div class="form-group">
+											<small><label class="col-sm-2 control-label"><wicket:message key="descriptionMessage" /></label></small>
+											<div class="col-sm-10">
+												<small><textarea wicket:id="description" class="form-control input-sm" style="resize: vertical; background-color: white;" rows="10" readonly="readonly" cols=""></textarea></small>
+											</div>
+										</div>
+									</div>
+									<hr>
+									<div class="panel-heading">
+										<h3 class="panel-title">
+											<wicket:message key="contentMessage" />
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div class="form-group">
+											<div class="col-sm-12">
+												<wicket:container wicket:id="contentViewOrEditPanel" />
+											</div>
+										</div>
+									</div>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</wicket:fragment>
+		</td>
+	</tr>
 </wicket:panel>

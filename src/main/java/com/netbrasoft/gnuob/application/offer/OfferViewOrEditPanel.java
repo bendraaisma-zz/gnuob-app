@@ -56,7 +56,6 @@ public class OfferViewOrEditPanel extends Panel {
          if (((Offer) OfferViewOrEditPanel.this.getDefaultModelObject()).getId() > 0) {
             OfferViewOrEditPanel.this.setDefaultModelObject(offerDataProvider.findById((Offer) OfferViewOrEditPanel.this.getDefaultModelObject()));
          }
-
          target.add(target.getPage());
       }
    }
