@@ -23,7 +23,6 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.netbrasoft.gnuob.api.Offer;
 import com.netbrasoft.gnuob.api.Product;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
@@ -57,7 +56,7 @@ public class ProductViewOrEditPanel extends Panel {
          ProductViewOrEditPanel.this.removeAll();
          ProductViewOrEditPanel.this.add(new ProductViewFragement()).setOutputMarkupId(true);
 
-         if (((Offer) ProductViewOrEditPanel.this.getDefaultModelObject()).getId() > 0) {
+         if (((Product) ProductViewOrEditPanel.this.getDefaultModelObject()).getId() > 0) {
             ProductViewOrEditPanel.this.setDefaultModelObject(productDataProvider.findById((Product) ProductViewOrEditPanel.this.getDefaultModelObject()));
          }
          target.add(target.getPage());
@@ -90,6 +89,10 @@ public class ProductViewOrEditPanel extends Panel {
 
       private final WebMarkupContainer productEditTable;
 
+      private final ProductContentPanel contentViewOrEditPanel;
+
+      private final ProductSubCategoryPanel subCategoryViewOrEditPanel;
+
       public ProductEditFragement() {
          super("productViewOrEditFragement", "productEditFragement", ProductViewOrEditPanel.this, ProductViewOrEditPanel.this.getDefaultModel());
 
@@ -99,8 +102,6 @@ public class ProductViewOrEditPanel extends Panel {
 
             @Override
             protected void onInitialize() {
-               final ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Product>) getDefaultModel());
-               final SubCategoryViewOrEditPanel subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Product>) getDefaultModel());
                final Form<Product> productEditForm = new Form<Product>("productEditForm");
                productEditForm.setModel(new CompoundPropertyModel<Product>((IModel<Product>) getDefaultModel()));
                productEditForm.add(new RequiredTextField<String>("number").add(StringValidator.maximumLength(64)));
@@ -126,8 +127,8 @@ public class ProductViewOrEditPanel extends Panel {
                productEditForm.add(new NumberTextField<Integer>("stock.maxQuantity"));
                productEditForm.add(new NumberTextField<Integer>("stock.minQuantity"));
                productEditForm.add(new NumberTextField<Integer>("stock.quantity"));
-               productEditForm.add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ContentEditFragement()).setOutputMarkupId(true));
-               productEditForm.add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryEditFragement()).setOutputMarkupId(true));
+               productEditForm.add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ProductContentEditFragement()).setOutputMarkupId(true));
+               productEditForm.add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new ProductSubCategoryEditFragement()).setOutputMarkupId(true));
                add(productEditForm.setOutputMarkupId(true));
                add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
                add(new CancelAjaxLink().setOutputMarkupId(true));
@@ -136,6 +137,8 @@ public class ProductViewOrEditPanel extends Panel {
                super.onInitialize();
             }
          };
+         contentViewOrEditPanel = new ProductContentPanel("contentViewOrEditPanel", (IModel<Product>) getDefaultModel());
+         subCategoryViewOrEditPanel = new ProductSubCategoryPanel("subCategoryViewOrEditPanel", (IModel<Product>) getDefaultModel());
       }
 
       @Override
@@ -152,6 +155,10 @@ public class ProductViewOrEditPanel extends Panel {
 
       private final WebMarkupContainer productViewTable;
 
+      private final ProductContentPanel contentViewOrEditPanel;
+
+      private final ProductSubCategoryPanel subCategoryViewOrEditPanel;
+
       public ProductViewFragement() {
          super("productViewOrEditFragement", "productViewFragement", ProductViewOrEditPanel.this, ProductViewOrEditPanel.this.getDefaultModel());
 
@@ -161,8 +168,6 @@ public class ProductViewOrEditPanel extends Panel {
 
             @Override
             protected void onInitialize() {
-               final ContentViewOrEditPanel contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Product>) getDefaultModel());
-               final SubCategoryViewOrEditPanel subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Product>) getDefaultModel());
                final Form<Product> productViewForm = new Form<Product>("productViewForm");
                productViewForm.setModel(new CompoundPropertyModel<Product>((IModel<Product>) getDefaultModel()));
                productViewForm.add(new Label("number"));
@@ -188,14 +193,16 @@ public class ProductViewOrEditPanel extends Panel {
                productViewForm.add(new Label("stock.maxQuantity"));
                productViewForm.add(new Label("stock.minQuantity"));
                productViewForm.add(new Label("stock.quantity"));
-               productViewForm.add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryViewFragement()).setOutputMarkupId(true));
-               productViewForm.add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ContentViewFragement()).setOutputMarkupId(true));
+               productViewForm.add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ProductContentViewFragement()).setOutputMarkupId(true));
+               productViewForm.add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new ProductSubCategoryViewFragement()).setOutputMarkupId(true));
                add(productViewForm.setOutputMarkupId(true));
                add(new EditAjaxLink().setOutputMarkupId(true));
                add(new TableBehavior());
                super.onInitialize();
             }
          };
+         contentViewOrEditPanel = new ProductContentPanel("contentViewOrEditPanel", (IModel<Product>) getDefaultModel());
+         subCategoryViewOrEditPanel = new ProductSubCategoryPanel("subCategoryViewOrEditPanel", (IModel<Product>) getDefaultModel());
       }
 
       @Override

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Order;
 import com.netbrasoft.gnuob.api.OrderRecord;
-import com.netbrasoft.gnuob.api.generic.XMLGregorianCalendarConverter;
+import com.netbrasoft.gnuob.api.generic.converter.XMLGregorianCalendarConverter;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;

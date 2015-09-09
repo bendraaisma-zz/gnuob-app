@@ -218,7 +218,7 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
 
       getTable().add(new HumanTheme());
       getTable().add(new wicketdnd.theme.HumanTheme());
-      getTable().add(new TableBehavior());
+      getTable().add(new TableBehavior().hover());
       getTable().addTopToolbar(new HeadersToolbar<String>(getTable(), null));
       getTable().addTopToolbar(new SubCategoryToolBar(getTable()));
 

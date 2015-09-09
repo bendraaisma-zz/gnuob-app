@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Category;
-import com.netbrasoft.gnuob.api.Contract;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -153,7 +152,7 @@ public class CategoryPanel extends Panel {
          try {
             getModelObject().setActive(false);
             categoryDataProvider.merge(getModelObject());
-            categoryViewOrEditPanel.setDefaultModelObject(new Contract());
+            categoryViewOrEditPanel.setDefaultModelObject(new Category());
          } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             categoryTableContainer.warn(e.getLocalizedMessage());

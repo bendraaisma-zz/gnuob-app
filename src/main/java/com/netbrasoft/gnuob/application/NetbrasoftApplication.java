@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.wicketstuff.wicket.servlet3.auth.ServletContainerAuthenticatedWebApplication;
 import org.wicketstuff.wicket.servlet3.auth.ServletContainerAuthenticatedWebSession;
 
-import com.netbrasoft.gnuob.api.generic.XMLGregorianCalendarConverter;
+import com.netbrasoft.gnuob.api.generic.converter.XMLGregorianCalendarConverter;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.page.MainPage;
 import com.netbrasoft.gnuob.application.page.SignInPage;

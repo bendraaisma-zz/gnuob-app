@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Order;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.generic.XMLGregorianCalendarConverter;
+import com.netbrasoft.gnuob.api.generic.converter.XMLGregorianCalendarConverter;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 

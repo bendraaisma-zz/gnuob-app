@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Customer;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.generic.XMLGregorianCalendarConverter;
+import com.netbrasoft.gnuob.api.generic.converter.XMLGregorianCalendarConverter;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
@@ -168,7 +168,11 @@ public class CustomerViewOrEditPanel extends Panel {
 
                   @Override
                   public <C> IConverter<C> getConverter(final Class<C> type) {
-                     return (IConverter<C>) new XMLGregorianCalendarConverter();
+                     if (XMLGregorianCalendar.class.isAssignableFrom(type)) {
+                        return (IConverter<C>) new XMLGregorianCalendarConverter();
+                     } else {
+                        return super.getConverter(type);
+                     }
                   }
                });
                customerViewForm.add(new Label("buyerEmail"));
