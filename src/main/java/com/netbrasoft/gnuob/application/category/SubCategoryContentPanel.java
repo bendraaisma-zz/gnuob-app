@@ -73,7 +73,7 @@ public class SubCategoryContentPanel extends Panel {
       private long selectedObjectId;
 
       protected ContentDataview() {
-         super("contentDataview", new ContentListDataProvider(), ITEMS_PER_PAGE);
+         super("contentDataview", contentListDataProvider, ITEMS_PER_PAGE);
       }
 
       public boolean isRemoveAjaxLinkVisable() {

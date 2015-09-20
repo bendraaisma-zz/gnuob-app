@@ -95,8 +95,8 @@ public class ProductPanel extends Panel {
 
       @Override
       protected void onConfigure() {
-         if(selectedObjectId  != ((Product)ProductPanel.this.getDefaultModelObject()).getId()) {
-            selectedObjectId = ((Product)ProductPanel.this.getDefaultModelObject()).getId();
+         if (selectedObjectId != ((Product) ProductPanel.this.getDefaultModelObject()).getId()) {
+            selectedObjectId = ((Product) ProductPanel.this.getDefaultModelObject()).getId();
          }
          super.onConfigure();
       }
@@ -154,7 +154,7 @@ public class ProductPanel extends Panel {
             productViewOrEditPanel.setDefaultModelObject(new Product());
          } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
-            warn(e.getLocalizedMessage());
+            productTableContainer.warn(e.getLocalizedMessage());
          } finally {
             target.add(getPage());
          }
@@ -239,7 +239,7 @@ public class ProductPanel extends Panel {
             super.onInitialize();
          }
       };
-      productViewOrEditPanel = new ProductViewOrEditPanel("productViewOrEditPanel", Model.of(new Product())){
+      productViewOrEditPanel = new ProductViewOrEditPanel("productViewOrEditPanel", Model.of(new Product())) {
 
          private static final long serialVersionUID = -8723947139234708667L;
 
@@ -257,6 +257,7 @@ public class ProductPanel extends Panel {
       productDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       productDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
       productDataProvider.setType((Product) getDefaultModelObject());
+      productDataProvider.getType().setActive(true);
       add(productPanelContainer.setOutputMarkupId(true));
       super.onInitialize();
    }

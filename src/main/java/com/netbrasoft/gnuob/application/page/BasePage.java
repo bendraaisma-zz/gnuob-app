@@ -12,11 +12,10 @@ import org.apache.wicket.markup.head.filter.FilteredHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.resource.JavaScriptResourceReference;
 
 import com.google.common.collect.Lists;
-import com.netbrasoft.gnuob.application.NetbrasoftApplication;
-
 import de.agilecoders.wicket.core.Bootstrap;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.icon.FontAwesomeCDNCSSReference;
@@ -37,7 +36,7 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
          final List<HeaderItem> dependencies = Lists.newArrayList(super.getDependencies());
 
          dependencies.add(JavaScriptHeaderItem.forReference(JQueryCookieJsReference.INSTANCE));
-         dependencies.add(JavaScriptHeaderItem.forReference(NetbrasoftApplication.get().getJavaScriptLibrarySettings().getJQueryReference()));
+         dependencies.add(JavaScriptHeaderItem.forReference(WebApplication.get().getJavaScriptLibrarySettings().getJQueryReference()));
          dependencies.add(JavaScriptHeaderItem.forReference(Bootstrap.getSettings().getJsResourceReference()));
          dependencies.add(CssHeaderItem.forReference(FontAwesomeCDNCSSReference.instance()));
 

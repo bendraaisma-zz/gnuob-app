@@ -27,8 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Content;
 import com.netbrasoft.gnuob.api.Product;
-import com.netbrasoft.gnuob.application.product.ProductContentPanel.ProductContentEditFragement;
-import com.netbrasoft.gnuob.application.product.ProductContentPanel.ProductContentViewFragement;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
@@ -73,7 +71,7 @@ public class ProductContentPanel extends Panel {
       private long selectedObjectId;
 
       protected ContentDataview() {
-         super("contentDataview", new ContentListDataProvider(), ITEMS_PER_PAGE);
+         super("contentDataview", contentListDataProvider, ITEMS_PER_PAGE);
       }
 
       public boolean isRemoveAjaxLinkVisable() {

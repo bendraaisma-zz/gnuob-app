@@ -127,9 +127,7 @@ public class CategoryViewOrEditPanel extends Panel {
 
             @Override
             protected void onInitialize() {
-
                final Form<Category> categoryViewForm = new Form<Category>("categoryViewForm");
-
                categoryViewForm.setModel(new CompoundPropertyModel<Category>((IModel<Category>) getDefaultModel()));
                categoryViewForm.add(new NumberTextField<Integer>("position"));
                categoryViewForm.add(new RequiredTextField<String>("name"));

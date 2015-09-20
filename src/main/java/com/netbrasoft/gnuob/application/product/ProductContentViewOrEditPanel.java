@@ -107,7 +107,8 @@ public class ProductContentViewOrEditPanel extends Panel {
                contentViewForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
                contentViewForm.add(new Label("name"));
                contentViewForm.add(new Label("format"));
-               contentViewForm.add(new Label("content"){
+               contentViewForm.add(new Label("content") {
+
                   private static final long serialVersionUID = 721587245052671908L;
 
                   @Override

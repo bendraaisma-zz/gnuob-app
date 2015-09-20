@@ -36,6 +36,7 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel
 import de.agilecoders.wicket.core.markup.html.bootstrap.form.BootstrapCheckbox;
 import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
 import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
+import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.TooltipValidation;
 
 @SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
@@ -59,6 +60,7 @@ public class ProductViewOrEditPanel extends Panel {
          if (((Product) ProductViewOrEditPanel.this.getDefaultModelObject()).getId() > 0) {
             ProductViewOrEditPanel.this.setDefaultModelObject(productDataProvider.findById((Product) ProductViewOrEditPanel.this.getDefaultModelObject()));
          }
+
          target.add(target.getPage());
       }
    }
@@ -224,6 +226,13 @@ public class ProductViewOrEditPanel extends Panel {
       }
 
       @Override
+      protected void onError(AjaxRequestTarget target, Form<?> form) {
+         form.add(new TooltipValidation());
+         target.add(form);
+         target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductViewOrEditPanel.this.getString("saveAndCloseMessage")))));
+      }
+
+      @Override
       protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
          try {
             final Product product = (Product) form.getDefaultModelObject();
@@ -262,7 +271,7 @@ public class ProductViewOrEditPanel extends Panel {
       productDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
       productDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
       productDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      productDataProvider.setType(new Product());
+      productDataProvider.setType((Product) getDefaultModelObject());
       productDataProvider.getType().setActive(true);
       super.onInitialize();
    }

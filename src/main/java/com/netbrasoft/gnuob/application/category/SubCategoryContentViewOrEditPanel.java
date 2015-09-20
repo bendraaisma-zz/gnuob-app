@@ -11,16 +11,17 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Category;
 import com.netbrasoft.gnuob.api.Content;
+import com.netbrasoft.gnuob.api.generic.converter.ByteArrayConverter;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxButton;
@@ -92,21 +93,19 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
                contentEditForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
                contentEditForm.add(new TextField<String>("name"));
                contentEditForm.add(new TextField<String>("format"));
-               contentEditForm.add(new TextArea<String>("content.content", new Model<String>() {
+               contentEditForm.add(new TextArea<byte[]>("content") {
 
-                  private static final long serialVersionUID = -5327965345786983877L;
-
-                  @Override
-                  public String getObject() {
-                     final Content content = (Content) getDefaultModelObject();
-                     return content.getContent() != null ? new String(content.getContent()) : new String();
-                  }
+                  private static final long serialVersionUID = -7341359315847579440L;
 
                   @Override
-                  public void setObject(String object) {
-                     ((Content) getDefaultModelObject()).setContent(object != null ? object.getBytes() : null);
-                  }
-               }).add(new TinyMceBehavior()));
+                  public <C> IConverter<C> getConverter(Class<C> type) {
+                     if (byte[].class.isAssignableFrom(type)) {
+                        return (IConverter<C>) new ByteArrayConverter();
+                     } else {
+                        return super.getConverter(type);
+                     }
+                  };
+               }.add(new TinyMceBehavior()));
                contentEditForm.add(new SaveAjaxButton(contentEditForm).setOutputMarkupId(true));
                add(contentEditForm.setOutputMarkupId(true));
                add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
@@ -144,16 +143,19 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
                contentViewForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
                contentViewForm.add(new Label("name"));
                contentViewForm.add(new Label("format"));
-               contentViewForm.add(new Label("content.content", new AbstractReadOnlyModel<String>() {
+               contentViewForm.add(new Label("content") {
 
-                  private static final long serialVersionUID = -5951175997487496312L;
+                  private static final long serialVersionUID = 721587245052671908L;
 
                   @Override
-                  public String getObject() {
-                     final Content content = (Content) getDefaultModelObject();
-                     return content.getContent() != null ? new String(content.getContent()) : new String();
-                  }
-               }).setEscapeModelStrings(false));
+                  public <C> IConverter<C> getConverter(Class<C> type) {
+                     if (byte[].class.isAssignableFrom(type)) {
+                        return (IConverter<C>) new ByteArrayConverter();
+                     } else {
+                        return super.getConverter(type);
+                     }
+                  };
+               }.setEscapeModelStrings(false));
                add(contentViewForm.setOutputMarkupId(true));
                add(new TableBehavior());
                super.onInitialize();
