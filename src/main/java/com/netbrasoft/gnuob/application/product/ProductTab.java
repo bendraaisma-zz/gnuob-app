@@ -9,14 +9,14 @@ import com.netbrasoft.gnuob.api.Product;
 
 public class ProductTab extends AbstractTab {
 
-   private static final long serialVersionUID = 4835579949680085443L;
+  private static final long serialVersionUID = 4835579949680085443L;
 
-   public ProductTab(final IModel<String> title) {
-      super(title);
-   }
+  public ProductTab(final IModel<String> title) {
+    super(title);
+  }
 
-   @Override
-   public WebMarkupContainer getPanel(final String panelId) {
-      return new ProductPanel(panelId, Model.of(new Product()));
-   }
+  @Override
+  public WebMarkupContainer getPanel(final String panelId) {
+    return new ProductPanel(panelId, Model.of(new Product()));
+  }
 }

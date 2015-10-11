@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.wicketstuff.wicket.servlet3.auth.ServletContainerAuthenticatedWebApplication;
 import org.wicketstuff.wicket.servlet3.auth.ServletContainerAuthenticatedWebSession;
 
-import com.netbrasoft.gnuob.api.generic.converter.XMLGregorianCalendarConverter;
+import com.netbrasoft.gnuob.api.generic.converter.XmlGregorianCalendarConverter;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.page.MainPage;
 import com.netbrasoft.gnuob.application.page.SignInPage;
@@ -30,59 +30,60 @@ import net.ftlines.wicketsource.WicketSource;
 @Service("wicketApplication")
 public class NetbrasoftApplication extends ServletContainerAuthenticatedWebApplication {
 
-   private static final String INSPECTOR_PAGE_HTML = "InspectorPage.html";
+  private static final String INSPECTOR_PAGE_HTML = "InspectorPage.html";
 
-   @Override
-   protected Class<? extends ServletContainerAuthenticatedWebSession> getContainerManagedWebSessionClass() {
-      return AppServletContainerAuthenticatedWebSession.class;
-   }
+  @Override
+  protected Class<? extends ServletContainerAuthenticatedWebSession> getContainerManagedWebSessionClass() {
+    return AppServletContainerAuthenticatedWebSession.class;
+  }
 
-   @Override
-   public Class<? extends Page> getHomePage() {
-      return MainPage.class;
-   }
+  @Override
+  public Class<? extends Page> getHomePage() {
+    return MainPage.class;
+  }
 
-   @Override
-   protected Class<? extends WebPage> getSignInPageClass() {
-      return SignInPage.class;
-   }
+  @Override
+  protected Class<? extends WebPage> getSignInPageClass() {
+    return SignInPage.class;
+  }
 
-   @Override
-   protected void init() {
-      super.init();
+  @Override
+  protected void init() {
+    super.init();
 
-      final BootstrapSettings bootstrapSettings = new BootstrapSettings();
-      bootstrapSettings.useCdnResources(Boolean.valueOf(System.getProperty("gnuob.site.cdn.enabled", "false")));
-      bootstrapSettings.setJsResourceFilterName("netbrasoft-application-javascript-container");
-      Bootstrap.install(this, bootstrapSettings);
+    final BootstrapSettings bootstrapSettings = new BootstrapSettings();
+    final WebjarsSettings webjarsSettings = new WebjarsSettings();
 
-      final WebjarsSettings webjarsSettings = new WebjarsSettings();
-      webjarsSettings.cdnUrl(System.getProperty("gnuob.site.cdn.url", "//cdnjs.cloudflare.com:80"));
-      webjarsSettings.useCdnResources(Boolean.valueOf(System.getProperty("gnuob.site.cdn.enabled", "false")));
-      WicketWebjars.install(this, webjarsSettings);
+    bootstrapSettings.useCdnResources(Boolean.valueOf(System.getProperty("gnuob.site.cdn.enabled", "false")));
+    bootstrapSettings.setJsResourceFilterName("netbrasoft-application-javascript-container");
+    webjarsSettings.cdnUrl(System.getProperty("gnuob.site.cdn.url", "//cdnjs.cloudflare.com:80"));
+    webjarsSettings.useCdnResources(Boolean.valueOf(System.getProperty("gnuob.site.cdn.enabled", "false")));
 
-      setHeaderResponseDecorator(new RenderJavaScriptToFooterHeaderResponseDecorator());
-      getComponentInstantiationListeners().add(new SpringComponentInjector(this));
-      getApplicationSettings().setUploadProgressUpdatesEnabled(true);
-      getApplicationSettings().setAccessDeniedPage(SignInPage.class);
-      getSecuritySettings().setCryptFactory(new CachingSunJceCryptFactory(System.getProperty("gnuob.site.encryption.key", SecuritySettings.DEFAULT_ENCRYPTION_KEY)));
+    Bootstrap.install(this, bootstrapSettings);
+    WicketWebjars.install(this, webjarsSettings);
 
+    setHeaderResponseDecorator(new RenderJavaScriptToFooterHeaderResponseDecorator());
 
-      if (getConfigurationType() == RuntimeConfigurationType.DEVELOPMENT) {
+    getComponentInstantiationListeners().add(new SpringComponentInjector(this));
+    getApplicationSettings().setUploadProgressUpdatesEnabled(true);
+    getApplicationSettings().setAccessDeniedPage(SignInPage.class);
+    getSecuritySettings().setCryptFactory(new CachingSunJceCryptFactory(System.getProperty("gnuob.site.encryption.key", SecuritySettings.DEFAULT_ENCRYPTION_KEY)));
 
-         mountPage(INSPECTOR_PAGE_HTML, InspectorPage.class);
+    if (getConfigurationType() == RuntimeConfigurationType.DEVELOPMENT) {
 
-         getDebugSettings().setDevelopmentUtilitiesEnabled(true);
-         getDebugSettings().setAjaxDebugModeEnabled(true);
+      mountPage(INSPECTOR_PAGE_HTML, InspectorPage.class);
 
-         WicketSource.configure(this);
-      }
-   }
+      getDebugSettings().setDevelopmentUtilitiesEnabled(true);
+      getDebugSettings().setAjaxDebugModeEnabled(true);
 
-   @Override
-   protected IConverterLocator newConverterLocator() {
-      final ConverterLocator locator = (ConverterLocator) super.newConverterLocator();
-      locator.set(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter());
-      return locator;
-   }
+      WicketSource.configure(this);
+    }
+  }
+
+  @Override
+  protected IConverterLocator newConverterLocator() {
+    final ConverterLocator locator = (ConverterLocator) super.newConverterLocator();
+    locator.set(XMLGregorianCalendar.class, new XmlGregorianCalendarConverter());
+    return locator;
+  }
 }

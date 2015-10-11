@@ -23,53 +23,53 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 public class HeaderPanel extends Panel {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR, AppRoles.MANAGER, AppRoles.EMPLOYEE })
-   class LogoutAjaxLink extends AjaxLink<Void> {
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.ADMINISTRATOR, AppRoles.MANAGER, AppRoles.EMPLOYEE})
+  class LogoutAjaxLink extends AjaxLink<Void> {
 
-      private static final long serialVersionUID = -6950515027229520882L;
+    private static final long serialVersionUID = -6950515027229520882L;
 
-      public LogoutAjaxLink() {
-         super("logout");
-      }
+    public LogoutAjaxLink() {
+      super("logout");
+    }
 
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-         AppServletContainerAuthenticatedWebSession.get().signOut();
-         AppServletContainerAuthenticatedWebSession.get().invalidate();
-         AppServletContainerAuthenticatedWebSession.get().invalidateNow();
-         setResponsePage(SignInPage.class);
-      }
-   }
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      AppServletContainerAuthenticatedWebSession.get().signOut();
+      AppServletContainerAuthenticatedWebSession.get().invalidate();
+      AppServletContainerAuthenticatedWebSession.get().invalidateNow();
+      setResponsePage(SignInPage.class);
+    }
+  }
 
-   private static final long serialVersionUID = 3137234732197409313L;
+  private static final long serialVersionUID = 3137234732197409313L;
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(HeaderPanel.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(HeaderPanel.class);
 
-   public HeaderPanel(String id) {
-      super(id);
-   }
+  public HeaderPanel(String id) {
+    super(id);
+  }
 
-   @Override
-   protected void onInitialize() {
-      try {
-         ServletContext application = WebApplication.get().getServletContext();
-         InputStream inputStream = application.getResourceAsStream("/META-INF/MANIFEST.MF");
-         Attributes attributes = new Manifest(inputStream).getMainAttributes();
+  @Override
+  protected void onInitialize() {
+    try {
+      ServletContext application = WebApplication.get().getServletContext();
+      InputStream inputStream = application.getResourceAsStream("/META-INF/MANIFEST.MF");
+      Attributes attributes = new Manifest(inputStream).getMainAttributes();
 
-         add(new Label("implementationVendor", attributes.getValue("Implementation-Vendor")));
-         add(new Label("implementationTitle", attributes.getValue("Implementation-Title")));
-         add(new Label("implementationVersion", attributes.getValue("Implementation-Version")));
+      add(new Label("implementationVendor", attributes.getValue("Implementation-Vendor")));
+      add(new Label("implementationTitle", attributes.getValue("Implementation-Title")));
+      add(new Label("implementationVersion", attributes.getValue("Implementation-Version")));
 
-      } catch (IOException e) {
-         LOGGER.warn(e.getMessage(), e);
+    } catch (IOException e) {
+      LOGGER.warn(e.getMessage(), e);
 
-         add(new Label("implementationVendor", "-"));
-         add(new Label("implementationTitle", "-"));
-         add(new Label("implementationVersion", "-"));
-      }
+      add(new Label("implementationVendor", "-"));
+      add(new Label("implementationTitle", "-"));
+      add(new Label("implementationVersion", "-"));
+    }
 
-      add(new LogoutAjaxLink());
+    add(new LogoutAjaxLink());
 
-      super.onInitialize();
-   }
+    super.onInitialize();
+  }
 }

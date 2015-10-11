@@ -1,46 +1,50 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
-	<div wicket:id="productPanelContainer">
-		<h1>
-			<small><wicket:message key="definitionMessage" /></small>
-		</h1>
-		<table wicket:id="productTableContainer">
-			<thead>
-				<tr>
-					<td style="border-top: none;" colspan="3"><span wicket:id="feedback"></span></td>
-				</tr>
-				<tr>
-					<td style="border-top: none;" colspan="3" align="left"><a wicket:id="add"><wicket:message key="addMessage" /></a></td>
-				</tr>
-				<tr>
-					<th style="border-top: none;" wicket:id="orderByNumber"><small><wicket:message key="numberMessage" /></small></th>
-					<th style="border-top: none;" wicket:id="orderByName"><small><wicket:message key="nameMessage" /></small></th>
-					<th style="border-top: none;"><small><wicket:message key="operationMessage" /></small></th>
-				</tr>
-			</thead>
-			<tbody wicket:id="productDataviewContainer">
-				<tr wicket:id="productDataview">
-					<td><small><span wicket:id="number"></span></small></td>
-					<td><small><span wicket:id="name"></span></small></td>
-					<td><button wicket:id="remove"></button></td>
-				</tr>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan="3" align="right"><ul wicket:id="productPagingNavigator"></ul></td>
-				</tr>
-			</tfoot>
-		</table>
-		<h2>
-			<small><wicket:message key="detailMessage" /></small>
-		</h2>
-		<div align="right">
-			<a href="#needHelp" data-toggle="collapse" aria-expanded="false" aria-controls="needHelp"><small><wicket:message key="needHelpMessage" /></small></a>
-			<div class="collapse panel panel-default" id="needHelp">
-				<div class="panel-body">
-					<small><wicket:message key="needHelpTextMessage" /></small>
-				</div>
-			</div>
-		</div>
-		<div wicket:id="productViewOrEditPanel"></div>
-	</div>
+  <style type="text/css">
+.productDataviewContainer tr {
+  cursor: pointer;
+}
+</style>
+  <div wicket:id="productPanelContainer">
+    <h1>
+      <small><wicket:message key="definitionMessage" /></small>
+    </h1>
+    <table wicket:id="productTableContainer">
+      <thead>
+        <tr>
+          <td style="border-top: none;" colspan="3"><span wicket:id="feedback"></span></td>
+        </tr>
+        <tr>
+          <td style="border-top: none;" colspan="3" align="left"><a wicket:id="add"><wicket:message key="addMessage" /></a></td>
+        </tr>
+        <tr>
+          <th style="border-top: none;" wicket:id="orderByNumber"><small><wicket:message key="numberMessage" /></small></th>
+          <th colspan="2" style="border-top: none;" wicket:id="orderByName"><small><wicket:message key="nameMessage" /></small></th>
+        </tr>
+      </thead>
+      <tbody wicket:id="productDataviewContainer" class="productDataviewContainer">
+        <tr wicket:id="productDataview">
+          <td><small><span wicket:id="number"></span></small></td>
+          <td><small><span wicket:id="name"></span></small></td>
+          <td align="right"><button wicket:id="remove"></button></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" align="right"><ul wicket:id="productPagingNavigator"></ul></td>
+        </tr>
+      </tfoot>
+    </table>
+    <h2>
+      <small><wicket:message key="detailMessage" /></small>
+    </h2>
+    <div align="right">
+      <a href="#needHelp" data-toggle="collapse" aria-expanded="false" aria-controls="needHelp"><small><wicket:message key="needHelpMessage" /></small></a>
+      <div class="collapse panel panel-default" id="needHelp">
+        <div class="panel-body">
+          <small><wicket:message key="needHelpTextMessage" /></small>
+        </div>
+      </div>
+    </div>
+    <div wicket:id="productViewOrEditPanel"></div>
+  </div>
 </wicket:panel>

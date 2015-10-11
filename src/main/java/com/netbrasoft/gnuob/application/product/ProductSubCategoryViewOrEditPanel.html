@@ -1,17 +1,46 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
-	<wicket:container wicket:id="productSubCategoryViewOrEditFragement" />
-	<wicket:fragment wicket:id="productSubCategoryEditFragement">
-		<div wicket:id="productSubCategoryEditTable">
-			<div wicket:id="productSubCategoriesDataViewContainer">
-				<div wicket:id="productSubCategoriesDataView"></div>
-			</div>
-		</div>
-	</wicket:fragment>
-	<wicket:fragment wicket:id="productSubCategoryViewFragement">
-		<div wicket:id="productSubCategoryViewTable">
-			<div wicket:id="productSubCategoriesDataViewContainer">
-				<div wicket:id="productSubCategoriesDataView"></div>
-			</div>
-		</div>
-	</wicket:fragment>
+  <wicket:container wicket:id="productSubCategoryViewOrEditFragement" />
+  <wicket:fragment wicket:id="productSubCategoryEditFragement">
+    <table wicket:id="productSubCategoryEditTable">
+      <thead>
+        <tr>
+          <td style="border-top: none;"><span wicket:id="feedback"></span></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="border-top: none;">
+            <form wicket:id="subCategoryEditForm" action="">
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <div wicket:id="productSubCategoriesDataViewContainer">
+                    <div wicket:id="productSubCategoriesDataView"></div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </wicket:fragment>
+  <wicket:fragment wicket:id="productSubCategoryViewFragement">
+    <table wicket:id="productSubCategoryViewTable">
+      <tbody>
+        <tr>
+          <td style="border-top: none;">
+            <form wicket:id="subCategoryViewForm" action="">
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <div wicket:id="productSubCategoriesDataViewContainer">
+                    <div wicket:id="productSubCategoriesDataView"></div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </wicket:fragment>
 </wicket:panel>

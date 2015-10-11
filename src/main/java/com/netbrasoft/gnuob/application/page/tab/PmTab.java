@@ -16,32 +16,28 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.tabs.BootstrapTabbedPane
 
 public class PmTab extends AbstractTab {
 
-   private static final long serialVersionUID = 4835579949680085443L;
+  private static final long serialVersionUID = 4835579949680085443L;
 
-   private ITab categoryTab = new CategoryTab(Model.of("Category"));
-   private ITab contentTab = new ContentTab(Model.of("Content"));
-   private ITab productTab = new ProductTab(Model.of("Product"));
+  public PmTab(final IModel<String> title) {
+    super(title);
+  }
 
-   public PmTab(final IModel<String> title) {
-      super(title);
-   }
+  @Override
+  public WebMarkupContainer getPanel(final String panelId) {
+    final BootstrapTabbedPanel<ITab> productTabbedPanel = new BootstrapTabbedPanel<ITab>(panelId, new ArrayList<ITab>()) {
 
-   @Override
-   public WebMarkupContainer getPanel(final String panelId) {
-      BootstrapTabbedPanel<ITab> productTabbedPanel = new BootstrapTabbedPanel<ITab>(panelId, new ArrayList<ITab>()) {
+      private static final long serialVersionUID = -8650291789763661400L;
 
-         private static final long serialVersionUID = -8650291789763661400L;
+      @Override
+      public String getTabContainerCssClass() {
+        return "nav nav-pills nav-stacked col-md-2";
+      }
+    };
 
-         @Override
-         public String getTabContainerCssClass() {
-            return "nav nav-pills nav-stacked col-md-2";
-         }
-      };
+    productTabbedPanel.getTabs().add(new CategoryTab(Model.of("Category")));
+    productTabbedPanel.getTabs().add(new ContentTab(Model.of("Content")));
+    productTabbedPanel.getTabs().add(new ProductTab(Model.of("Product")));
 
-      productTabbedPanel.getTabs().add(categoryTab);
-      productTabbedPanel.getTabs().add(productTab);
-      productTabbedPanel.getTabs().add(contentTab);
-
-      return productTabbedPanel;
-   }
+    return productTabbedPanel;
+  }
 }

@@ -9,14 +9,14 @@ import com.netbrasoft.gnuob.api.Contract;
 
 public class ContractTab extends AbstractTab {
 
-   private static final long serialVersionUID = 4835579949680085443L;
+  private static final long serialVersionUID = 4835579949680085443L;
 
-   public ContractTab(final IModel<String> title) {
-      super(title);
-   }
+  public ContractTab(final IModel<String> title) {
+    super(title);
+  }
 
-   @Override
-   public WebMarkupContainer getPanel(final String panelId) {
-      return new ContractPanel(panelId, Model.of(new Contract()));
-   }
+  @Override
+  public WebMarkupContainer getPanel(final String panelId) {
+    return new ContractPanel(panelId, Model.of(new Contract()));
+  }
 }

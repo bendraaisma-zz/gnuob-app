@@ -8,21 +8,21 @@ import com.netbrasoft.gnuob.application.panel.MainMenuPanel;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 @MountPath("application.html")
-@AuthorizeInstantiation({ AppRoles.MANAGER, AppRoles.EMPLOYEE, AppRoles.ADMINISTRATOR })
+@AuthorizeInstantiation({AppRoles.MANAGER, AppRoles.EMPLOYEE, AppRoles.ADMINISTRATOR})
 public class MainPage extends BasePage {
 
-   private static final long serialVersionUID = 2104311609974795936L;
+  private static final long serialVersionUID = 2104311609974795936L;
 
-   private MainMenuPanel mainMenuPanel = new MainMenuPanel("mainMenuPanel");
+  private MainMenuPanel mainMenuPanel = new MainMenuPanel("mainMenuPanel");
 
-   private final ContentBorder contentBorder = new ContentBorder("contentBorder");
+  private final ContentBorder contentBorder = new ContentBorder("contentBorder");
 
-   @Override
-   protected void onInitialize() {
+  @Override
+  protected void onInitialize() {
 
-      contentBorder.add(mainMenuPanel);
-      add(contentBorder);
+    contentBorder.add(mainMenuPanel);
+    add(contentBorder);
 
-      super.onInitialize();
-   }
+    super.onInitialize();
+  }
 }

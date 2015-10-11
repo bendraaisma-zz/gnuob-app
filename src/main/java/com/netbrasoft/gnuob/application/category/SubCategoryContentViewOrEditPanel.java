@@ -32,152 +32,154 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.TooltipValidation;
 import wicket.contrib.tinymce4.TinyMceBehavior;
 
-@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
+@AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class SubCategoryContentViewOrEditPanel extends Panel {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class SaveAjaxButton extends BootstrapAjaxButton {
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+  class SaveAjaxButton extends BootstrapAjaxButton {
 
-      private static final long serialVersionUID = 2695394292963384938L;
+    private static final long serialVersionUID = 2695394292963384938L;
 
-      public SaveAjaxButton(Form<?> form) {
-         super("save", Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")), form, Buttons.Type.Primary);
-         setSize(Buttons.Size.Small);
-         add(new LoadingBehavior(Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage"))));
+    public SaveAjaxButton(Form<?> form) {
+      super("save", Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")), form, Buttons.Type.Primary);
+      setSize(Buttons.Size.Small);
+      add(new LoadingBehavior(Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage"))));
+    }
+
+    @Override
+    protected void onError(AjaxRequestTarget target, Form<?> form) {
+      form.add(new TooltipValidation());
+      target.add(form);
+      target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")))));
+    }
+
+    @Override
+    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+      try {
+        final Content content = (Content) form.getDefaultModelObject();
+
+        if (content.getId() == 0) {
+          ((Category) markupContainer.getDefaultModelObject()).getContents().add(content);
+        }
+      } catch (final RuntimeException e) {
+        LOGGER.warn(e.getMessage(), e);
+        warn(e.getLocalizedMessage());
+      } finally {
+        target.add(markupContainer.setOutputMarkupId(true));
+        target.add(form.setOutputMarkupId(true));
+        target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")))));
       }
+    }
+  }
 
-      @Override
-      protected void onError(AjaxRequestTarget target, Form<?> form) {
-         form.add(new TooltipValidation());
-         target.add(form);
-         target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")))));
-      }
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+  class SubCategoryContentEditFragement extends Fragment {
 
-      @Override
-      protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-         try {
-            final Content content = (Content) form.getDefaultModelObject();
+    private static final long serialVersionUID = 2975560176491444462L;
 
-            if (content.getId() == 0) {
-               ((Category) markupContainer.getDefaultModelObject()).getContents().add(content);
-            }
-         } catch (final RuntimeException e) {
-            LOGGER.warn(e.getMessage(), e);
-            warn(e.getLocalizedMessage());
-         } finally {
-            target.add(markupContainer.setOutputMarkupId(true));
-            target.add(form.setOutputMarkupId(true));
-            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")))));
-         }
-      }
-   }
+    private final WebMarkupContainer contentEditTable;
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class SubCategoryContentEditFragement extends Fragment {
+    public SubCategoryContentEditFragement() {
+      super("subCategoryContentViewOrEditFragement", "subCategoryContentEditFragement", SubCategoryContentViewOrEditPanel.this,
+          SubCategoryContentViewOrEditPanel.this.getDefaultModel());
 
-      private static final long serialVersionUID = 2975560176491444462L;
+      contentEditTable = new WebMarkupContainer("contentEditTable", getDefaultModel()) {
 
-      private final WebMarkupContainer contentEditTable;
+        private static final long serialVersionUID = 630333471990816489L;
 
-      public SubCategoryContentEditFragement() {
-         super("subCategoryContentViewOrEditFragement", "subCategoryContentEditFragement", SubCategoryContentViewOrEditPanel.this, SubCategoryContentViewOrEditPanel.this.getDefaultModel());
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void onInitialize() {
+          final Form<Content> contentEditForm = new Form<Content>("contentEditForm");
+          contentEditForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
+          contentEditForm.add(new TextField<String>("name"));
+          contentEditForm.add(new TextField<String>("format"));
+          contentEditForm.add(new TextArea<byte[]>("content") {
 
-         contentEditTable = new WebMarkupContainer("contentEditTable", getDefaultModel()) {
+            private static final long serialVersionUID = -7341359315847579440L;
 
-            private static final long serialVersionUID = 630333471990816489L;
-
-            @SuppressWarnings("unchecked")
             @Override
-            protected void onInitialize() {
-               final Form<Content> contentEditForm = new Form<Content>("contentEditForm");
-               contentEditForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
-               contentEditForm.add(new TextField<String>("name"));
-               contentEditForm.add(new TextField<String>("format"));
-               contentEditForm.add(new TextArea<byte[]>("content") {
+            public <C> IConverter<C> getConverter(Class<C> type) {
+              if (byte[].class.isAssignableFrom(type)) {
+                return (IConverter<C>) new ByteArrayConverter();
+              } else {
+                return super.getConverter(type);
+              }
+            };
+          }.add(new TinyMceBehavior()));
+          contentEditForm.add(new SaveAjaxButton(contentEditForm).setOutputMarkupId(true));
+          add(contentEditForm.setOutputMarkupId(true));
+          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
+          add(new TableBehavior());
+          super.onInitialize();
+        }
+      };
+    }
 
-                  private static final long serialVersionUID = -7341359315847579440L;
+    @Override
+    protected void onInitialize() {
+      add(contentEditTable.setOutputMarkupId(true));
+      super.onInitialize();
+    }
+  }
 
-                  @Override
-                  public <C> IConverter<C> getConverter(Class<C> type) {
-                     if (byte[].class.isAssignableFrom(type)) {
-                        return (IConverter<C>) new ByteArrayConverter();
-                     } else {
-                        return super.getConverter(type);
-                     }
-                  };
-               }.add(new TinyMceBehavior()));
-               contentEditForm.add(new SaveAjaxButton(contentEditForm).setOutputMarkupId(true));
-               add(contentEditForm.setOutputMarkupId(true));
-               add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-               add(new TableBehavior());
-               super.onInitialize();
-            }
-         };
-      }
+  @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+  class SubCategoryContentViewFragement extends Fragment {
 
-      @Override
-      protected void onInitialize() {
-         add(contentEditTable.setOutputMarkupId(true));
-         super.onInitialize();
-      }
-   }
+    private static final long serialVersionUID = -8203670073215506846L;
 
-   @AuthorizeAction(action = Action.ENABLE, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
-   class SubCategoryContentViewFragement extends Fragment {
+    private final WebMarkupContainer contentViewTable;
 
-      private static final long serialVersionUID = -8203670073215506846L;
+    public SubCategoryContentViewFragement() {
+      super("subCategoryContentViewOrEditFragement", "subCategoryContentViewFragement", SubCategoryContentViewOrEditPanel.this,
+          SubCategoryContentViewOrEditPanel.this.getDefaultModel());
 
-      private final WebMarkupContainer contentViewTable;
+      contentViewTable = new WebMarkupContainer("contentViewTable", getDefaultModel()) {
 
-      public SubCategoryContentViewFragement() {
-         super("subCategoryContentViewOrEditFragement", "subCategoryContentViewFragement", SubCategoryContentViewOrEditPanel.this, SubCategoryContentViewOrEditPanel.this.getDefaultModel());
+        private static final long serialVersionUID = 630333471990816489L;
 
-         contentViewTable = new WebMarkupContainer("contentViewTable", getDefaultModel()) {
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void onInitialize() {
+          final Form<Content> contentViewForm = new Form<Content>("contentViewForm");
+          contentViewForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
+          contentViewForm.add(new Label("name"));
+          contentViewForm.add(new Label("format"));
+          contentViewForm.add(new Label("content") {
 
-            private static final long serialVersionUID = 630333471990816489L;
+            private static final long serialVersionUID = 721587245052671908L;
 
-            @SuppressWarnings("unchecked")
             @Override
-            protected void onInitialize() {
-               final Form<Content> contentViewForm = new Form<Content>("contentViewForm");
-               contentViewForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
-               contentViewForm.add(new Label("name"));
-               contentViewForm.add(new Label("format"));
-               contentViewForm.add(new Label("content") {
+            public <C> IConverter<C> getConverter(Class<C> type) {
+              if (byte[].class.isAssignableFrom(type)) {
+                return (IConverter<C>) new ByteArrayConverter();
+              } else {
+                return super.getConverter(type);
+              }
+            };
+          }.setEscapeModelStrings(false));
+          add(contentViewForm.setOutputMarkupId(true));
+          add(new TableBehavior());
+          super.onInitialize();
+        }
+      };
+    }
 
-                  private static final long serialVersionUID = 721587245052671908L;
+    @Override
+    protected void onInitialize() {
+      add(contentViewTable.setOutputMarkupId(true));
+      super.onInitialize();
+    }
+  }
 
-                  @Override
-                  public <C> IConverter<C> getConverter(Class<C> type) {
-                     if (byte[].class.isAssignableFrom(type)) {
-                        return (IConverter<C>) new ByteArrayConverter();
-                     } else {
-                        return super.getConverter(type);
-                     }
-                  };
-               }.setEscapeModelStrings(false));
-               add(contentViewForm.setOutputMarkupId(true));
-               add(new TableBehavior());
-               super.onInitialize();
-            }
-         };
-      }
+  private static final long serialVersionUID = 7032777283917504797L;
 
-      @Override
-      protected void onInitialize() {
-         add(contentViewTable.setOutputMarkupId(true));
-         super.onInitialize();
-      }
-   }
+  private static final Logger LOGGER = LoggerFactory.getLogger(CategoryContentViewOrEditPanel.class);
 
-   private static final long serialVersionUID = 7032777283917504797L;
+  private final MarkupContainer markupContainer;
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(CategoryContentViewOrEditPanel.class);
-
-   private final MarkupContainer markupContainer;
-
-   public SubCategoryContentViewOrEditPanel(final String id, final IModel<Content> model, final MarkupContainer markupContainer) {
-      super(id, model);
-      this.markupContainer = markupContainer;
-   }
+  public SubCategoryContentViewOrEditPanel(final String id, final IModel<Content> model, final MarkupContainer markupContainer) {
+    super(id, model);
+    this.markupContainer = markupContainer;
+  }
 }

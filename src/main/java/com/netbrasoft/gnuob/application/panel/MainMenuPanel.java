@@ -16,34 +16,25 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.tabs.BootstrapTabbedPane
 
 public class MainMenuPanel extends Panel {
 
-   private static final long serialVersionUID = -1204513473673934094L;
+  private static final long serialVersionUID = -1204513473673934094L;
 
-   private final ITab crmTab = new CrmTab(Model.of("CRM"));
+  private final BootstrapTabbedPanel<ITab> mainMenuTabbedPanel;
 
-   private final ITab pmTab = new PmTab(Model.of("PM"));
+  public MainMenuPanel(final String id) {
+    super(id);
+    mainMenuTabbedPanel = new BootstrapTabbedPanel<ITab>("mainMenuTabbedPanel", new ArrayList<ITab>());
+  }
 
-   private final ITab alertTab = new AlertTab(Model.of("Alerts"));
+  @Override
+  protected void onInitialize() {
+    mainMenuTabbedPanel.getTabs().add(new CrmTab(Model.of("CRM")));
+    mainMenuTabbedPanel.getTabs().add(new PmTab(Model.of("PM")));
+    mainMenuTabbedPanel.getTabs().add(new AlertTab(Model.of("Alerts")));
+    mainMenuTabbedPanel.getTabs().add(new ReportTab(Model.of("Reports")));
+    mainMenuTabbedPanel.getTabs().add(new AdministrationTab(Model.of("Administration")));
 
-   private final ITab reportTab = new ReportTab(Model.of("Reports"));
+    add(mainMenuTabbedPanel);
 
-   private final ITab administrationTab = new AdministrationTab(Model.of("Administration"));
-
-   private final BootstrapTabbedPanel<ITab> mainMenuTabbedPanel = new BootstrapTabbedPanel<ITab>("mainMenuTabbedPanel", new ArrayList<ITab>());
-
-   public MainMenuPanel(final String id) {
-      super(id);
-   }
-
-   @Override
-   protected void onInitialize() {
-      mainMenuTabbedPanel.getTabs().add(crmTab);
-      mainMenuTabbedPanel.getTabs().add(pmTab);
-      mainMenuTabbedPanel.getTabs().add(alertTab);
-      mainMenuTabbedPanel.getTabs().add(reportTab);
-      mainMenuTabbedPanel.getTabs().add(administrationTab);
-
-      add(mainMenuTabbedPanel);
-
-      super.onInitialize();
-   }
+    super.onInitialize();
+  }
 }

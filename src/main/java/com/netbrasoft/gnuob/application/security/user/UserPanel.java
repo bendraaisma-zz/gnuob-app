@@ -24,107 +24,107 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 
 @SuppressWarnings("unchecked")
-@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR, AppRoles.MANAGER })
+@AuthorizeAction(action = Action.RENDER, roles = {AppRoles.ADMINISTRATOR, AppRoles.MANAGER})
 public class UserPanel extends Panel {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR })
-   class AddAjaxLink extends AjaxLink<Void> {
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.ADMINISTRATOR})
+  class AddAjaxLink extends AjaxLink<Void> {
 
-      private static final long serialVersionUID = -8317730269644885290L;
+    private static final long serialVersionUID = -8317730269644885290L;
 
-      public AddAjaxLink() {
-         super("add");
+    public AddAjaxLink() {
+      super("add");
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      // TODO Auto-generated method stub
+    }
+  }
+
+  class UserDataview extends DataView<User> {
+
+    private static final long serialVersionUID = -5039874949058607907L;
+
+    protected UserDataview() {
+      super("userDataview", userDataProvider, ITEMS_PER_PAGE);
+    }
+
+    @Override
+    protected Item<User> newItem(String id, int index, IModel<User> model) {
+      Item<User> item = super.newItem(id, index, model);
+
+      if (model.getObject().getId() == ((User) userViewOrEditPanel.getDefaultModelObject()).getId()) {
+        item.add(new AttributeModifier("class", "info"));
       }
 
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-         // TODO Auto-generated method stub
-      }
-   }
+      return item;
+    }
 
-   class UserDataview extends DataView<User> {
+    @Override
+    protected void populateItem(Item<User> paramItem) {
+      paramItem.setModel(new CompoundPropertyModel<User>(paramItem.getModelObject()));
+      paramItem.add(new Label("name"));
+      paramItem.add(new Label("description"));
+      paramItem.add(new AjaxEventBehavior("click") {
 
-      private static final long serialVersionUID = -5039874949058607907L;
+        private static final long serialVersionUID = 1L;
 
-      protected UserDataview() {
-         super("userDataview", userDataProvider, ITEMS_PER_PAGE);
-      }
+        @Override
+        public void onEvent(AjaxRequestTarget target) {
+          userViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
+          target.add(getPage());
+        }
+      });
+    }
+  }
 
-      @Override
-      protected Item<User> newItem(String id, int index, IModel<User> model) {
-         Item<User> item = super.newItem(id, index, model);
+  private static final long serialVersionUID = 3703226064705246155L;
 
-         if (model.getObject().getId() == ((User) userViewOrEditPanel.getDefaultModelObject()).getId()) {
-            item.add(new AttributeModifier("class", "info"));
-         }
+  private static final int ITEMS_PER_PAGE = 10;
 
-         return item;
-      }
+  @SpringBean(name = "UserDataProvider", required = true)
+  private GenericTypeDataProvider<User> userDataProvider;
 
-      @Override
-      protected void populateItem(Item<User> paramItem) {
-         paramItem.setModel(new CompoundPropertyModel<User>(paramItem.getModelObject()));
-         paramItem.add(new Label("name"));
-         paramItem.add(new Label("description"));
-         paramItem.add(new AjaxEventBehavior("click") {
+  private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", userDataProvider);
 
-            private static final long serialVersionUID = 1L;
+  private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description", userDataProvider);
 
-            @Override
-            public void onEvent(AjaxRequestTarget target) {
-               userViewOrEditPanel.setDefaultModelObject(paramItem.getModelObject());
-               target.add(getPage());
-            }
-         });
-      }
-   }
+  private UserDataview userDataview = new UserDataview();
 
-   private static final long serialVersionUID = 3703226064705246155L;
+  private WebMarkupContainer userDataviewContainer = new WebMarkupContainer("userDataviewContainer") {
 
-   private static final int ITEMS_PER_PAGE = 10;
+    private static final long serialVersionUID = -497527332092449028L;
 
-   @SpringBean(name = "UserDataProvider", required = true)
-   private GenericTypeDataProvider<User> userDataProvider;
-
-   private OrderByBorder<String> orderByName = new OrderByBorder<String>("orderByName", "name", userDataProvider);
-
-   private OrderByBorder<String> orderByDescription = new OrderByBorder<String>("orderByDescription", "description", userDataProvider);
-
-   private UserDataview userDataview = new UserDataview();
-
-   private WebMarkupContainer userDataviewContainer = new WebMarkupContainer("userDataviewContainer") {
-
-      private static final long serialVersionUID = -497527332092449028L;
-
-      @Override
-      protected void onInitialize() {
-         add(userDataview);
-         super.onInitialize();
-      }
-   };
-
-   private BootstrapPagingNavigator userPagingNavigator = new BootstrapPagingNavigator("userPagingNavigator", userDataview);
-
-   private UserViewOrEditPanel userViewOrEditPanel = new UserViewOrEditPanel("userViewOrEditPanel", (IModel<User>) getDefaultModel());
-
-   public UserPanel(final String id, final IModel<User> model) {
-      super(id, model);
-   }
-
-   @Override
-   protected void onInitialize() {
+    @Override
+    protected void onInitialize() {
+      add(userDataview);
       super.onInitialize();
-      userDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
-      userDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
-      userDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      userDataProvider.setType(new User());
-      userDataProvider.getType().setActive(true);
+    }
+  };
 
-      add(new AddAjaxLink());
-      add(orderByName);
-      add(orderByDescription);
-      add(userDataviewContainer.setOutputMarkupId(true));
-      add(userPagingNavigator);
-      add(userViewOrEditPanel.add(userViewOrEditPanel.new UserViewFragement()).setOutputMarkupId(true));
-   }
+  private BootstrapPagingNavigator userPagingNavigator = new BootstrapPagingNavigator("userPagingNavigator", userDataview);
+
+  private UserViewOrEditPanel userViewOrEditPanel = new UserViewOrEditPanel("userViewOrEditPanel", (IModel<User>) getDefaultModel());
+
+  public UserPanel(final String id, final IModel<User> model) {
+    super(id, model);
+  }
+
+  @Override
+  protected void onInitialize() {
+    super.onInitialize();
+    userDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+    userDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+    userDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
+    userDataProvider.setType(new User());
+    userDataProvider.getType().setActive(true);
+
+    add(new AddAjaxLink());
+    add(orderByName);
+    add(orderByDescription);
+    add(userDataviewContainer.setOutputMarkupId(true));
+    add(userPagingNavigator);
+    add(userViewOrEditPanel.add(userViewOrEditPanel.new UserViewFragement()).setOutputMarkupId(true));
+  }
 }

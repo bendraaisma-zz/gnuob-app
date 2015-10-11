@@ -23,52 +23,52 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.references.JQueryC
 
 public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
 
-   class NetbrasoftApplicationJavaScript extends JavaScriptResourceReference {
+  class NetbrasoftApplicationJavaScript extends JavaScriptResourceReference {
 
-      private static final long serialVersionUID = 62421909883685410L;
+    private static final long serialVersionUID = 62421909883685410L;
 
-      private NetbrasoftApplicationJavaScript() {
-         super(ConfirmationBehavior.class, "bootstrap-confirmation.js");
-      }
+    private NetbrasoftApplicationJavaScript() {
+      super(ConfirmationBehavior.class, "bootstrap-confirmation.js");
+    }
 
-      @Override
-      public List<HeaderItem> getDependencies() {
-         final List<HeaderItem> dependencies = Lists.newArrayList(super.getDependencies());
+    @Override
+    public List<HeaderItem> getDependencies() {
+      final List<HeaderItem> dependencies = Lists.newArrayList(super.getDependencies());
 
-         dependencies.add(JavaScriptHeaderItem.forReference(JQueryCookieJsReference.INSTANCE));
-         dependencies.add(JavaScriptHeaderItem.forReference(WebApplication.get().getJavaScriptLibrarySettings().getJQueryReference()));
-         dependencies.add(JavaScriptHeaderItem.forReference(Bootstrap.getSettings().getJsResourceReference()));
-         dependencies.add(CssHeaderItem.forReference(FontAwesomeCDNCSSReference.instance()));
+      dependencies.add(JavaScriptHeaderItem.forReference(JQueryCookieJsReference.INSTANCE));
+      dependencies.add(JavaScriptHeaderItem.forReference(WebApplication.get().getJavaScriptLibrarySettings().getJQueryReference()));
+      dependencies.add(JavaScriptHeaderItem.forReference(Bootstrap.getSettings().getJsResourceReference()));
+      dependencies.add(CssHeaderItem.forReference(FontAwesomeCDNCSSReference.instance()));
 
-         return dependencies;
-      }
-   }
+      return dependencies;
+    }
+  }
 
-   private static final long serialVersionUID = 8192334293970678397L;
+  private static final long serialVersionUID = 8192334293970678397L;
 
-   private static final String GNUOB_SITE_TITLE_PROPERTY = "gnuob.site.title";
+  private static final String GNUOB_SITE_TITLE_PROPERTY = "gnuob.site.title";
 
-   private static final String VEIL_HEX_LOADING = "veil-hex-loading";
+  private static final String VEIL_HEX_LOADING = "veil-hex-loading";
 
-   @Override
-   public String getAjaxIndicatorMarkupId() {
-      return VEIL_HEX_LOADING;
-   }
+  @Override
+  public String getAjaxIndicatorMarkupId() {
+    return VEIL_HEX_LOADING;
+  }
 
-   @Override
-   protected void onInitialize() {
-      final String site = getRequest().getClientUrl().getHost();
-      final String title = site.replaceFirst("www.", "").split("\\.")[0];
+  @Override
+  protected void onInitialize() {
+    final String site = getRequest().getClientUrl().getHost();
+    final String title = site.replaceFirst("www.", "").split("\\.")[0];
 
-      add(new Label(GNUOB_SITE_TITLE_PROPERTY, System.getProperty(GNUOB_SITE_TITLE_PROPERTY, WordUtils.capitalize(title))));
-      add(new HeaderResponseContainer("netbrasoft-application-javascript-container", "netbrasoft-application-javascript-container"));
+    add(new Label(GNUOB_SITE_TITLE_PROPERTY, System.getProperty(GNUOB_SITE_TITLE_PROPERTY, WordUtils.capitalize(title))));
+    add(new HeaderResponseContainer("netbrasoft-application-javascript-container", "netbrasoft-application-javascript-container"));
 
-      super.onInitialize();
-   }
+    super.onInitialize();
+  }
 
-   @Override
-   public void renderHead(IHeaderResponse response) {
-      response.render(new FilteredHeaderItem(JavaScriptHeaderItem.forReference(new NetbrasoftApplicationJavaScript()), "netbrasoft-application-javascript-container"));
-      super.renderHead(response);
-   }
+  @Override
+  public void renderHead(IHeaderResponse response) {
+    response.render(new FilteredHeaderItem(JavaScriptHeaderItem.forReference(new NetbrasoftApplicationJavaScript()), "netbrasoft-application-javascript-container"));
+    super.renderHead(response);
+  }
 }

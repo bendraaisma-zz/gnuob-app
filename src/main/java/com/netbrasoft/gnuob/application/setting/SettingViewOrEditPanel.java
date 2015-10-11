@@ -25,136 +25,136 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 
 @SuppressWarnings("unchecked")
-@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR, AppRoles.MANAGER })
+@AuthorizeAction(action = Action.RENDER, roles = {AppRoles.ADMINISTRATOR, AppRoles.MANAGER})
 public class SettingViewOrEditPanel extends Panel {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR })
-   class CancelAjaxLink extends AjaxLink<Void> {
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.ADMINISTRATOR})
+  class CancelAjaxLink extends AjaxLink<Void> {
 
-      private static final long serialVersionUID = 4267535261864907719L;
+    private static final long serialVersionUID = 4267535261864907719L;
 
-      public CancelAjaxLink() {
-         super("cancel");
+    public CancelAjaxLink() {
+      super("cancel");
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      SettingViewOrEditPanel.this.removeAll();
+      SettingViewOrEditPanel.this.add(new SettingEditFragement()).setOutputMarkupId(true);
+      target.add(target.getPage());
+    }
+  }
+
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.ADMINISTRATOR})
+  class EditAjaxLink extends AjaxLink<Void> {
+
+    private static final long serialVersionUID = 4267535261864907719L;
+
+    public EditAjaxLink() {
+      super("edit");
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      SettingViewOrEditPanel.this.removeAll();
+      SettingViewOrEditPanel.this.add(new SettingEditFragement().setOutputMarkupId(true));
+      target.add(SettingViewOrEditPanel.this);
+    }
+  }
+
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.ADMINISTRATOR})
+  class SaveAjaxButton extends AjaxButton {
+
+    private static final long serialVersionUID = 2695394292963384938L;
+
+    public SaveAjaxButton(Form<?> form) {
+      super("save", form);
+    }
+
+    @Override
+    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+      try {
+        Setting setting = (Setting) form.getDefaultModelObject();
+
+        if (setting.getId() == 0) {
+          setting.setActive(true);
+
+          settingDataProvider.persist(setting);
+        } else {
+          settingDataProvider.merge(setting);
+        }
+
+        SettingViewOrEditPanel.this.removeAll();
+        SettingViewOrEditPanel.this.add(new SettingViewFragement().setOutputMarkupId(true));
+      } catch (RuntimeException e) {
+        LOGGER.warn(e.getMessage(), e);
+
+        String[] messages = e.getMessage().split(": ");
+        String message = messages[messages.length - 1];
+
+        warn(message.substring(0, 1).toUpperCase() + message.substring(1));
+      } finally {
+        target.add(target.getPage());
       }
+    }
+  }
 
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-         SettingViewOrEditPanel.this.removeAll();
-         SettingViewOrEditPanel.this.add(new SettingEditFragement()).setOutputMarkupId(true);
-         target.add(target.getPage());
-      }
-   }
+  class SettingEditFragement extends Fragment {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR })
-   class EditAjaxLink extends AjaxLink<Void> {
+    private static final long serialVersionUID = 8971798392355786447L;
 
-      private static final long serialVersionUID = 4267535261864907719L;
+    public SettingEditFragement() {
+      super("settingViewOrEditFragement", "settingEditFragement", SettingViewOrEditPanel.this, SettingViewOrEditPanel.this.getDefaultModel());
+    }
 
-      public EditAjaxLink() {
-         super("edit");
-      }
+    @Override
+    protected void onInitialize() {
+      Form<Setting> settingEditForm = new Form<Setting>("settingEditForm");
 
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-         SettingViewOrEditPanel.this.removeAll();
-         SettingViewOrEditPanel.this.add(new SettingEditFragement().setOutputMarkupId(true));
-         target.add(SettingViewOrEditPanel.this);
-      }
-   }
+      settingEditForm.setModel(new CompoundPropertyModel<Setting>((IModel<Setting>) getDefaultModel()));
+      settingEditForm.add(new TextField<String>("property"));
+      settingEditForm.add(new TextField<String>("value"));
+      settingEditForm.add(new TextArea<String>("description"));
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.ADMINISTRATOR })
-   class SaveAjaxButton extends AjaxButton {
+      add(settingEditForm.setOutputMarkupId(true));
+      add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
+      add(new SaveAjaxButton(settingEditForm).setOutputMarkupId(true));
+      add(new CancelAjaxLink().setOutputMarkupId(true));
+      super.onInitialize();
+    }
+  }
 
-      private static final long serialVersionUID = 2695394292963384938L;
+  class SettingViewFragement extends Fragment {
 
-      public SaveAjaxButton(Form<?> form) {
-         super("save", form);
-      }
+    private static final long serialVersionUID = 498703216819003839L;
 
-      @Override
-      protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-         try {
-            Setting setting = (Setting) form.getDefaultModelObject();
+    public SettingViewFragement() {
+      super("settingViewOrEditFragement", "settingViewFragement", SettingViewOrEditPanel.this, SettingViewOrEditPanel.this.getDefaultModel());
+    }
 
-            if (setting.getId() == 0) {
-               setting.setActive(true);
+    @Override
+    protected void onInitialize() {
+      Form<Setting> settingViewForm = new Form<Setting>("settingViewForm");
 
-               settingDataProvider.persist(setting);
-            } else {
-               settingDataProvider.merge(setting);
-            }
+      settingViewForm.setModel(new CompoundPropertyModel<Setting>((IModel<Setting>) getDefaultModel()));
+      settingViewForm.add(new Label("property"));
+      settingViewForm.add(new Label("value"));
+      settingViewForm.add(new Label("description"));
 
-            SettingViewOrEditPanel.this.removeAll();
-            SettingViewOrEditPanel.this.add(new SettingViewFragement().setOutputMarkupId(true));
-         } catch (RuntimeException e) {
-            LOGGER.warn(e.getMessage(), e);
+      add(new EditAjaxLink());
+      add(settingViewForm.setOutputMarkupId(true));
+      super.onInitialize();
+    }
+  }
 
-            String[] messages = e.getMessage().split(": ");
-            String message = messages[messages.length - 1];
+  private static final Logger LOGGER = LoggerFactory.getLogger(SettingViewOrEditPanel.class);
 
-            warn(message.substring(0, 1).toUpperCase() + message.substring(1));
-         } finally {
-            target.add(target.getPage());
-         }
-      }
-   }
+  private static final long serialVersionUID = -8401960249843479048L;
 
-   class SettingEditFragement extends Fragment {
+  @SpringBean(name = "SettingDataProvider", required = true)
+  private GenericTypeDataProvider<Setting> settingDataProvider;
 
-      private static final long serialVersionUID = 8971798392355786447L;
-
-      public SettingEditFragement() {
-         super("settingViewOrEditFragement", "settingEditFragement", SettingViewOrEditPanel.this, SettingViewOrEditPanel.this.getDefaultModel());
-      }
-
-      @Override
-      protected void onInitialize() {
-         Form<Setting> settingEditForm = new Form<Setting>("settingEditForm");
-
-         settingEditForm.setModel(new CompoundPropertyModel<Setting>((IModel<Setting>) getDefaultModel()));
-         settingEditForm.add(new TextField<String>("property"));
-         settingEditForm.add(new TextField<String>("value"));
-         settingEditForm.add(new TextArea<String>("description"));
-
-         add(settingEditForm.setOutputMarkupId(true));
-         add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-         add(new SaveAjaxButton(settingEditForm).setOutputMarkupId(true));
-         add(new CancelAjaxLink().setOutputMarkupId(true));
-         super.onInitialize();
-      }
-   }
-
-   class SettingViewFragement extends Fragment {
-
-      private static final long serialVersionUID = 498703216819003839L;
-
-      public SettingViewFragement() {
-         super("settingViewOrEditFragement", "settingViewFragement", SettingViewOrEditPanel.this, SettingViewOrEditPanel.this.getDefaultModel());
-      }
-
-      @Override
-      protected void onInitialize() {
-         Form<Setting> settingViewForm = new Form<Setting>("settingViewForm");
-
-         settingViewForm.setModel(new CompoundPropertyModel<Setting>((IModel<Setting>) getDefaultModel()));
-         settingViewForm.add(new Label("property"));
-         settingViewForm.add(new Label("value"));
-         settingViewForm.add(new Label("description"));
-
-         add(new EditAjaxLink());
-         add(settingViewForm.setOutputMarkupId(true));
-         super.onInitialize();
-      }
-   }
-
-   private static final Logger LOGGER = LoggerFactory.getLogger(SettingViewOrEditPanel.class);
-
-   private static final long serialVersionUID = -8401960249843479048L;
-
-   @SpringBean(name = "SettingDataProvider", required = true)
-   private GenericTypeDataProvider<Setting> settingDataProvider;
-
-   public SettingViewOrEditPanel(final String id, final IModel<Setting> model) {
-      super(id, model);
-   }
+  public SettingViewOrEditPanel(final String id, final IModel<Setting> model) {
+    super(id, model);
+  }
 }

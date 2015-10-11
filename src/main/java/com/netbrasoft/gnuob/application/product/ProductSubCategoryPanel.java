@@ -1,210 +1,299 @@
 package com.netbrasoft.gnuob.application.product;
 
-import org.apache.wicket.Component;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
-import org.apache.wicket.extensions.markup.html.repeater.data.sort.OrderByBorder;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.netbrasoft.gnuob.api.Category;
+import com.netbrasoft.gnuob.api.OrderBy;
 import com.netbrasoft.gnuob.api.Product;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
-import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
-import de.agilecoders.wicket.core.util.Attributes;
 
-@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
+@SuppressWarnings("unchecked")
+@AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class ProductSubCategoryPanel extends Panel {
 
-   @AuthorizeAction(action = Action.ENABLE, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
-   class CategoryDataview extends DataView<Category> {
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+  class ProductSubCategoryEditFragement extends Fragment {
 
-      private static final long serialVersionUID = -5039874949058607907L;
+    @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+    class CategoryEditTable extends WebMarkupContainer {
 
-      private long selectedObjectId;
+      @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+      class CategoryDataviewContainer extends WebMarkupContainer {
 
-      protected CategoryDataview() {
-         super("categoryDataview", categoryDataProvider, ITEMS_PER_PAGE);
-      }
+        @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+        class CategoryDataview extends DataView<Category> {
 
-      @Override
-      protected Item<Category> newItem(String id, int index, IModel<Category> model) {
-         final Item<Category> item = super.newItem(id, index, model);
-         final long modelObjectId = ((Category) subCategoryViewOrEditPanel.getDefaultModelObject()).getId();
+          private static final long serialVersionUID = -5039874949058607907L;
 
-         if ((model.getObject().getId() == modelObjectId) || modelObjectId == 0) {
-            item.add(new BootstrapBaseBehavior() {
+          private int index = 0;
 
-               private static final long serialVersionUID = -4903722864597601489L;
+          protected CategoryDataview(final String id, final IDataProvider<Category> dataProvider, final long itemsPerPage) {
+            super(id, dataProvider, itemsPerPage);
+          }
 
-               @Override
-               public void onComponentTag(Component component, ComponentTag tag) {
-                  Attributes.addClass(tag, "info");
-               }
-            });
-         }
-         return item;
-      }
-
-      @Override
-      protected void onConfigure() {
-         if (selectedObjectId != ((Product) ProductSubCategoryPanel.this.getDefaultModelObject()).getId()) {
-            selectedObjectId = ((Product) ProductSubCategoryPanel.this.getDefaultModelObject()).getId();
-         }
-         super.onConfigure();
-      }
-
-      @Override
-      protected void populateItem(Item<Category> item) {
-         item.setModel(new CompoundPropertyModel<Category>(item.getModelObject()));
-         item.add(new Label("name"));
-         item.add(new Label("position"));
-         item.add(new AjaxEventBehavior("click") {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void onEvent(AjaxRequestTarget target) {
-               subCategoryViewOrEditPanel.setDefaultModelObject(item.getModelObject());
-               target.add(categoryDataviewContainer.setOutputMarkupId(true));
-               target.add(subCategoryViewOrEditPanel.setOutputMarkupId(true));
+          @Override
+          protected Item<Category> newItem(String id, int index, IModel<Category> model) {
+            final Item<Category> item = super.newItem(id, index, model);
+            if (this.index == index) {
+              item.add(new AttributeModifier("class", "info"));
             }
-         });
+            return item;
+          }
 
-         if (item.getIndex() == 0 && ((Category) subCategoryViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
-            subCategoryViewOrEditPanel.setDefaultModelObject(item.getModelObject());
-         }
+          @Override
+          protected void onConfigure() {
+            if (categoryDataProvider.size() > 0) {
+              productSubCategoryViewOrEditPanel.setEnabled(true);
+              productSubCategoryViewOrEditPanel.removeAll();
+              productSubCategoryViewOrEditPanel.setSelectedModel(Model.of(categoryDataProvider.iterator(index, index + (long) 1).next()));
+              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragement()).setOutputMarkupId(true);
+            } else {
+              productSubCategoryViewOrEditPanel.setEnabled(false);
+              productSubCategoryViewOrEditPanel.removeAll();
+              productSubCategoryViewOrEditPanel.setSelectedModel(Model.of(new Category()));
+              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragement()).setOutputMarkupId(true);
+            }
+            super.onConfigure();
+          }
+
+          @Override
+          protected void populateItem(Item<Category> item) {
+            item.setModel(new CompoundPropertyModel<Category>(item.getModelObject()));
+            item.add(new Label("name").setOutputMarkupId(true));
+            item.add(new Label("position").setOutputMarkupId(true));
+            item.add(new AjaxEventBehavior("click") {
+
+              private static final long serialVersionUID = 1L;
+
+              @Override
+              public void onEvent(AjaxRequestTarget target) {
+                index = item.getIndex();
+                productSubCategoryViewOrEditPanel.removeAll();
+                productSubCategoryViewOrEditPanel.setSelectedModel(item.getModel());
+                target.add(categoryDataviewContainer.setOutputMarkupId(true));
+                target.add(productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragement()).setOutputMarkupId(true));
+              }
+            });
+          }
+        }
+
+        private static final long serialVersionUID = 4047707639075180742L;
+
+        private static final int ITEMS_PER_PAGE = 10;
+
+        private final CategoryDataview categoryDataview;
+
+        public CategoryDataviewContainer(String id, IModel<Product> model) {
+          super(id, model);
+          categoryDataview = new CategoryDataview("categoryDataview", categoryDataProvider, ITEMS_PER_PAGE);
+        }
+
+        @Override
+        protected void onInitialize() {
+          add(categoryDataview.setOutputMarkupId(true));
+          super.onInitialize();
+        }
       }
-   }
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class ProductSubCategoryEditFragement extends Fragment {
+      private static final long serialVersionUID = -3198761923054137704L;
 
-      private static final long serialVersionUID = -3118710638006841019L;
+      private final CategoryDataviewContainer categoryDataviewContainer;
 
-      public ProductSubCategoryEditFragement() {
-         super("productSubCategoryViewOrEditFragement", "productSubCategoryEditFragement", ProductSubCategoryPanel.this, ProductSubCategoryPanel.this.getDefaultModel());
+      private final BootstrapPagingNavigator categoryPagingNavigator;
+
+      private final ProductSubCategoryViewOrEditPanel productSubCategoryViewOrEditPanel;
+
+      public CategoryEditTable(final String id, final IModel<Product> model) {
+        super(id, model);
+        categoryDataviewContainer = new CategoryDataviewContainer("categoryDataviewContainer", (IModel<Product>) CategoryEditTable.this.getDefaultModel());
+        categoryPagingNavigator = new BootstrapPagingNavigator("categoryPagingNavigator", categoryDataviewContainer.categoryDataview);
+        productSubCategoryViewOrEditPanel = new ProductSubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Product>) CategoryEditTable.this.getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
-         add(categoryEditTable.setOutputMarkupId(true));
-         super.onInitialize();
+        add(categoryDataviewContainer.setOutputMarkupId(true));
+        add(categoryPagingNavigator.setOutputMarkupId(true));
+        add(productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragement()).setOutputMarkupId(true));
+        super.onInitialize();
       }
-   }
+    }
 
-   @AuthorizeAction(action = Action.ENABLE, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
-   class ProductSubCategoryViewFragement extends Fragment {
+    private static final long serialVersionUID = -3118710638006841019L;
 
-      private static final long serialVersionUID = 2822717929419097201L;
+    private final CategoryEditTable categoryEditTable;
 
-      public ProductSubCategoryViewFragement() {
-         super("productSubCategoryViewOrEditFragement", "productSubCategoryViewFragement", ProductSubCategoryPanel.this, ProductSubCategoryPanel.this.getDefaultModel());
-      }
+    public ProductSubCategoryEditFragement() {
+      super("productSubCategoryViewOrEditFragement", "productSubCategoryEditFragement", ProductSubCategoryPanel.this, ProductSubCategoryPanel.this.getDefaultModel());
+      categoryEditTable = new CategoryEditTable("categoryEditTable", (IModel<Product>) ProductSubCategoryEditFragement.this.getDefaultModel());
+    }
 
-      @Override
-      protected void onInitialize() {
-         add(categoryViewTable.setOutputMarkupId(true));
-         super.onInitialize();
-      }
-   }
-
-   private static final long serialVersionUID = 3703226064705246155L;
-
-   private static final int ITEMS_PER_PAGE = 10;
-
-   @SpringBean(name = "CategoryDataProvider", required = true)
-   private GenericTypeDataProvider<Category> categoryDataProvider;
-
-   private final CategoryDataview categoryDataview;
-
-   private final OrderByBorder<String> orderByposition;
-
-   private final OrderByBorder<String> orderByName;
-
-   private final WebMarkupContainer categoryDataviewContainer;
-
-   private final BootstrapPagingNavigator categoryPagingNavigator;
-
-   private final ProductSubCategoryViewOrEditPanel subCategoryViewOrEditPanel;
-
-   private final WebMarkupContainer categoryEditTable;
-
-   private final WebMarkupContainer categoryViewTable;
-
-   public ProductSubCategoryPanel(final String id, final IModel<Product> model) {
-      super(id, model);
-
-      orderByposition = new OrderByBorder<String>("orderByPosition", "position", categoryDataProvider);
-      orderByName = new OrderByBorder<String>("orderByName", "name", categoryDataProvider);
-      categoryDataview = new CategoryDataview();
-      categoryPagingNavigator = new BootstrapPagingNavigator("categoryPagingNavigator", categoryDataview);
-      categoryDataviewContainer = new WebMarkupContainer("categoryDataviewContainer") {
-
-         private static final long serialVersionUID = -497527332092449028L;
-
-         @Override
-         protected void onInitialize() {
-            add(categoryDataview);
-            super.onInitialize();
-         }
-      };
-      categoryEditTable = new WebMarkupContainer("categoryEditTable", getDefaultModel()) {
-
-         private static final long serialVersionUID = -497527332092449028L;
-
-         @Override
-         protected void onInitialize() {
-            add(orderByposition);
-            add(orderByName);
-            add(categoryDataviewContainer.setOutputMarkupId(true));
-            add(categoryPagingNavigator);
-            add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryEditFragement()).setOutputMarkupId(true));
-            add(new TableBehavior().hover());
-            super.onInitialize();
-         }
-      };
-      categoryViewTable = new WebMarkupContainer("categoryViewTable", getDefaultModel()) {
-
-         private static final long serialVersionUID = -497527332092449028L;
-
-         @Override
-         protected void onInitialize() {
-            add(orderByposition);
-            add(orderByName);
-            add(categoryDataviewContainer.setOutputMarkupId(true));
-            add(categoryPagingNavigator);
-            add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryViewFragement()).setOutputMarkupId(true));
-            add(new TableBehavior().hover());
-            super.onInitialize();
-         }
-      };
-      subCategoryViewOrEditPanel = new ProductSubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", Model.of(new Category()), ProductSubCategoryPanel.this);
-   }
-
-   @Override
-   protected void onInitialize() {
-      categoryDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
-      categoryDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
-      categoryDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      categoryDataProvider.setType(new Category());
-      categoryDataProvider.getType().setActive(true);
+    @Override
+    protected void onInitialize() {
+      add(categoryEditTable.add(new TableBehavior()).setOutputMarkupId(true));
       super.onInitialize();
-   }
+    }
+  }
+
+  @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+  class ProductSubCategoryViewFragement extends Fragment {
+
+    @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+    class CategoryViewTable extends WebMarkupContainer {
+
+      @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+      class CategoryDataviewContainer extends WebMarkupContainer {
+
+        @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+        class CategoryDataview extends DataView<Category> {
+
+          private static final long serialVersionUID = -5039874949058607907L;
+
+          private int index = 0;
+
+          protected CategoryDataview(final String id, final IDataProvider<Category> dataProvider, final long itemsPerPage) {
+            super(id, dataProvider, itemsPerPage);
+          }
+
+          @Override
+          protected Item<Category> newItem(String id, int index, IModel<Category> model) {
+            final Item<Category> item = super.newItem(id, index, model);
+            if (this.index == index) {
+              item.add(new AttributeModifier("class", "info"));
+            }
+            return item;
+          }
+
+          @Override
+          protected void onConfigure() {
+            if (categoryDataProvider.size() > 0) {
+              productSubCategoryViewOrEditPanel.removeAll();
+              productSubCategoryViewOrEditPanel.setSelectedModel(Model.of(categoryDataProvider.iterator(index, index + (long) 1).next()));
+              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragement()).setOutputMarkupId(true);
+            } else {
+              productSubCategoryViewOrEditPanel.removeAll();
+              productSubCategoryViewOrEditPanel.setSelectedModel(Model.of(new Category()));
+              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragement()).setOutputMarkupId(true);
+            }
+            super.onConfigure();
+          }
+
+          @Override
+          protected void populateItem(Item<Category> item) {
+            item.setModel(new CompoundPropertyModel<Category>(item.getModelObject()));
+            item.add(new Label("name").setOutputMarkupId(true));
+            item.add(new Label("position").setOutputMarkupId(true));
+            item.add(new AjaxEventBehavior("click") {
+
+              private static final long serialVersionUID = 1L;
+
+              @Override
+              public void onEvent(AjaxRequestTarget target) {
+                index = item.getIndex();
+                productSubCategoryViewOrEditPanel.removeAll();
+                productSubCategoryViewOrEditPanel.setSelectedModel(item.getModel());
+                target.add(categoryDataviewContainer.setOutputMarkupId(true));
+                target.add(productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragement()).setOutputMarkupId(true));
+              }
+            });
+          }
+        }
+
+        private static final long serialVersionUID = 4047707639075180742L;
+
+        private static final int ITEMS_PER_PAGE = 10;
+
+        private final CategoryDataview categoryDataview;
+
+        public CategoryDataviewContainer(final String id, final IModel<Product> model) {
+          super(id, model);
+          categoryDataview = new CategoryDataview("categoryDataview", categoryDataProvider, ITEMS_PER_PAGE);
+        }
+
+        @Override
+        protected void onInitialize() {
+          add(categoryDataview.setOutputMarkupId(true));
+          super.onInitialize();
+        }
+      }
+
+      private static final long serialVersionUID = 1254364120794610309L;
+
+      private final CategoryDataviewContainer categoryDataviewContainer;
+
+      private final BootstrapPagingNavigator categoryPagingNavigator;
+
+      private final ProductSubCategoryViewOrEditPanel productSubCategoryViewOrEditPanel;
+
+      public CategoryViewTable(final String id, final IModel<Product> model) {
+        super(id, model);
+        categoryDataviewContainer = new CategoryDataviewContainer("categoryDataviewContainer", (IModel<Product>) CategoryViewTable.this.getDefaultModel());
+        categoryPagingNavigator = new BootstrapPagingNavigator("categoryPagingNavigator", categoryDataviewContainer.categoryDataview);
+        productSubCategoryViewOrEditPanel = new ProductSubCategoryViewOrEditPanel("subCategoryViewOrEditPanel", (IModel<Product>) CategoryViewTable.this.getDefaultModel());
+      }
+
+      @Override
+      protected void onInitialize() {
+        add(categoryDataviewContainer.setOutputMarkupId(true));
+        add(categoryPagingNavigator.setOutputMarkupId(true));
+        add(productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragement()).setOutputMarkupId(true));
+        super.onInitialize();
+      }
+    }
+
+    private static final long serialVersionUID = 2822717929419097201L;
+
+    private final CategoryViewTable categoryViewTable;
+
+    public ProductSubCategoryViewFragement() {
+      super("productSubCategoryViewOrEditFragement", "productSubCategoryViewFragement", ProductSubCategoryPanel.this, ProductSubCategoryPanel.this.getDefaultModel());
+      categoryViewTable = new CategoryViewTable("categoryViewTable", (IModel<Product>) ProductSubCategoryViewFragement.this.getDefaultModel());
+    }
+
+    @Override
+    protected void onInitialize() {
+      add(categoryViewTable.add(new TableBehavior()).setOutputMarkupId(true));
+      super.onInitialize();
+    }
+  }
+
+  private static final long serialVersionUID = 3703226064705246155L;
+
+  @SpringBean(name = "CategoryDataProvider", required = true)
+  private GenericTypeDataProvider<Category> categoryDataProvider;
+
+  public ProductSubCategoryPanel(final String id, final IModel<Product> model) {
+    super(id, model);
+  }
+
+  @Override
+  protected void onInitialize() {
+    categoryDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+    categoryDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+    categoryDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
+    categoryDataProvider.setOrderBy(OrderBy.POSITION_A_Z);
+    categoryDataProvider.setType(new Category());
+    categoryDataProvider.getType().setActive(true);
+    super.onInitialize();
+  }
 }

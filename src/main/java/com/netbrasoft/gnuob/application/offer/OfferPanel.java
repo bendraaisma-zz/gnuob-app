@@ -43,233 +43,232 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationConfig;
 
 @SuppressWarnings("unchecked")
-@AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
+@AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class OfferPanel extends Panel {
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class AddAjaxLink extends BootstrapAjaxLink<String> {
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+  class AddAjaxLink extends BootstrapAjaxLink<String> {
 
-      private static final long serialVersionUID = 9191172039973638020L;
+    private static final long serialVersionUID = 9191172039973638020L;
 
-      public AddAjaxLink() {
-         super("add", Model.of(OfferPanel.this.getString("addMessage")), Buttons.Type.Primary, Model.of(OfferPanel.this.getString("addMessage")));
-         setIconType(GlyphIconType.plus);
-         setSize(Buttons.Size.Small);
+    public AddAjaxLink() {
+      super("add", Model.of(OfferPanel.this.getString("addMessage")), Buttons.Type.Primary, Model.of(OfferPanel.this.getString("addMessage")));
+      setIconType(GlyphIconType.plus);
+      setSize(Buttons.Size.Small);
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      offerViewOrEditPanel.setDefaultModelObject(new Offer());
+      target.add(offerViewOrEditPanel.setOutputMarkupId(true));
+    }
+  }
+
+  @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+  class OfferDataview extends DataView<Offer> {
+
+    private static final long serialVersionUID = -5039874949058607907L;
+
+    private long selectedObjectId;
+
+    protected OfferDataview() {
+      super("offerDataview", offerDataProvider, ITEMS_PER_PAGE);
+    }
+
+    @Override
+    protected Item<Offer> newItem(String id, int index, IModel<Offer> model) {
+      final Item<Offer> item = super.newItem(id, index, model);
+      final long modelObjectId = ((Offer) offerViewOrEditPanel.getDefaultModelObject()).getId();
+
+      if ((model.getObject().getId() == modelObjectId) || modelObjectId == 0) {
+        item.add(new BootstrapBaseBehavior() {
+
+          private static final long serialVersionUID = -4903722864597601489L;
+
+          @Override
+          public void onComponentTag(Component component, ComponentTag tag) {
+            Attributes.addClass(tag, "info");
+          }
+        });
       }
+      return item;
+    }
+
+    @Override
+    protected void onConfigure() {
+      if (selectedObjectId != ((Offer) OfferPanel.this.getDefaultModelObject()).getId()) {
+        selectedObjectId = ((Offer) OfferPanel.this.getDefaultModelObject()).getId();
+      }
+      super.onConfigure();
+    }
+
+    @Override
+    protected void populateItem(Item<Offer> item) {
+      item.setModel(new CompoundPropertyModel<Offer>(item.getModelObject()));
+      item.add(new Label("offerId"));
+      item.add(new Label("contract.contractId"));
+      item.add(new Label("contract.customer.firstName"));
+      item.add(new Label("contract.customer.lastName"));
+      item.add(new AjaxEventBehavior("click") {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onEvent(AjaxRequestTarget target) {
+          offerViewOrEditPanel.setDefaultModelObject(item.getModelObject());
+          target.add(offerDataviewContainer.setOutputMarkupId(true));
+          target.add(offerViewOrEditPanel.setOutputMarkupId(true));
+        }
+      });
+      item.add(new RemoveAjaxLink(item.getModel()).add(new ConfirmationBehavior() {
+
+        private static final long serialVersionUID = 7744720444161839031L;
+
+        @Override
+        public void renderHead(Component component, IHeaderResponse response) {
+          response.render($(component).chain("confirmation", new ConfirmationConfig().withTitle(getString("confirmationTitleMessage")).withSingleton(true).withPopout(true)
+              .withBtnOkLabel(getString("confirmMessage")).withBtnCancelLabel(getString("cancelMessage"))).asDomReadyScript());
+        }
+      }));
+
+      if (item.getIndex() == 0 && ((Offer) offerViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
+        offerViewOrEditPanel.setDefaultModelObject(item.getModelObject());
+      }
+    }
+  }
+
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+  class RemoveAjaxLink extends BootstrapAjaxLink<Offer> {
+
+    private static final long serialVersionUID = -8317730269644885290L;
+
+    public RemoveAjaxLink(final IModel<Offer> model) {
+      super("remove", model, Buttons.Type.Default, Model.of(OfferPanel.this.getString("removeMessage")));
+      setIconType(GlyphIconType.remove);
+      setSize(Buttons.Size.Mini);
+    }
+
+    @Override
+    public void onClick(AjaxRequestTarget target) {
+      try {
+        getModelObject().setActive(false);
+        offerDataProvider.merge(getModelObject());
+        offerViewOrEditPanel.setDefaultModelObject(new Offer());
+      } catch (final RuntimeException e) {
+        LOGGER.warn(e.getMessage(), e);
+        warn(e.getLocalizedMessage());
+      } finally {
+        target.add(getPage());
+      }
+    }
+  }
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(OfferPanel.class);
+
+  private static final long serialVersionUID = 3703226064705246155L;
+
+  private static final int ITEMS_PER_PAGE = 10;
+
+  @SpringBean(name = "OfferDataProvider", required = true)
+  private GenericTypeDataProvider<Offer> offerDataProvider;
+
+  private final OrderByBorder<String> orderByFirstName;
+
+  private final OrderByBorder<String> orderByLastName;
+
+  private final OrderByBorder<String> orderByOfferId;
+
+  private final OrderByBorder<String> orderByContractId;
+
+  private final OfferDataview offerDataview;
+
+  private final WebMarkupContainer offerPanelContainer;
+
+  private final WebMarkupContainer offerTableContainer;
+
+  private final WebMarkupContainer offerDataviewContainer;
+
+  private final BootstrapPagingNavigator offerPagingNavigator;
+
+  private final OfferViewOrEditPanel offerViewOrEditPanel;
+
+  public OfferPanel(final String id, final IModel<Offer> model) {
+    super(id, model);
+
+    orderByFirstName = new OrderByBorder<String>("orderByFirstName", "contract.customer.firstName", offerDataProvider);
+    orderByLastName = new OrderByBorder<String>("orderByLastName", "contract.customer.lastName", offerDataProvider);
+    orderByOfferId = new OrderByBorder<String>("orderByOfferId", "orderId", offerDataProvider);
+    orderByContractId = new OrderByBorder<String>("orderByContractId", "contract.contractId", offerDataProvider);
+    offerDataview = new OfferDataview();
+    offerPagingNavigator = new BootstrapPagingNavigator("offerPagingNavigator", offerDataview);
+    offerDataviewContainer = new WebMarkupContainer("offerDataviewContainer", getDefaultModel()) {
+
+      private static final long serialVersionUID = -497527332092449028L;
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
-         offerViewOrEditPanel.setDefaultModelObject(new Offer());
-         target.add(offerViewOrEditPanel.setOutputMarkupId(true));
+      protected void onInitialize() {
+        add(offerDataview.setOutputMarkupId(true));
+        super.onInitialize();
       }
-   }
+    };
+    offerTableContainer = new WebMarkupContainer("offerTableContainer", getDefaultModel()) {
 
-   @AuthorizeAction(action = Action.ENABLE, roles = { AppRoles.MANAGER, AppRoles.EMPLOYEE })
-   class OfferDataview extends DataView<Offer> {
-
-      private static final long serialVersionUID = -5039874949058607907L;
-
-      private long selectedObjectId;
-
-      protected OfferDataview() {
-         super("offerDataview", offerDataProvider, ITEMS_PER_PAGE);
-      }
+      private static final long serialVersionUID = -497527332092449028L;
 
       @Override
-      protected Item<Offer> newItem(String id, int index, IModel<Offer> model) {
-         final Item<Offer> item = super.newItem(id, index, model);
-         final long modelObjectId = ((Offer) offerViewOrEditPanel.getDefaultModelObject()).getId();
-
-         if ((model.getObject().getId() == modelObjectId) || modelObjectId == 0) {
-            item.add(new BootstrapBaseBehavior() {
-
-               private static final long serialVersionUID = -4903722864597601489L;
-
-               @Override
-               public void onComponentTag(Component component, ComponentTag tag) {
-                  Attributes.addClass(tag, "info");
-               }
-            });
-         }
-         return item;
+      protected void onInitialize() {
+        add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
+        add(new AddAjaxLink().setOutputMarkupId(true));
+        add(orderByFirstName.setOutputMarkupId(true));
+        add(orderByLastName.setOutputMarkupId(true));
+        add(orderByOfferId.setOutputMarkupId(true));
+        add(orderByContractId.setOutputMarkupId(true));
+        add(offerDataviewContainer.setOutputMarkupId(true));
+        add(offerPagingNavigator.setOutputMarkupId(true));
+        add(new TableBehavior().hover());
+        super.onInitialize();
       }
+    };
+    offerPanelContainer = new WebMarkupContainer("offerPanelContainer", getDefaultModel()) {
+
+      private static final long serialVersionUID = -497527332092449028L;
 
       @Override
-      protected void onConfigure() {
-         if(selectedObjectId  != ((Offer)OfferPanel.this.getDefaultModelObject()).getId()) {
-            selectedObjectId = ((Offer)OfferPanel.this.getDefaultModelObject()).getId();
-         }
-         super.onConfigure();
+      protected void onInitialize() {
+        add(offerTableContainer.setOutputMarkupId(true));
+        add(offerViewOrEditPanel.add(offerViewOrEditPanel.new OfferViewFragement()).setOutputMarkupId(true));
+        add(new BootstrapBaseBehavior() {
+
+          private static final long serialVersionUID = -4903722864597601489L;
+
+          @Override
+          public void onComponentTag(Component component, ComponentTag tag) {
+            Attributes.addClass(tag, MediumSpanType.SPAN10);
+          }
+        });
+        super.onInitialize();
       }
+    };
+    offerViewOrEditPanel = new OfferViewOrEditPanel("offerViewOrEditPanel", (IModel<Offer>) getDefaultModel()) {
+
+      private static final long serialVersionUID = -8723947139234708667L;
 
       @Override
-      protected void populateItem(Item<Offer> item) {
-         item.setModel(new CompoundPropertyModel<Offer>(item.getModelObject()));
-         item.add(new Label("offerId"));
-         item.add(new Label("contract.contractId"));
-         item.add(new Label("contract.customer.firstName"));
-         item.add(new Label("contract.customer.lastName"));
-         item.add(new AjaxEventBehavior("click") {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void onEvent(AjaxRequestTarget target) {
-               offerViewOrEditPanel.setDefaultModelObject(item.getModelObject());
-               target.add(offerDataviewContainer.setOutputMarkupId(true));
-               target.add(offerViewOrEditPanel.setOutputMarkupId(true));
-            }
-         });
-         item.add(new RemoveAjaxLink(item.getModel()).add(new ConfirmationBehavior() {
-
-            private static final long serialVersionUID = 7744720444161839031L;
-
-            @Override
-            public void renderHead(Component component, IHeaderResponse response) {
-               response.render($(component)
-                     .chain("confirmation", new ConfirmationConfig().withTitle(getString("confirmationTitleMessage")).withSingleton(true).withPopout(true).withBtnOkLabel(getString("confirmMessage")).withBtnCancelLabel(getString("cancelMessage")))
-                     .asDomReadyScript());
-            }
-         }));
-
-         if (item.getIndex() == 0 && ((Offer) offerViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
-            offerViewOrEditPanel.setDefaultModelObject(item.getModelObject());
-         }
+      protected void onInitialize() {
+        add(new WellBehavior(Size.Small));
+        super.onInitialize();
       }
-   }
+    };
+  }
 
-   @AuthorizeAction(action = Action.RENDER, roles = { AppRoles.MANAGER })
-   class RemoveAjaxLink extends BootstrapAjaxLink<Offer> {
-
-      private static final long serialVersionUID = -8317730269644885290L;
-
-      public RemoveAjaxLink(final IModel<Offer> model) {
-         super("remove", model, Buttons.Type.Default, Model.of(OfferPanel.this.getString("removeMessage")));
-         setIconType(GlyphIconType.remove);
-         setSize(Buttons.Size.Mini);
-      }
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-         try {
-            getModelObject().setActive(false);
-            offerDataProvider.merge(getModelObject());
-            offerViewOrEditPanel.setDefaultModelObject(new Offer());
-         } catch (final RuntimeException e) {
-            LOGGER.warn(e.getMessage(), e);
-            warn(e.getLocalizedMessage());
-         } finally {
-            target.add(getPage());
-         }
-      }
-   }
-
-   private static final Logger LOGGER = LoggerFactory.getLogger(OfferPanel.class);
-
-   private static final long serialVersionUID = 3703226064705246155L;
-
-   private static final int ITEMS_PER_PAGE = 10;
-
-   @SpringBean(name = "OfferDataProvider", required = true)
-   private GenericTypeDataProvider<Offer> offerDataProvider;
-
-   private final OrderByBorder<String> orderByFirstName;
-
-   private final OrderByBorder<String> orderByLastName;
-
-   private final OrderByBorder<String> orderByOfferId;
-
-   private final OrderByBorder<String> orderByContractId;
-
-   private final OfferDataview offerDataview;
-
-   private final WebMarkupContainer offerPanelContainer;
-
-   private final WebMarkupContainer offerTableContainer;
-
-   private final WebMarkupContainer offerDataviewContainer;
-
-   private final BootstrapPagingNavigator offerPagingNavigator;
-
-   private final OfferViewOrEditPanel offerViewOrEditPanel;
-
-   public OfferPanel(final String id, final IModel<Offer> model) {
-      super(id, model);
-
-      orderByFirstName = new OrderByBorder<String>("orderByFirstName", "contract.customer.firstName", offerDataProvider);
-      orderByLastName = new OrderByBorder<String>("orderByLastName", "contract.customer.lastName", offerDataProvider);
-      orderByOfferId = new OrderByBorder<String>("orderByOfferId", "orderId", offerDataProvider);
-      orderByContractId = new OrderByBorder<String>("orderByContractId", "contract.contractId", offerDataProvider);
-      offerDataview = new OfferDataview();
-      offerPagingNavigator = new BootstrapPagingNavigator("offerPagingNavigator", offerDataview);
-      offerDataviewContainer = new WebMarkupContainer("offerDataviewContainer", getDefaultModel()) {
-
-         private static final long serialVersionUID = -497527332092449028L;
-
-         @Override
-         protected void onInitialize() {
-            add(offerDataview.setOutputMarkupId(true));
-            super.onInitialize();
-         }
-      };
-      offerTableContainer = new WebMarkupContainer("offerTableContainer", getDefaultModel()) {
-
-         private static final long serialVersionUID = -497527332092449028L;
-
-         @Override
-         protected void onInitialize() {
-            add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-            add(new AddAjaxLink().setOutputMarkupId(true));
-            add(orderByFirstName.setOutputMarkupId(true));
-            add(orderByLastName.setOutputMarkupId(true));
-            add(orderByOfferId.setOutputMarkupId(true));
-            add(orderByContractId.setOutputMarkupId(true));
-            add(offerDataviewContainer.setOutputMarkupId(true));
-            add(offerPagingNavigator.setOutputMarkupId(true));
-            add(new TableBehavior().hover());
-            super.onInitialize();
-         }
-      };
-      offerPanelContainer = new WebMarkupContainer("offerPanelContainer", getDefaultModel()) {
-
-         private static final long serialVersionUID = -497527332092449028L;
-
-         @Override
-         protected void onInitialize() {
-            add(offerTableContainer.setOutputMarkupId(true));
-            add(offerViewOrEditPanel.add(offerViewOrEditPanel.new OfferViewFragement()).setOutputMarkupId(true));
-            add(new BootstrapBaseBehavior() {
-
-               private static final long serialVersionUID = -4903722864597601489L;
-
-               @Override
-               public void onComponentTag(Component component, ComponentTag tag) {
-                  Attributes.addClass(tag, MediumSpanType.SPAN10);
-               }
-            });
-            super.onInitialize();
-         }
-      };
-      offerViewOrEditPanel = new OfferViewOrEditPanel("offerViewOrEditPanel", (IModel<Offer>) getDefaultModel()) {
-
-         private static final long serialVersionUID = -8723947139234708667L;
-
-         @Override
-         protected void onInitialize() {
-            add(new WellBehavior(Size.Small));
-            super.onInitialize();
-         }
-      };
-   }
-
-   @Override
-   protected void onInitialize() {
-      offerDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
-      offerDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
-      offerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-      offerDataProvider.setType(new Offer());
-      offerDataProvider.getType().setActive(true);
-      add(offerPanelContainer.setOutputMarkupId(true));
-      super.onInitialize();
-   }
+  @Override
+  protected void onInitialize() {
+    offerDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
+    offerDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
+    offerDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
+    offerDataProvider.setType(new Offer());
+    offerDataProvider.getType().setActive(true);
+    add(offerPanelContainer.setOutputMarkupId(true));
+    super.onInitialize();
+  }
 }
