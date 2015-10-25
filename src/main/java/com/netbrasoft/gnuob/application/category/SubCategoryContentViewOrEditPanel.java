@@ -41,16 +41,19 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
     private static final long serialVersionUID = 2695394292963384938L;
 
     public SaveAjaxButton(Form<?> form) {
-      super("save", Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")), form, Buttons.Type.Primary);
+      super("save", Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")), form,
+          Buttons.Type.Primary);
       setSize(Buttons.Size.Small);
-      add(new LoadingBehavior(Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage"))));
+      add(new LoadingBehavior(
+          Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage"))));
     }
 
     @Override
     protected void onError(AjaxRequestTarget target, Form<?> form) {
       form.add(new TooltipValidation());
       target.add(form);
-      target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")))));
+      target.add(SaveAjaxButton.this.add(new LoadingBehavior(
+          Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")))));
     }
 
     @Override
@@ -67,7 +70,8 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
       } finally {
         target.add(markupContainer.setOutputMarkupId(true));
         target.add(form.setOutputMarkupId(true));
-        target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")))));
+        target.add(SaveAjaxButton.this.add(new LoadingBehavior(
+            Model.of(SubCategoryContentViewOrEditPanel.this.getString("saveMessage")))));
       }
     }
   }
@@ -80,7 +84,8 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
     private final WebMarkupContainer contentEditTable;
 
     public SubCategoryContentEditFragement() {
-      super("subCategoryContentViewOrEditFragement", "subCategoryContentEditFragement", SubCategoryContentViewOrEditPanel.this,
+      super("subCategoryContentViewOrEditFragement", "subCategoryContentEditFragement",
+          SubCategoryContentViewOrEditPanel.this,
           SubCategoryContentViewOrEditPanel.this.getDefaultModel());
 
       contentEditTable = new WebMarkupContainer("contentEditTable", getDefaultModel()) {
@@ -91,7 +96,8 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
         @Override
         protected void onInitialize() {
           final Form<Content> contentEditForm = new Form<Content>("contentEditForm");
-          contentEditForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
+          contentEditForm
+              .setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
           contentEditForm.add(new TextField<String>("name"));
           contentEditForm.add(new TextField<String>("format"));
           contentEditForm.add(new TextArea<byte[]>("content") {
@@ -105,11 +111,12 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
               } else {
                 return super.getConverter(type);
               }
-            };
+            }
           }.add(new TinyMceBehavior()));
           contentEditForm.add(new SaveAjaxButton(contentEditForm).setOutputMarkupId(true));
           add(contentEditForm.setOutputMarkupId(true));
-          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
+          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5))
+              .setOutputMarkupId(true));
           add(new TableBehavior());
           super.onInitialize();
         }
@@ -131,7 +138,8 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
     private final WebMarkupContainer contentViewTable;
 
     public SubCategoryContentViewFragement() {
-      super("subCategoryContentViewOrEditFragement", "subCategoryContentViewFragement", SubCategoryContentViewOrEditPanel.this,
+      super("subCategoryContentViewOrEditFragement", "subCategoryContentViewFragement",
+          SubCategoryContentViewOrEditPanel.this,
           SubCategoryContentViewOrEditPanel.this.getDefaultModel());
 
       contentViewTable = new WebMarkupContainer("contentViewTable", getDefaultModel()) {
@@ -142,7 +150,8 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
         @Override
         protected void onInitialize() {
           final Form<Content> contentViewForm = new Form<Content>("contentViewForm");
-          contentViewForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
+          contentViewForm
+              .setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
           contentViewForm.add(new Label("name"));
           contentViewForm.add(new Label("format"));
           contentViewForm.add(new Label("content") {
@@ -156,7 +165,7 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
               } else {
                 return super.getConverter(type);
               }
-            };
+            }
           }.setEscapeModelStrings(false));
           add(contentViewForm.setOutputMarkupId(true));
           add(new TableBehavior());
@@ -174,11 +183,13 @@ public class SubCategoryContentViewOrEditPanel extends Panel {
 
   private static final long serialVersionUID = 7032777283917504797L;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CategoryContentViewOrEditPanel.class);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(CategoryContentViewOrEditPanel.class);
 
   private final MarkupContainer markupContainer;
 
-  public SubCategoryContentViewOrEditPanel(final String id, final IModel<Content> model, final MarkupContainer markupContainer) {
+  public SubCategoryContentViewOrEditPanel(final String id, final IModel<Content> model,
+      final MarkupContainer markupContainer) {
     super(id, model);
     this.markupContainer = markupContainer;
   }

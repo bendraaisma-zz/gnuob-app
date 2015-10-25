@@ -52,7 +52,8 @@ public class ProductContentPanel extends Panel {
 
         private static final long serialVersionUID = 9191172039973638020L;
 
-        public AddAjaxLink(String id, IModel<Product> model, Buttons.Type type, IModel<String> labelModel) {
+        public AddAjaxLink(String id, IModel<Product> model, Buttons.Type type,
+            IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -63,10 +64,13 @@ public class ProductContentPanel extends Panel {
           final Content content = new Content();
           content.setActive(true);
           ((Product) AddAjaxLink.this.getDefaultModelObject()).getContents().add(content);
-          contentDataviewContainer.contentDataview.index = ((Product) AddAjaxLink.this.getDefaultModelObject()).getContents().size() - 1;
+          contentDataviewContainer.contentDataview.index =
+              ((Product) AddAjaxLink.this.getDefaultModelObject()).getContents().size() - 1;
           productContentViewOrEditPanel.removeAll();
           target.add(contentDataviewContainer.setOutputMarkupId(true));
-          target.add(productContentViewOrEditPanel.add(productContentViewOrEditPanel.new ProductContentEditFragement()).setOutputMarkupId(true));
+          target.add(productContentViewOrEditPanel
+              .add(productContentViewOrEditPanel.new ProductContentEditFragment())
+              .setOutputMarkupId(true));
         }
       }
 
@@ -81,7 +85,8 @@ public class ProductContentPanel extends Panel {
 
             private static final long serialVersionUID = -6950515027229520882L;
 
-            public RemoveAjaxLink(String id, IModel<Content> model, Buttons.Type type, IModel<String> labelModel) {
+            public RemoveAjaxLink(String id, IModel<Content> model, Buttons.Type type,
+                IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
@@ -89,11 +94,16 @@ public class ProductContentPanel extends Panel {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-              ((Product) ContentDataviewContainer.this.getDefaultModelObject()).getContents().remove(RemoveAjaxLink.this.getDefaultModelObject());
-              contentDataview.index = ((Product) ContentDataviewContainer.this.getDefaultModelObject()).getContents().size() - 1;
+              ((Product) ContentDataviewContainer.this.getDefaultModelObject()).getContents()
+                  .remove(RemoveAjaxLink.this.getDefaultModelObject());
+              contentDataview.index =
+                  ((Product) ContentDataviewContainer.this.getDefaultModelObject()).getContents()
+                      .size() - 1;
               productContentViewOrEditPanel.removeAll();
               target.add(contentDataviewContainer.setOutputMarkupId(true));
-              target.add(productContentViewOrEditPanel.add(productContentViewOrEditPanel.new ProductContentEditFragement()).setOutputMarkupId(true));
+              target.add(productContentViewOrEditPanel
+                  .add(productContentViewOrEditPanel.new ProductContentEditFragment())
+                  .setOutputMarkupId(true));
             }
           }
 
@@ -101,7 +111,8 @@ public class ProductContentPanel extends Panel {
 
           private int index = 0;
 
-          protected ContentDataview(final String id, final IDataProvider<Content> dataProvider, final long itemsPerPage) {
+          protected ContentDataview(final String id, final IDataProvider<Content> dataProvider,
+              final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -116,24 +127,31 @@ public class ProductContentPanel extends Panel {
 
           @Override
           protected void onConfigure() {
-            final IModel<Product> model = (IModel<Product>) ContentDataviewContainer.this.getDefaultModel();
+            final IModel<Product> model =
+                (IModel<Product>) ContentDataviewContainer.this.getDefaultModel();
             if (!model.getObject().getContents().isEmpty()) {
               productContentViewOrEditPanel.setEnabled(true);
               productContentViewOrEditPanel.removeAll();
-              productContentViewOrEditPanel.setSelectedModel(Model.of(model.getObject().getContents().get(index)));
-              productContentViewOrEditPanel.add(productContentViewOrEditPanel.new ProductContentEditFragement()).setOutputMarkupId(true);
+              productContentViewOrEditPanel
+                  .setSelectedModel(Model.of(model.getObject().getContents().get(index)));
+              productContentViewOrEditPanel
+                  .add(productContentViewOrEditPanel.new ProductContentEditFragment())
+                  .setOutputMarkupId(true);
             } else {
               productContentViewOrEditPanel.setEnabled(false);
               productContentViewOrEditPanel.removeAll();
               productContentViewOrEditPanel.setSelectedModel(Model.of(new Content()));
-              productContentViewOrEditPanel.add(productContentViewOrEditPanel.new ProductContentEditFragement()).setOutputMarkupId(true);
+              productContentViewOrEditPanel
+                  .add(productContentViewOrEditPanel.new ProductContentEditFragment())
+                  .setOutputMarkupId(true);
             }
             super.onConfigure();
           }
 
           @Override
           protected void populateItem(Item<Content> item) {
-            final IModel<Content> compound = new CompoundPropertyModel<Content>(item.getModelObject());
+            final IModel<Content> compound =
+                new CompoundPropertyModel<Content>(item.getModelObject());
             item.setModel(compound);
             item.add(new Label("name").setOutputMarkupId(true));
             item.add(new Label("format").setOutputMarkupId(true));
@@ -147,23 +165,33 @@ public class ProductContentPanel extends Panel {
                 productContentViewOrEditPanel.setSelectedModel(item.getModel());
                 productContentViewOrEditPanel.removeAll();
                 target.add(contentDataviewContainer.setOutputMarkupId(true));
-                target.add(productContentViewOrEditPanel.add(productContentViewOrEditPanel.new ProductContentEditFragement()).setOutputMarkupId(true));
+                target.add(productContentViewOrEditPanel
+                    .add(productContentViewOrEditPanel.new ProductContentEditFragment())
+                    .setOutputMarkupId(true));
               }
             });
             item.add(new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default,
-                Model.of(ProductContentPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY))).add(new ConfirmationBehavior() {
+                Model.of(ProductContentPanel.this
+                    .getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                        .add(new ConfirmationBehavior() {
 
-                  private static final long serialVersionUID = 7744720444161839031L;
+                          private static final long serialVersionUID = 7744720444161839031L;
 
-                  @Override
-                  public void renderHead(Component component, IHeaderResponse response) {
-                    response.render($(component).chain("confirmation",
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                        .asDomReadyScript());
-                  }
-                }));
+                          @Override
+                          public void renderHead(Component component, IHeaderResponse response) {
+                            response.render($(component)
+                                .chain("confirmation",
+                                    new ConfirmationConfig()
+                                        .withTitle(getString(
+                                            NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY))
+                                    .withSingleton(true).withPopout(true)
+                                    .withBtnOkLabel(getString(
+                                        NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                    .withBtnCancelLabel(getString(
+                                        NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                                .asDomReadyScript());
+                          }
+                        }));
           }
         }
 
@@ -182,10 +210,12 @@ public class ProductContentPanel extends Panel {
 
             @Override
             protected List<Content> getData() {
-              return ((Product) ContentDataviewContainer.this.getDefaultModelObject()).getContents();
+              return ((Product) ContentDataviewContainer.this.getDefaultModelObject())
+                  .getContents();
             }
           };
-          contentDataview = new ContentDataview("contentDataview", contentListDataProvider, ITEMS_PER_PAGE);
+          contentDataview =
+              new ContentDataview("contentDataview", contentListDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -207,11 +237,16 @@ public class ProductContentPanel extends Panel {
 
       public ContentEditTable(final String id, final IModel<Product> model) {
         super(id, model);
-        addAjaxLink = new AddAjaxLink("add", (IModel<Product>) ContentEditTable.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(ProductContentPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        contentDataviewContainer = new ContentDataviewContainer("contentDataviewContainer", (IModel<Product>) ContentEditTable.this.getDefaultModel());
-        contentPagingNavigator = new BootstrapPagingNavigator("contentPagingNavigator", contentDataviewContainer.contentDataview);
-        productContentViewOrEditPanel = new ProductContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Product>) ContentEditTable.this.getDefaultModel());
+        addAjaxLink =
+            new AddAjaxLink("add", (IModel<Product>) ContentEditTable.this.getDefaultModel(),
+                Buttons.Type.Primary, Model.of(ProductContentPanel.this
+                    .getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
+        contentDataviewContainer = new ContentDataviewContainer("contentDataviewContainer",
+            (IModel<Product>) ContentEditTable.this.getDefaultModel());
+        contentPagingNavigator = new BootstrapPagingNavigator("contentPagingNavigator",
+            contentDataviewContainer.contentDataview);
+        productContentViewOrEditPanel = new ProductContentViewOrEditPanel("contentViewOrEditPanel",
+            (IModel<Product>) ContentEditTable.this.getDefaultModel());
       }
 
       @Override
@@ -219,7 +254,9 @@ public class ProductContentPanel extends Panel {
         add(addAjaxLink.setOutputMarkupId(true));
         add(contentDataviewContainer.setOutputMarkupId(true));
         add(contentPagingNavigator.setOutputMarkupId(true));
-        add(productContentViewOrEditPanel.add(productContentViewOrEditPanel.new ProductContentEditFragement()).setOutputMarkupId(true));
+        add(productContentViewOrEditPanel
+            .add(productContentViewOrEditPanel.new ProductContentEditFragment())
+            .setOutputMarkupId(true));
         super.onInitialize();
       }
     }
@@ -229,8 +266,10 @@ public class ProductContentPanel extends Panel {
     private final ContentEditTable contentEditTable;
 
     public ProductContentEditFragement() {
-      super("productContentViewOrEditFragement", "productContentEditFragement", ProductContentPanel.this, ProductContentPanel.this.getDefaultModel());
-      contentEditTable = new ContentEditTable("contentEditTable", (IModel<Product>) ProductContentEditFragement.this.getDefaultModel());
+      super("productContentViewOrEditFragement", "productContentEditFragement",
+          ProductContentPanel.this, ProductContentPanel.this.getDefaultModel());
+      contentEditTable = new ContentEditTable("contentEditTable",
+          (IModel<Product>) ProductContentEditFragement.this.getDefaultModel());
     }
 
     @Override
@@ -256,7 +295,8 @@ public class ProductContentPanel extends Panel {
 
           private int index = 0;
 
-          protected ContentDataview(final String id, final IDataProvider<Content> dataProvider, final long itemsPerPage) {
+          protected ContentDataview(final String id, final IDataProvider<Content> dataProvider,
+              final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -271,23 +311,30 @@ public class ProductContentPanel extends Panel {
 
           @Override
           protected void onConfigure() {
-            final IModel<Product> model = (IModel<Product>) ContentDataviewContainer.this.getDefaultModel();
+            final IModel<Product> model =
+                (IModel<Product>) ContentDataviewContainer.this.getDefaultModel();
             if (!model.getObject().getContents().isEmpty()) {
               productContentViewOrEditPanel.setEnabled(true);
               productContentViewOrEditPanel.removeAll();
-              productContentViewOrEditPanel.setSelectedModel(Model.of(model.getObject().getContents().get(index)));
-              productContentViewOrEditPanel.add(productContentViewOrEditPanel.new ProductContentViewFragement()).setOutputMarkupId(true);
+              productContentViewOrEditPanel
+                  .setSelectedModel(Model.of(model.getObject().getContents().get(index)));
+              productContentViewOrEditPanel
+                  .add(productContentViewOrEditPanel.new ProductContentViewFragment())
+                  .setOutputMarkupId(true);
             } else {
               productContentViewOrEditPanel.removeAll();
               productContentViewOrEditPanel.setSelectedModel(Model.of(new Content()));
-              productContentViewOrEditPanel.add(productContentViewOrEditPanel.new ProductContentViewFragement()).setOutputMarkupId(true);
+              productContentViewOrEditPanel
+                  .add(productContentViewOrEditPanel.new ProductContentViewFragment())
+                  .setOutputMarkupId(true);
             }
             super.onConfigure();
           }
 
           @Override
           protected void populateItem(Item<Content> item) {
-            final IModel<Content> compound = new CompoundPropertyModel<Content>(item.getModelObject());
+            final IModel<Content> compound =
+                new CompoundPropertyModel<Content>(item.getModelObject());
             item.setModel(compound);
             item.add(new Label("name").setOutputMarkupId(true));
             item.add(new Label("format").setOutputMarkupId(true));
@@ -301,7 +348,9 @@ public class ProductContentPanel extends Panel {
                 productContentViewOrEditPanel.setSelectedModel(item.getModel());
                 productContentViewOrEditPanel.removeAll();
                 target.add(contentDataviewContainer.setOutputMarkupId(true));
-                target.add(productContentViewOrEditPanel.add(productContentViewOrEditPanel.new ProductContentViewFragement()).setOutputMarkupId(true));
+                target.add(productContentViewOrEditPanel
+                    .add(productContentViewOrEditPanel.new ProductContentViewFragment())
+                    .setOutputMarkupId(true));
               }
             });
           }
@@ -322,10 +371,12 @@ public class ProductContentPanel extends Panel {
 
             @Override
             protected List<Content> getData() {
-              return ((Product) ContentDataviewContainer.this.getDefaultModelObject()).getContents();
+              return ((Product) ContentDataviewContainer.this.getDefaultModelObject())
+                  .getContents();
             }
           };
-          contentDataview = new ContentDataview("contentDataview", contentListDataProvider, ITEMS_PER_PAGE);
+          contentDataview =
+              new ContentDataview("contentDataview", contentListDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -348,9 +399,12 @@ public class ProductContentPanel extends Panel {
       public ContentViewTable(final String id, final IModel<Product> model) {
         super(id, model);
         feedbackPanel = new NotificationPanel("feedback");
-        contentDataviewContainer = new ContentDataviewContainer("contentDataviewContainer", (IModel<Product>) ContentViewTable.this.getDefaultModel());
-        contentPagingNavigator = new BootstrapPagingNavigator("contentPagingNavigator", contentDataviewContainer.contentDataview);
-        productContentViewOrEditPanel = new ProductContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Product>) ContentViewTable.this.getDefaultModel());
+        contentDataviewContainer = new ContentDataviewContainer("contentDataviewContainer",
+            (IModel<Product>) ContentViewTable.this.getDefaultModel());
+        contentPagingNavigator = new BootstrapPagingNavigator("contentPagingNavigator",
+            contentDataviewContainer.contentDataview);
+        productContentViewOrEditPanel = new ProductContentViewOrEditPanel("contentViewOrEditPanel",
+            (IModel<Product>) ContentViewTable.this.getDefaultModel());
       }
 
       @Override
@@ -358,7 +412,9 @@ public class ProductContentPanel extends Panel {
         add(feedbackPanel.setOutputMarkupId(true));
         add(contentDataviewContainer.setOutputMarkupId(true));
         add(contentPagingNavigator.setOutputMarkupId(true));
-        add(productContentViewOrEditPanel.add(productContentViewOrEditPanel.new ProductContentViewFragement()).setOutputMarkupId(true));
+        add(productContentViewOrEditPanel
+            .add(productContentViewOrEditPanel.new ProductContentViewFragment())
+            .setOutputMarkupId(true));
         super.onInitialize();
       }
     }
@@ -368,8 +424,10 @@ public class ProductContentPanel extends Panel {
     private final ContentViewTable contentViewTable;
 
     public ProductContentViewFragement() {
-      super("productContentViewOrEditFragement", "productContentViewFragement", ProductContentPanel.this, ProductContentPanel.this.getDefaultModel());
-      contentViewTable = new ContentViewTable("contentViewTable", (IModel<Product>) ProductContentViewFragement.this.getDefaultModel());
+      super("productContentViewOrEditFragement", "productContentViewFragement",
+          ProductContentPanel.this, ProductContentPanel.this.getDefaultModel());
+      contentViewTable = new ContentViewTable("contentViewTable",
+          (IModel<Product>) ProductContentViewFragement.this.getDefaultModel());
     }
 
     @Override

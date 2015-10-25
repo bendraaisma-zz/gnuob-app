@@ -39,14 +39,13 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
 import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.TooltipValidation;
 import wicket.contrib.tinymce4.TinyMceBehavior;
-import wicket.contrib.tinymce4.ajax.TinyMceAjaxSubmitModifier;
 
 @SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class ContentViewOrEditPanel extends Panel {
 
   @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class ContentEditFragement extends Fragment {
+  class ContentEditFragment extends Fragment {
 
     @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
     class ContentEditTable extends WebMarkupContainer {
@@ -67,7 +66,7 @@ public class ContentViewOrEditPanel extends Panel {
           if (((Content) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
             CancelAjaxLink.this.setDefaultModelObject(contentDataProvider.findById((Content) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(ContentViewOrEditPanel.this.add(new ContentViewFragement()).setOutputMarkupId(true));
+          target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentViewFragment()).setOutputMarkupId(true));
         }
       }
 
@@ -79,8 +78,7 @@ public class ContentViewOrEditPanel extends Panel {
         public SaveAjaxButton(String id, IModel<String> model, Form<?> form, Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))),
-              new TinyMceAjaxSubmitModifier());
+          add(new LoadingBehavior(Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
         }
 
         @Override
@@ -95,9 +93,9 @@ public class ContentViewOrEditPanel extends Panel {
           boolean isException = false;
           try {
             if (((Content) form.getDefaultModelObject()).getId() == 0) {
-              ContentEditTable.this.setDefaultModelObject(contentDataProvider.findById(contentDataProvider.persist(((Content) form.getDefaultModelObject()))));
+              ContentEditTable.this.setDefaultModelObject(contentDataProvider.findById(contentDataProvider.persist((Content) form.getDefaultModelObject())));
             } else {
-              ContentEditTable.this.setDefaultModelObject(contentDataProvider.findById(contentDataProvider.merge(((Content) form.getDefaultModelObject()))));
+              ContentEditTable.this.setDefaultModelObject(contentDataProvider.findById(contentDataProvider.merge((Content) form.getDefaultModelObject())));
             }
           } catch (final RuntimeException e) {
             isException = true;
@@ -109,7 +107,7 @@ public class ContentViewOrEditPanel extends Panel {
           } finally {
             if (!isException) {
               ContentViewOrEditPanel.this.removeAll();
-              target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentViewFragement()).setOutputMarkupId(true));
+              target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentViewFragment()).setOutputMarkupId(true));
             }
           }
         }
@@ -164,9 +162,9 @@ public class ContentViewOrEditPanel extends Panel {
 
     private final ContentEditTable contentEditTable;
 
-    public ContentEditFragement() {
-      super("contentViewOrEditFragement", "contentEditFragement", ContentViewOrEditPanel.this, ContentViewOrEditPanel.this.getDefaultModel());
-      contentEditTable = new ContentEditTable("contentEditTable", (IModel<Content>) ContentEditFragement.this.getDefaultModel());
+    public ContentEditFragment() {
+      super("contentViewOrEditFragment", "contentEditFragment", ContentViewOrEditPanel.this, ContentViewOrEditPanel.this.getDefaultModel());
+      contentEditTable = new ContentEditTable("contentEditTable", (IModel<Content>) ContentEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -177,7 +175,7 @@ public class ContentViewOrEditPanel extends Panel {
   }
 
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
-  class ContentViewFragement extends Fragment {
+  class ContentViewFragment extends Fragment {
 
     @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
     class ContentViewTable extends WebMarkupContainer {
@@ -196,7 +194,7 @@ public class ContentViewOrEditPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           ContentViewOrEditPanel.this.removeAll();
-          target.add(ContentViewOrEditPanel.this.add(new ContentEditFragement().setOutputMarkupId(true)));
+          target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentEditFragment().setOutputMarkupId(true)));
         }
       }
 
@@ -249,7 +247,7 @@ public class ContentViewOrEditPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         ContentViewOrEditPanel.this.removeAll();
-        target.add(ContentViewOrEditPanel.this.add(new ContentEditFragement().setOutputMarkupId(true)));
+        target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentEditFragment().setOutputMarkupId(true)));
       }
     }
 
@@ -257,9 +255,9 @@ public class ContentViewOrEditPanel extends Panel {
 
     private final ContentViewTable contentViewTable;
 
-    public ContentViewFragement() {
-      super("contentViewOrEditFragement", "contentViewFragement", ContentViewOrEditPanel.this, ContentViewOrEditPanel.this.getDefaultModel());
-      contentViewTable = new ContentViewTable("contentViewTable", (IModel<Content>) ContentViewFragement.this.getDefaultModel());
+    public ContentViewFragment() {
+      super("contentViewOrEditFragment", "contentViewFragment", ContentViewOrEditPanel.this, ContentViewOrEditPanel.this.getDefaultModel());
+      contentViewTable = new ContentViewTable("contentViewTable", (IModel<Content>) ContentViewFragment.this.getDefaultModel());
     }
 
     @Override

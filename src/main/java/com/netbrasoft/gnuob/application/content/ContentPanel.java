@@ -230,7 +230,7 @@ public class ContentPanel extends Panel {
     @Override
     protected void onInitialize() {
       add(contentTableContainer.add(new TableBehavior().hover()).setOutputMarkupId(true));
-      add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ContentViewFragement()).setOutputMarkupId(true));
+      add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ContentViewFragment()).setOutputMarkupId(true));
       super.onInitialize();
     }
   }

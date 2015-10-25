@@ -44,7 +44,9 @@ public class CategoryContentViewOrEditPanel extends Panel {
     private final WebMarkupContainer contentEditTable;
 
     public CategoryContentEditFragement() {
-      super("categoryContentViewOrEditFragement", "categoryContentEditFragement", CategoryContentViewOrEditPanel.this, CategoryContentViewOrEditPanel.this.getDefaultModel());
+      super("categoryContentViewOrEditFragement", "categoryContentEditFragement",
+          CategoryContentViewOrEditPanel.this,
+          CategoryContentViewOrEditPanel.this.getDefaultModel());
 
       contentEditTable = new WebMarkupContainer("contentEditTable", getDefaultModel()) {
 
@@ -54,7 +56,8 @@ public class CategoryContentViewOrEditPanel extends Panel {
         @Override
         protected void onInitialize() {
           final Form<Content> contentEditForm = new Form<Content>("contentEditForm");
-          contentEditForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
+          contentEditForm
+              .setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
           contentEditForm.add(new TextField<String>("name"));
           contentEditForm.add(new TextField<String>("format"));
           contentEditForm.add(new TextArea<byte[]>("content") {
@@ -68,11 +71,12 @@ public class CategoryContentViewOrEditPanel extends Panel {
               } else {
                 return super.getConverter(type);
               }
-            };
+            }
           }.add(new TinyMceBehavior()));
           contentEditForm.add(new SaveAjaxButton(contentEditForm).setOutputMarkupId(true));
           add(contentEditForm.setOutputMarkupId(true));
-          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
+          add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5))
+              .setOutputMarkupId(true));
           add(new TableBehavior());
           super.onInitialize();
         }
@@ -94,7 +98,9 @@ public class CategoryContentViewOrEditPanel extends Panel {
     private final WebMarkupContainer contentViewTable;
 
     public CategoryContentViewFragement() {
-      super("categoryContentViewOrEditFragement", "categoryContentViewFragement", CategoryContentViewOrEditPanel.this, CategoryContentViewOrEditPanel.this.getDefaultModel());
+      super("categoryContentViewOrEditFragement", "categoryContentViewFragement",
+          CategoryContentViewOrEditPanel.this,
+          CategoryContentViewOrEditPanel.this.getDefaultModel());
 
       contentViewTable = new WebMarkupContainer("contentViewTable", getDefaultModel()) {
 
@@ -104,7 +110,8 @@ public class CategoryContentViewOrEditPanel extends Panel {
         @Override
         protected void onInitialize() {
           final Form<Content> contentViewForm = new Form<Content>("contentViewForm");
-          contentViewForm.setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
+          contentViewForm
+              .setModel(new CompoundPropertyModel<Content>((IModel<Content>) getDefaultModel()));
           contentViewForm.add(new Label("name"));
           contentViewForm.add(new Label("format"));
           contentViewForm.add(new Label("content") {
@@ -140,16 +147,20 @@ public class CategoryContentViewOrEditPanel extends Panel {
     private static final long serialVersionUID = 2695394292963384938L;
 
     public SaveAjaxButton(Form<?> form) {
-      super("save", Model.of(CategoryContentViewOrEditPanel.this.getString("saveMessage")), form, Buttons.Type.Primary);
+      super("save", Model.of(CategoryContentViewOrEditPanel.this.getString("saveMessage")), form,
+          Buttons.Type.Primary);
       setSize(Buttons.Size.Small);
-      add(new LoadingBehavior(Model.of(CategoryContentViewOrEditPanel.this.getString("saveMessage"))), new TinyMceAjaxSubmitModifier());
+      add(new LoadingBehavior(
+          Model.of(CategoryContentViewOrEditPanel.this.getString("saveMessage"))),
+          new TinyMceAjaxSubmitModifier());
     }
 
     @Override
     protected void onError(AjaxRequestTarget target, Form<?> form) {
       form.add(new TooltipValidation());
       target.add(form);
-      target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(CategoryContentViewOrEditPanel.this.getString("saveMessage")))));
+      target.add(SaveAjaxButton.this.add(new LoadingBehavior(
+          Model.of(CategoryContentViewOrEditPanel.this.getString("saveMessage")))));
     }
 
     @Override
@@ -166,18 +177,21 @@ public class CategoryContentViewOrEditPanel extends Panel {
       } finally {
         target.add(markupContainer.setOutputMarkupId(true));
         target.add(form.setOutputMarkupId(true));
-        target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(CategoryContentViewOrEditPanel.this.getString("saveMessage")))));
+        target.add(SaveAjaxButton.this.add(new LoadingBehavior(
+            Model.of(CategoryContentViewOrEditPanel.this.getString("saveMessage")))));
       }
     }
   }
 
   private static final long serialVersionUID = 7032777283917504797L;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CategoryContentViewOrEditPanel.class);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(CategoryContentViewOrEditPanel.class);
 
   private final MarkupContainer markupContainer;
 
-  public CategoryContentViewOrEditPanel(final String id, final IModel<Content> model, final MarkupContainer markupContainer) {
+  public CategoryContentViewOrEditPanel(final String id, final IModel<Content> model,
+      final MarkupContainer markupContainer) {
     super(id, model);
     this.markupContainer = markupContainer;
   }

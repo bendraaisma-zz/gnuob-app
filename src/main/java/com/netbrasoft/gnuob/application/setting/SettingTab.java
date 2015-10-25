@@ -17,6 +17,8 @@ public class SettingTab extends AbstractTab {
 
   @Override
   public WebMarkupContainer getPanel(final String panelId) {
-    return new SettingPanel(panelId, Model.of(new Setting()));
+    Setting setting = new Setting();
+    setting.setActive(true);
+	return new SettingPanel(panelId, Model.of(setting));
   }
 }

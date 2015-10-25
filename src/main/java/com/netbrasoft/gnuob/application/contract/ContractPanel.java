@@ -193,7 +193,7 @@ public class ContractPanel extends Panel {
 
       private final BootstrapPagingNavigator contractPagingNavigator;
 
-      private final CustomerDataviewContainer contractDataviewContainer;;
+      private final CustomerDataviewContainer contractDataviewContainer;
 
       public ContractTableContainer(final String id, final IModel<Contract> model) {
         super(id, model);

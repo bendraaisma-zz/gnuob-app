@@ -53,7 +53,8 @@ public class ProductSubOptionPanel extends Panel {
 
         private static final long serialVersionUID = 9191172039973638020L;
 
-        public AddAjaxLink(String id, IModel<Product> model, Buttons.Type type, IModel<String> labelModel) {
+        public AddAjaxLink(String id, IModel<Product> model, Buttons.Type type,
+            IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -62,10 +63,13 @@ public class ProductSubOptionPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions().add(new SubOption());
-          subOptionDataviewContainer.subOptionDataview.index = ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions().size() - 1;
+          subOptionDataviewContainer.subOptionDataview.index =
+              ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions().size() - 1;
           productSubOptionViewOrEditPanel.removeAll();
           target.add(subOptionDataviewContainer.setOutputMarkupId(true));
-          target.add(productSubOptionViewOrEditPanel.add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragement()).setOutputMarkupId(true));
+          target.add(productSubOptionViewOrEditPanel
+              .add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragment())
+              .setOutputMarkupId(true));
         }
       }
 
@@ -80,7 +84,8 @@ public class ProductSubOptionPanel extends Panel {
 
             private static final long serialVersionUID = -6950515027229520882L;
 
-            public RemoveAjaxLink(String id, IModel<SubOption> model, Buttons.Type type, IModel<String> labelModel) {
+            public RemoveAjaxLink(String id, IModel<SubOption> model, Buttons.Type type,
+                IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
@@ -88,11 +93,15 @@ public class ProductSubOptionPanel extends Panel {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-              ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions().remove(RemoveAjaxLink.this.getDefaultModelObject());
-              subOptionDataview.index = ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions().size() - 1;
+              ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions()
+                  .remove(RemoveAjaxLink.this.getDefaultModelObject());
+              subOptionDataview.index =
+                  ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions().size() - 1;
               productSubOptionViewOrEditPanel.removeAll();
               target.add(subOptionDataviewContainer.setOutputMarkupId(true));
-              target.add(productSubOptionViewOrEditPanel.add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragement()).setOutputMarkupId(true));
+              target.add(productSubOptionViewOrEditPanel
+                  .add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragment())
+                  .setOutputMarkupId(true));
             }
           }
 
@@ -100,7 +109,8 @@ public class ProductSubOptionPanel extends Panel {
 
           private int index = 0;
 
-          protected SubOptionDataview(final String id, final IDataProvider<SubOption> dataProvider, final long itemsPerPage) {
+          protected SubOptionDataview(final String id, final IDataProvider<SubOption> dataProvider,
+              final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -118,14 +128,22 @@ public class ProductSubOptionPanel extends Panel {
             if (!ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions().isEmpty()) {
               productSubOptionViewOrEditPanel.setEnabled(true);
               productSubOptionViewOrEditPanel.removeAll();
-              productSubOptionViewOrEditPanel.setSelectedModel(Model.of(ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions().get(index)),
+              productSubOptionViewOrEditPanel
+                  .setSelectedModel(
+                      Model.of(ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions()
+                          .get(index)),
                   Model.of(ProductSubOptionPanel.this.selectedModel.getObject()));
-              productSubOptionViewOrEditPanel.add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragement()).setOutputMarkupId(true);
+              productSubOptionViewOrEditPanel
+                  .add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragment())
+                  .setOutputMarkupId(true);
             } else {
               productSubOptionViewOrEditPanel.setEnabled(false);
               productSubOptionViewOrEditPanel.removeAll();
-              productSubOptionViewOrEditPanel.setSelectedModel(Model.of(new SubOption()), Model.of(ProductSubOptionPanel.this.selectedModel.getObject()));
-              productSubOptionViewOrEditPanel.add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragement()).setOutputMarkupId(true);
+              productSubOptionViewOrEditPanel.setSelectedModel(Model.of(new SubOption()),
+                  Model.of(ProductSubOptionPanel.this.selectedModel.getObject()));
+              productSubOptionViewOrEditPanel
+                  .add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragment())
+                  .setOutputMarkupId(true);
             }
             super.onConfigure();
           }
@@ -143,26 +161,37 @@ public class ProductSubOptionPanel extends Panel {
               @Override
               public void onEvent(AjaxRequestTarget target) {
                 index = item.getIndex();
-                productSubOptionViewOrEditPanel.setSelectedModel(item.getModel(), Model.of(ProductSubOptionPanel.this.selectedModel.getObject()));
+                productSubOptionViewOrEditPanel.setSelectedModel(item.getModel(),
+                    Model.of(ProductSubOptionPanel.this.selectedModel.getObject()));
                 productSubOptionViewOrEditPanel.removeAll();
                 target.add(subOptionDataviewContainer.setOutputMarkupId(true));
-                target.add(productSubOptionViewOrEditPanel.add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragement()).setOutputMarkupId(true));
+                target.add(productSubOptionViewOrEditPanel
+                    .add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragment())
+                    .setOutputMarkupId(true));
               }
             });
             item.add(new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default,
-                Model.of(ProductSubOptionPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY))).add(new ConfirmationBehavior() {
+                Model.of(ProductSubOptionPanel.this
+                    .getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                        .add(new ConfirmationBehavior() {
 
-                  private static final long serialVersionUID = 7744720444161839031L;
+                          private static final long serialVersionUID = 7744720444161839031L;
 
-                  @Override
-                  public void renderHead(Component component, IHeaderResponse response) {
-                    response.render($(component).chain("confirmation",
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                        .asDomReadyScript());
-                  }
-                }));
+                          @Override
+                          public void renderHead(Component component, IHeaderResponse response) {
+                            response.render($(component)
+                                .chain("confirmation",
+                                    new ConfirmationConfig()
+                                        .withTitle(getString(
+                                            NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY))
+                                    .withSingleton(true).withPopout(true)
+                                    .withBtnOkLabel(getString(
+                                        NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                    .withBtnCancelLabel(getString(
+                                        NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                                .asDomReadyScript());
+                          }
+                        }));
           }
         }
 
@@ -183,7 +212,8 @@ public class ProductSubOptionPanel extends Panel {
               return ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions();
             }
           };
-          subOptionDataview = new SubOptionDataview("subOptionDataview", subOptionListDataProvider, ITEMS_PER_PAGE);
+          subOptionDataview =
+              new SubOptionDataview("subOptionDataview", subOptionListDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -205,11 +235,17 @@ public class ProductSubOptionPanel extends Panel {
 
       public SubOptionEditTable(final String id, final IModel<Product> model) {
         super(id, model);
-        addAjaxLink = new AddAjaxLink("add", (IModel<Product>) SubOptionEditTable.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(ProductSubOptionPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        subOptionDataviewContainer = new SubOptionDataviewContainer("subOptionDataviewContainer", (IModel<Product>) SubOptionEditTable.this.getDefaultModel());
-        subOptionPagingNavigator = new BootstrapPagingNavigator("subOptionPagingNavigator", subOptionDataviewContainer.subOptionDataview);
-        productSubOptionViewOrEditPanel = new ProductSubOptionViewOrEditPanel("productSubOptionViewOrEditPanel", (IModel<Product>) SubOptionEditTable.this.getDefaultModel());
+        addAjaxLink =
+            new AddAjaxLink("add", (IModel<Product>) SubOptionEditTable.this.getDefaultModel(),
+                Buttons.Type.Primary, Model.of(ProductSubOptionPanel.this
+                    .getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
+        subOptionDataviewContainer = new SubOptionDataviewContainer("subOptionDataviewContainer",
+            (IModel<Product>) SubOptionEditTable.this.getDefaultModel());
+        subOptionPagingNavigator = new BootstrapPagingNavigator("subOptionPagingNavigator",
+            subOptionDataviewContainer.subOptionDataview);
+        productSubOptionViewOrEditPanel =
+            new ProductSubOptionViewOrEditPanel("productSubOptionViewOrEditPanel",
+                (IModel<Product>) SubOptionEditTable.this.getDefaultModel());
       }
 
       @Override
@@ -217,7 +253,9 @@ public class ProductSubOptionPanel extends Panel {
         add(addAjaxLink.setOutputMarkupId(true));
         add(subOptionDataviewContainer.setOutputMarkupId(true));
         add(subOptionPagingNavigator.setOutputMarkupId(true));
-        add(productSubOptionViewOrEditPanel.add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragement()).setOutputMarkupId(true));
+        add(productSubOptionViewOrEditPanel
+            .add(productSubOptionViewOrEditPanel.new ProductSubOptionEditFragment())
+            .setOutputMarkupId(true));
         super.onInitialize();
       }
     }
@@ -227,8 +265,10 @@ public class ProductSubOptionPanel extends Panel {
     private final SubOptionEditTable subOptionEditTable;
 
     public ProductSubOptionEditFragement() {
-      super("productSubOptionViewOrEditFragement", "productSubOptionEditFragement", ProductSubOptionPanel.this, ProductSubOptionPanel.this.getDefaultModel());
-      subOptionEditTable = new SubOptionEditTable("subOptionEditTable", (IModel<Product>) ProductSubOptionEditFragement.this.getDefaultModel());
+      super("productSubOptionViewOrEditFragement", "productSubOptionEditFragement",
+          ProductSubOptionPanel.this, ProductSubOptionPanel.this.getDefaultModel());
+      subOptionEditTable = new SubOptionEditTable("subOptionEditTable",
+          (IModel<Product>) ProductSubOptionEditFragement.this.getDefaultModel());
     }
 
     @Override
@@ -254,7 +294,8 @@ public class ProductSubOptionPanel extends Panel {
 
           private int index = 0;
 
-          protected SubOptionDataview(final String id, final IDataProvider<SubOption> dataProvider, final long itemsPerPage) {
+          protected SubOptionDataview(final String id, final IDataProvider<SubOption> dataProvider,
+              final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -271,13 +312,21 @@ public class ProductSubOptionPanel extends Panel {
           protected void onConfigure() {
             if (!ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions().isEmpty()) {
               productSubOptionViewOrEditPanel.removeAll();
-              productSubOptionViewOrEditPanel.setSelectedModel(Model.of(ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions().get(index)),
+              productSubOptionViewOrEditPanel
+                  .setSelectedModel(
+                      Model.of(ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions()
+                          .get(index)),
                   Model.of(ProductSubOptionPanel.this.selectedModel.getObject()));
-              productSubOptionViewOrEditPanel.add(productSubOptionViewOrEditPanel.new ProductSubOptionViewFragement()).setOutputMarkupId(true);
+              productSubOptionViewOrEditPanel
+                  .add(productSubOptionViewOrEditPanel.new ProductSubOptionViewFragment())
+                  .setOutputMarkupId(true);
             } else {
               productSubOptionViewOrEditPanel.removeAll();
-              productSubOptionViewOrEditPanel.setSelectedModel(Model.of(new SubOption()), Model.of(ProductSubOptionPanel.this.selectedModel.getObject()));
-              productSubOptionViewOrEditPanel.add(productSubOptionViewOrEditPanel.new ProductSubOptionViewFragement()).setOutputMarkupId(true);
+              productSubOptionViewOrEditPanel.setSelectedModel(Model.of(new SubOption()),
+                  Model.of(ProductSubOptionPanel.this.selectedModel.getObject()));
+              productSubOptionViewOrEditPanel
+                  .add(productSubOptionViewOrEditPanel.new ProductSubOptionViewFragment())
+                  .setOutputMarkupId(true);
             }
             super.onConfigure();
           }
@@ -295,10 +344,13 @@ public class ProductSubOptionPanel extends Panel {
               @Override
               public void onEvent(AjaxRequestTarget target) {
                 index = item.getIndex();
-                productSubOptionViewOrEditPanel.setSelectedModel(item.getModel(), Model.of(ProductSubOptionPanel.this.selectedModel.getObject()));
+                productSubOptionViewOrEditPanel.setSelectedModel(item.getModel(),
+                    Model.of(ProductSubOptionPanel.this.selectedModel.getObject()));
                 productSubOptionViewOrEditPanel.removeAll();
                 target.add(subOptionDataviewContainer.setOutputMarkupId(true));
-                target.add(productSubOptionViewOrEditPanel.add(productSubOptionViewOrEditPanel.new ProductSubOptionViewFragement()).setOutputMarkupId(true));
+                target.add(productSubOptionViewOrEditPanel
+                    .add(productSubOptionViewOrEditPanel.new ProductSubOptionViewFragment())
+                    .setOutputMarkupId(true));
               }
             });
           }
@@ -321,7 +373,8 @@ public class ProductSubOptionPanel extends Panel {
               return ProductSubOptionPanel.this.selectedModel.getObject().getSubOptions();
             }
           };
-          subOptionDataview = new SubOptionDataview("subOptionDataview", subOptionListDataProvider, ITEMS_PER_PAGE);
+          subOptionDataview =
+              new SubOptionDataview("subOptionDataview", subOptionListDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -344,9 +397,13 @@ public class ProductSubOptionPanel extends Panel {
       public SubOptionViewTable(final String id, final IModel<Product> model) {
         super(id, model);
         feedbackPanel = new NotificationPanel("feedback");
-        subOptionDataviewContainer = new SubOptionDataviewContainer("subOptionDataviewContainer", (IModel<Product>) SubOptionViewTable.this.getDefaultModel());
-        subOptionPagingNavigator = new BootstrapPagingNavigator("subOptionPagingNavigator", subOptionDataviewContainer.subOptionDataview);
-        productSubOptionViewOrEditPanel = new ProductSubOptionViewOrEditPanel("productSubOptionViewOrEditPanel", (IModel<Product>) SubOptionViewTable.this.getDefaultModel());
+        subOptionDataviewContainer = new SubOptionDataviewContainer("subOptionDataviewContainer",
+            (IModel<Product>) SubOptionViewTable.this.getDefaultModel());
+        subOptionPagingNavigator = new BootstrapPagingNavigator("subOptionPagingNavigator",
+            subOptionDataviewContainer.subOptionDataview);
+        productSubOptionViewOrEditPanel =
+            new ProductSubOptionViewOrEditPanel("productSubOptionViewOrEditPanel",
+                (IModel<Product>) SubOptionViewTable.this.getDefaultModel());
       }
 
       @Override
@@ -354,7 +411,9 @@ public class ProductSubOptionPanel extends Panel {
         add(feedbackPanel.setOutputMarkupId(true));
         add(subOptionDataviewContainer.setOutputMarkupId(true));
         add(subOptionPagingNavigator.setOutputMarkupId(true));
-        add(productSubOptionViewOrEditPanel.add(productSubOptionViewOrEditPanel.new ProductSubOptionViewFragement()).setOutputMarkupId(true));
+        add(productSubOptionViewOrEditPanel
+            .add(productSubOptionViewOrEditPanel.new ProductSubOptionViewFragment())
+            .setOutputMarkupId(true));
         super.onInitialize();
       }
     }
@@ -364,8 +423,10 @@ public class ProductSubOptionPanel extends Panel {
     private final SubOptionViewTable subOptionViewTable;
 
     public ProductSubOptionViewFragement() {
-      super("productSubOptionViewOrEditFragement", "productSubOptionViewFragement", ProductSubOptionPanel.this, ProductSubOptionPanel.this.getDefaultModel());
-      subOptionViewTable = new SubOptionViewTable("subOptionViewTable", (IModel<Product>) ProductSubOptionViewFragement.this.getDefaultModel());
+      super("productSubOptionViewOrEditFragement", "productSubOptionViewFragement",
+          ProductSubOptionPanel.this, ProductSubOptionPanel.this.getDefaultModel());
+      subOptionViewTable = new SubOptionViewTable("subOptionViewTable",
+          (IModel<Product>) ProductSubOptionViewFragement.this.getDefaultModel());
     }
 
     @Override

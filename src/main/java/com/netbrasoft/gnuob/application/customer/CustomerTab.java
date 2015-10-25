@@ -17,6 +17,8 @@ public class CustomerTab extends AbstractTab {
 
   @Override
   public WebMarkupContainer getPanel(final String panelId) {
-    return new CustomerPanel(panelId, Model.of(new Customer()));
+    Customer customer = new Customer();
+    customer.setActive(true);
+	return new CustomerPanel(panelId, Model.of(customer));
   }
 }

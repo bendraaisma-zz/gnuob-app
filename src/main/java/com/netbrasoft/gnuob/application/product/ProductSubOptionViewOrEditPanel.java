@@ -36,7 +36,7 @@ import wicket.contrib.tinymce4.ajax.TinyMceAjaxSubmitModifier;
 public class ProductSubOptionViewOrEditPanel extends Panel {
 
   @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class ProductSubOptionEditFragement extends Fragment {
+  class ProductSubOptionEditFragment extends Fragment {
 
     @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
     class SubOptionEditTable extends WebMarkupContainer {
@@ -46,26 +46,34 @@ public class ProductSubOptionViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<SubOption> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model,
+            final Form<SubOption> form, final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(ProductSubOptionViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY))), new TinyMceAjaxSubmitModifier());
+          add(new LoadingBehavior(Model.of(ProductSubOptionViewOrEditPanel.this
+              .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY))),
+              new TinyMceAjaxSubmitModifier());
         }
 
         @Override
         protected void onError(AjaxRequestTarget target, Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductSubOptionViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this
+              .add(new LoadingBehavior(Model.of(ProductSubOptionViewOrEditPanel.this
+                  .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
           if (((SubOption) form.getDefaultModelObject()).getId() == 0) {
-            ProductSubOptionViewOrEditPanel.this.selectedParentModel.getObject().getSubOptions().add((SubOption) form.getDefaultModelObject());
+            ProductSubOptionViewOrEditPanel.this.selectedParentModel.getObject().getSubOptions()
+                .add((SubOption) form.getDefaultModelObject());
           }
           target.add(form.setOutputMarkupId(true));
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductSubOptionViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this
+              .add(new LoadingBehavior(Model.of(ProductSubOptionViewOrEditPanel.this
+                  .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
           target.add(ProductSubOptionViewOrEditPanel.this.getParent().setOutputMarkupId(true));
         }
       }
@@ -78,15 +86,21 @@ public class ProductSubOptionViewOrEditPanel extends Panel {
 
       public SubOptionEditTable(final String id, final IModel<Product> model) {
         super(id, model);
-        subOptionEditForm = new BootstrapForm<SubOption>("subOptionEditForm", new CompoundPropertyModel<SubOption>(ProductSubOptionViewOrEditPanel.this.selectedModel));
-        saveAjaxButton = new SaveAjaxButton("save", Model.of(ProductSubOptionViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)),
+        subOptionEditForm =
+            new BootstrapForm<SubOption>("subOptionEditForm", new CompoundPropertyModel<SubOption>(
+                ProductSubOptionViewOrEditPanel.this.selectedModel));
+        saveAjaxButton = new SaveAjaxButton("save",
+            Model.of(ProductSubOptionViewOrEditPanel.this
+                .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)),
             subOptionEditForm, Buttons.Type.Primary);
       }
 
       @Override
       protected void onInitialize() {
-        subOptionEditForm.add(new TextArea<String>("value").add(StringValidator.maximumLength(128)).setRequired(true).setOutputMarkupId(true));
-        subOptionEditForm.add(new TextArea<String>("description").add(StringValidator.maximumLength(128)).setRequired(true).setOutputMarkupId(true));
+        subOptionEditForm.add(new TextArea<String>("value").add(StringValidator.maximumLength(128))
+            .setRequired(true).setOutputMarkupId(true));
+        subOptionEditForm.add(new TextArea<String>("description")
+            .add(StringValidator.maximumLength(128)).setRequired(true).setOutputMarkupId(true));
         subOptionEditForm.add(new BootstrapCheckbox("disabled").setOutputMarkupId(true));
         subOptionEditForm.add(saveAjaxButton.setOutputMarkupId(true));
         add(subOptionEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
@@ -98,10 +112,12 @@ public class ProductSubOptionViewOrEditPanel extends Panel {
 
     private final SubOptionEditTable subOptionEditTable;
 
-    public ProductSubOptionEditFragement() {
-      super("productSubOptionViewOrEditFragement", "productSubOptionEditFragement", ProductSubOptionViewOrEditPanel.this,
+    public ProductSubOptionEditFragment() {
+      super("productSubOptionViewOrEditFragment", "productSubOptionEditFragment",
+          ProductSubOptionViewOrEditPanel.this,
           ProductSubOptionViewOrEditPanel.this.getDefaultModel());
-      subOptionEditTable = new SubOptionEditTable("subOptionEditTable", (IModel<Product>) ProductSubOptionViewOrEditPanel.this.getDefaultModel());
+      subOptionEditTable = new SubOptionEditTable("subOptionEditTable",
+          (IModel<Product>) ProductSubOptionViewOrEditPanel.this.getDefaultModel());
     }
 
     @Override
@@ -112,7 +128,7 @@ public class ProductSubOptionViewOrEditPanel extends Panel {
   }
 
   @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class ProductSubOptionViewFragement extends Fragment {
+  class ProductSubOptionViewFragment extends Fragment {
 
     @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
     class SubOptionViewTable extends WebMarkupContainer {
@@ -123,7 +139,9 @@ public class ProductSubOptionViewOrEditPanel extends Panel {
 
       public SubOptionViewTable(final String id, final IModel<Product> model) {
         super(id, model);
-        subOptionViewForm = new BootstrapForm<SubOption>("subOptionViewForm", new CompoundPropertyModel<SubOption>(ProductSubOptionViewOrEditPanel.this.selectedModel));
+        subOptionViewForm =
+            new BootstrapForm<SubOption>("subOptionViewForm", new CompoundPropertyModel<SubOption>(
+                ProductSubOptionViewOrEditPanel.this.selectedModel));
       }
 
       @Override
@@ -140,10 +158,12 @@ public class ProductSubOptionViewOrEditPanel extends Panel {
 
     private final SubOptionViewTable subOptionViewTable;
 
-    public ProductSubOptionViewFragement() {
-      super("productSubOptionViewOrEditFragement", "productSubOptionViewFragement", ProductSubOptionViewOrEditPanel.this,
+    public ProductSubOptionViewFragment() {
+      super("productSubOptionViewOrEditFragment", "productSubOptionViewFragment",
+          ProductSubOptionViewOrEditPanel.this,
           ProductSubOptionViewOrEditPanel.this.getDefaultModel());
-      subOptionViewTable = new SubOptionViewTable("subOptionViewTable", (IModel<Product>) ProductSubOptionViewOrEditPanel.this.getDefaultModel());
+      subOptionViewTable = new SubOptionViewTable("subOptionViewTable",
+          (IModel<Product>) ProductSubOptionViewOrEditPanel.this.getDefaultModel());
     }
 
     @Override
@@ -165,7 +185,8 @@ public class ProductSubOptionViewOrEditPanel extends Panel {
     selectedParentModel = Model.of(new Option());
   }
 
-  public void setSelectedModel(final IModel<SubOption> selectedModel, IModel<Option> selectedParentModel) {
+  public void setSelectedModel(final IModel<SubOption> selectedModel,
+      IModel<Option> selectedParentModel) {
     this.selectedModel = selectedModel;
     this.selectedParentModel = selectedParentModel;
   }

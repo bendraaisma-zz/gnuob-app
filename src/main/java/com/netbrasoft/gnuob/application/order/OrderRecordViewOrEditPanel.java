@@ -47,14 +47,14 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.To
 public class OrderRecordViewOrEditPanel extends Panel {
 
   @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class OrderRecordEditFragement extends Fragment {
+  class OrderRecordEditFragment extends Fragment {
 
     private static final long serialVersionUID = 3709791409078428685L;
 
     private final WebMarkupContainer orderRecordEditTable;
 
-    public OrderRecordEditFragement() {
-      super("orderRecordViewOrEditFragement", "orderRecordEditFragement", OrderRecordViewOrEditPanel.this, OrderRecordViewOrEditPanel.this.getDefaultModel());
+    public OrderRecordEditFragment() {
+      super("orderRecordViewOrEditFragment", "orderRecordEditFragment", OrderRecordViewOrEditPanel.this, OrderRecordViewOrEditPanel.this.getDefaultModel());
 
       orderRecordEditTable = new WebMarkupContainer("orderRecordEditTable", getDefaultModel()) {
 
@@ -113,14 +113,14 @@ public class OrderRecordViewOrEditPanel extends Panel {
   }
 
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER})
-  class OrderRecordViewFragement extends Fragment {
+  class OrderRecordViewFragment extends Fragment {
 
     private static final long serialVersionUID = 6927997909191615786L;
 
     private final WebMarkupContainer orderRecordViewTable;
 
-    public OrderRecordViewFragement() {
-      super("orderRecordViewOrEditFragement", "orderRecordViewFragement", OrderRecordViewOrEditPanel.this, OrderRecordViewOrEditPanel.this.getDefaultModel());
+    public OrderRecordViewFragment() {
+      super("orderRecordViewOrEditFragment", "orderRecordViewFragment", OrderRecordViewOrEditPanel.this, OrderRecordViewOrEditPanel.this.getDefaultModel());
       orderRecordViewTable = new WebMarkupContainer("orderRecordViewTable", getDefaultModel()) {
 
         private static final long serialVersionUID = 4831933162858730026L;

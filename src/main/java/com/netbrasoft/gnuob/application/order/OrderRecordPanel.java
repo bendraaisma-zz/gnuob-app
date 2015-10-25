@@ -145,11 +145,11 @@ public class OrderRecordPanel extends Panel {
   }
 
   @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class OrderRecordEditFragement extends Fragment {
+  class OrderRecordEditFragment extends Fragment {
 
     private static final long serialVersionUID = 3709791409078428685L;
 
-    public OrderRecordEditFragement() {
+    public OrderRecordEditFragment() {
       super("orderRecordViewOrEditFragement", "orderRecordEditFragement", OrderRecordPanel.this, OrderRecordPanel.this.getDefaultModel());
     }
 
@@ -256,7 +256,7 @@ public class OrderRecordPanel extends Panel {
         add(orderRecordPagingNavigator.setOutputMarkupId(true));
         add(orderRecordDataviewContainer.setOutputMarkupId(true));
         add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-        add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordEditFragement()).setOutputMarkupId(true));
+        add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordEditFragment()).setOutputMarkupId(true));
         add(new TableBehavior());
         super.onInitialize();
       }
@@ -271,7 +271,7 @@ public class OrderRecordPanel extends Panel {
         add(orderRecordPagingNavigator.setOutputMarkupId(true));
         add(orderRecordDataviewContainer.setOutputMarkupId(true));
         add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-        add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordViewFragement()).setOutputMarkupId(true));
+        add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordViewFragment()).setOutputMarkupId(true));
         add(new TableBehavior());
         super.onInitialize();
       }

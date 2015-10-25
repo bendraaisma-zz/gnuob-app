@@ -17,6 +17,8 @@ public class ContentTab extends AbstractTab {
 
   @Override
   public WebMarkupContainer getPanel(final String panelId) {
-    return new ContentPanel(panelId, Model.of(new Content()));
+    Content content = new Content();
+    content.setActive(true);
+	return new ContentPanel(panelId, Model.of(content));
   }
 }

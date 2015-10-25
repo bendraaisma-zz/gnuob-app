@@ -5,6 +5,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import com.netbrasoft.gnuob.api.Invoice;
 import com.netbrasoft.gnuob.api.Order;
 
 public class OrderTab extends AbstractTab {
@@ -17,6 +18,9 @@ public class OrderTab extends AbstractTab {
 
   @Override
   public WebMarkupContainer getPanel(final String panelId) {
-    return new OrderPanel(panelId, Model.of(new Order()));
+	  Order order = new Order();
+	  order.setActive(true);
+	  order.setInvoice(new Invoice());
+    return new OrderPanel(panelId, Model.of(order));
   }
 }

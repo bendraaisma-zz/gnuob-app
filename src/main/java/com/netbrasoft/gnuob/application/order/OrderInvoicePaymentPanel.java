@@ -80,11 +80,11 @@ public class OrderInvoicePaymentPanel extends Panel {
   }
 
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
-  class OrderInvoicePaymentViewFragement extends Fragment {
+  class OrderInvoicePaymentViewFragment extends Fragment {
 
     private static final long serialVersionUID = 3709791409078428685L;
 
-    public OrderInvoicePaymentViewFragement() {
+    public OrderInvoicePaymentViewFragment() {
       super("orderInvoicePaymentViewOrEditFragement", "orderInvoicePaymentViewFragement", OrderInvoicePaymentPanel.this, OrderInvoicePaymentPanel.this.getDefaultModel());
     }
 

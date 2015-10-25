@@ -40,7 +40,7 @@ import wicket.contrib.tinymce4.ajax.TinyMceAjaxSubmitModifier;
 public class ProductContentViewOrEditPanel extends Panel {
 
   @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class ProductContentEditFragement extends Fragment {
+  class ProductContentEditFragment extends Fragment {
 
     @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
     class ContentEditTable extends WebMarkupContainer {
@@ -50,27 +50,35 @@ public class ProductContentViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<Content> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<Content> form,
+            final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(ProductContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY))), new TinyMceAjaxSubmitModifier());
+          add(new LoadingBehavior(Model.of(ProductContentViewOrEditPanel.this
+              .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY))),
+              new TinyMceAjaxSubmitModifier());
         }
 
         @Override
         protected void onError(AjaxRequestTarget target, Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this
+              .add(new LoadingBehavior(Model.of(ProductContentViewOrEditPanel.this
+                  .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
           if (((Content) form.getDefaultModelObject()).getId() == 0) {
             ((Content) form.getDefaultModelObject()).setActive(true);
-            ((Product) ProductContentViewOrEditPanel.this.getDefaultModelObject()).getContents().add((Content) form.getDefaultModelObject());
+            ((Product) ProductContentViewOrEditPanel.this.getDefaultModelObject()).getContents()
+                .add((Content) form.getDefaultModelObject());
           }
           target.add(form.setOutputMarkupId(true));
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this
+              .add(new LoadingBehavior(Model.of(ProductContentViewOrEditPanel.this
+                  .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
           target.add(ProductContentViewOrEditPanel.this.getParent().setOutputMarkupId(true));
         }
       }
@@ -85,16 +93,21 @@ public class ProductContentViewOrEditPanel extends Panel {
 
       public ContentEditTable(final String id, final IModel<Product> model) {
         super(id, model);
-        contentEditForm = new BootstrapForm<Content>("contentEditForm", new CompoundPropertyModel<Content>(ProductContentViewOrEditPanel.this.selectedModel));
+        contentEditForm = new BootstrapForm<Content>("contentEditForm",
+            new CompoundPropertyModel<Content>(ProductContentViewOrEditPanel.this.selectedModel));
         feedbackPanel = new NotificationPanel("feedback");
-        saveAjaxButton = new SaveAjaxButton("save", Model.of(ProductContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)), contentEditForm,
-            Buttons.Type.Primary);
+        saveAjaxButton = new SaveAjaxButton("save",
+            Model.of(ProductContentViewOrEditPanel.this
+                .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)),
+            contentEditForm, Buttons.Type.Primary);
       }
 
       @Override
       protected void onInitialize() {
-        contentEditForm.add(new RequiredTextField<String>("name").add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        contentEditForm.add(new RequiredTextField<String>("format").add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        contentEditForm.add(new RequiredTextField<String>("name")
+            .add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        contentEditForm.add(new RequiredTextField<String>("format")
+            .add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
         contentEditForm.add(new TextArea<byte[]>("content") {
 
           private static final long serialVersionUID = -7341359315847579440L;
@@ -119,9 +132,11 @@ public class ProductContentViewOrEditPanel extends Panel {
 
     private final ContentEditTable contentEditTable;
 
-    public ProductContentEditFragement() {
-      super("productContentViewOrEditFragement", "productContentEditFragement", ProductContentViewOrEditPanel.this, ProductContentViewOrEditPanel.this.getDefaultModel());
-      contentEditTable = new ContentEditTable("contentEditTable", (IModel<Product>) ProductContentEditFragement.this.getDefaultModel());
+    public ProductContentEditFragment() {
+      super("productContentViewOrEditFragment", "productContentEditFragment",
+          ProductContentViewOrEditPanel.this, ProductContentViewOrEditPanel.this.getDefaultModel());
+      contentEditTable = new ContentEditTable("contentEditTable",
+          (IModel<Product>) ProductContentEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -132,7 +147,7 @@ public class ProductContentViewOrEditPanel extends Panel {
   }
 
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
-  class ProductContentViewFragement extends Fragment {
+  class ProductContentViewFragment extends Fragment {
 
     @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
     class ContentViewTable extends WebMarkupContainer {
@@ -143,7 +158,8 @@ public class ProductContentViewOrEditPanel extends Panel {
 
       public ContentViewTable(final String id, final IModel<Product> model) {
         super(id, model);
-        contentViewForm = new BootstrapForm<Content>("contentViewForm", new CompoundPropertyModel<Content>(ProductContentViewOrEditPanel.this.selectedModel));
+        contentViewForm = new BootstrapForm<Content>("contentViewForm",
+            new CompoundPropertyModel<Content>(ProductContentViewOrEditPanel.this.selectedModel));
       }
 
       @Override
@@ -172,9 +188,11 @@ public class ProductContentViewOrEditPanel extends Panel {
 
     private final ContentViewTable contentViewTable;
 
-    public ProductContentViewFragement() {
-      super("productContentViewOrEditFragement", "productContentViewFragement", ProductContentViewOrEditPanel.this, ProductContentViewOrEditPanel.this.getDefaultModel());
-      contentViewTable = new ContentViewTable("contentViewTable", (IModel<Product>) ProductContentViewFragement.this.getDefaultModel());
+    public ProductContentViewFragment() {
+      super("productContentViewOrEditFragment", "productContentViewFragment",
+          ProductContentViewOrEditPanel.this, ProductContentViewOrEditPanel.this.getDefaultModel());
+      contentViewTable = new ContentViewTable("contentViewTable",
+          (IModel<Product>) ProductContentViewFragment.this.getDefaultModel());
     }
 
     @Override

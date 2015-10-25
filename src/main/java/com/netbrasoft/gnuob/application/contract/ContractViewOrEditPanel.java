@@ -65,7 +65,7 @@ public class ContractViewOrEditPanel extends Panel {
           if (((Contract) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
             CancelAjaxLink.this.setDefaultModelObject(contractDataProvider.findById((Contract) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(ContractViewOrEditPanel.this.add(new ContractViewFragement()).setOutputMarkupId(true));
+          target.add(ContractViewOrEditPanel.this.add(ContractViewOrEditPanel.this.new ContractViewFragement()).setOutputMarkupId(true));
         }
       }
 
@@ -94,9 +94,9 @@ public class ContractViewOrEditPanel extends Panel {
           boolean isException = false;
           try {
             if (((Contract) form.getDefaultModelObject()).getId() == 0) {
-              ContractEditTable.this.setDefaultModelObject(contractDataProvider.findById(contractDataProvider.persist(((Contract) form.getDefaultModelObject()))));
+              ContractEditTable.this.setDefaultModelObject(contractDataProvider.findById(contractDataProvider.persist((Contract) form.getDefaultModelObject())));
             } else {
-              ContractEditTable.this.setDefaultModelObject(contractDataProvider.findById(contractDataProvider.merge(((Contract) form.getDefaultModelObject()))));
+              ContractEditTable.this.setDefaultModelObject(contractDataProvider.findById(contractDataProvider.merge((Contract) form.getDefaultModelObject())));
             }
           } catch (final RuntimeException e) {
             isException = true;
@@ -193,7 +193,7 @@ public class ContractViewOrEditPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           ContractViewOrEditPanel.this.removeAll();
-          target.add(ContractViewOrEditPanel.this.add(new ContractEditFragement().setOutputMarkupId(true)));
+          target.add(ContractViewOrEditPanel.this.add(ContractViewOrEditPanel.this.new ContractEditFragement().setOutputMarkupId(true)));
         }
       }
 

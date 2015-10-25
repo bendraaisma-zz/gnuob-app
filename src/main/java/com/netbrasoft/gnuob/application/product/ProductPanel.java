@@ -64,7 +64,8 @@ public class ProductPanel extends Panel {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(String id, IModel<Product> model, Buttons.Type type, IModel<String> labelModel) {
+        public AddAjaxLink(String id, IModel<Product> model, Buttons.Type type,
+            IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -90,7 +91,8 @@ public class ProductPanel extends Panel {
 
             private static final long serialVersionUID = -8317730269644885290L;
 
-            public RemoveAjaxLink(final String id, final IModel<Product> model, final Buttons.Type type, final IModel<String> labelModel) {
+            public RemoveAjaxLink(final String id, final IModel<Product> model,
+                final Buttons.Type type, final IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
@@ -113,7 +115,8 @@ public class ProductPanel extends Panel {
 
           private int index = 0;
 
-          protected ProductDataview(final String id, final IDataProvider<Product> dataProvider, final long itemsPerPage) {
+          protected ProductDataview(final String id, final IDataProvider<Product> dataProvider,
+              final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -138,25 +141,35 @@ public class ProductPanel extends Panel {
               @Override
               public void onEvent(AjaxRequestTarget target) {
                 index = item.getIndex();
-                target.add(productDataviewContainer.setDefaultModelObject(item.getModelObject()).setOutputMarkupId(true));
+                target.add(productDataviewContainer.setDefaultModelObject(item.getModelObject())
+                    .setOutputMarkupId(true));
                 target.add(productViewOrEditPanel.setOutputMarkupId(true));
               }
             });
             item.add(
-                new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default, Model.of(ProductPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                    .add(new ConfirmationBehavior() {
+                new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default,
+                    Model.of(ProductPanel.this
+                        .getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                            .add(new ConfirmationBehavior() {
 
-                      private static final long serialVersionUID = 7744720444161839031L;
+                              private static final long serialVersionUID = 7744720444161839031L;
 
-                      @Override
-                      public void renderHead(Component component, IHeaderResponse response) {
-                        response.render($(component).chain("confirmation",
-                            new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                                .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                                .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                            .asDomReadyScript());
-                      }
-                    }));
+                              @Override
+                              public void renderHead(Component component,
+                                  IHeaderResponse response) {
+                                response.render($(component)
+                                    .chain("confirmation",
+                                        new ConfirmationConfig()
+                                            .withTitle(getString(
+                                                NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY))
+                                        .withSingleton(true).withPopout(true)
+                                        .withBtnOkLabel(getString(
+                                            NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                        .withBtnCancelLabel(getString(
+                                            NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                                    .asDomReadyScript());
+                              }
+                            }));
           }
         }
 
@@ -168,7 +181,8 @@ public class ProductPanel extends Panel {
 
         public ProductDataviewContainer(final String id, final IModel<Product> model) {
           super(id, model);
-          productDataview = new ProductDataview("productDataview", productDataProvider, ITEMS_PER_PAGE);
+          productDataview =
+              new ProductDataview("productDataview", productDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -195,12 +209,15 @@ public class ProductPanel extends Panel {
       public ProductTableContainer(final String id, final IModel<Product> model) {
         super(id, model);
         feedbackPanel = new NotificationPanel("feedback");
-        addAjaxLink = new AddAjaxLink("add", (IModel<Product>) ProductTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
+        addAjaxLink = new AddAjaxLink("add",
+            (IModel<Product>) ProductTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
             Model.of(ProductPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
         orderByNumber = new OrderByBorder<String>("orderByNumber", "number", productDataProvider);
         orderByName = new OrderByBorder<String>("orderByName", "name", productDataProvider);
-        productDataviewContainer = new ProductDataviewContainer("productDataviewContainer", (IModel<Product>) ProductTableContainer.this.getDefaultModel());
-        productPagingNavigator = new BootstrapPagingNavigator("productPagingNavigator", productDataviewContainer.productDataview);
+        productDataviewContainer = new ProductDataviewContainer("productDataviewContainer",
+            (IModel<Product>) ProductTableContainer.this.getDefaultModel());
+        productPagingNavigator = new BootstrapPagingNavigator("productPagingNavigator",
+            productDataviewContainer.productDataview);
       }
 
       @Override
@@ -223,14 +240,17 @@ public class ProductPanel extends Panel {
 
     public ProductPanelContainer(final String id, final IModel<Product> model) {
       super(id, model);
-      productTableContainer = new ProductTableContainer("productTableContainer", (IModel<Product>) ProductPanelContainer.this.getDefaultModel());
-      productViewOrEditPanel = new ProductViewOrEditPanel("productViewOrEditPanel", (IModel<Product>) ProductPanelContainer.this.getDefaultModel());
+      productTableContainer = new ProductTableContainer("productTableContainer",
+          (IModel<Product>) ProductPanelContainer.this.getDefaultModel());
+      productViewOrEditPanel = new ProductViewOrEditPanel("productViewOrEditPanel",
+          (IModel<Product>) ProductPanelContainer.this.getDefaultModel());
     }
 
     @Override
     protected void onInitialize() {
       add(productTableContainer.add(new TableBehavior().hover()).setOutputMarkupId(true));
-      add(productViewOrEditPanel.add(productViewOrEditPanel.new ProductViewFragement()).setOutputMarkupId(true));
+      add(productViewOrEditPanel.add(productViewOrEditPanel.new ProductViewFragment())
+          .setOutputMarkupId(true));
       super.onInitialize();
     }
   }
@@ -246,7 +266,8 @@ public class ProductPanel extends Panel {
 
   public ProductPanel(final String id, final IModel<Product> model) {
     super(id, model);
-    productPanelContainer = new ProductPanelContainer("productPanelContainer", (IModel<Product>) ProductPanel.this.getDefaultModel());
+    productPanelContainer = new ProductPanelContainer("productPanelContainer",
+        (IModel<Product>) ProductPanel.this.getDefaultModel());
   }
 
   @Override

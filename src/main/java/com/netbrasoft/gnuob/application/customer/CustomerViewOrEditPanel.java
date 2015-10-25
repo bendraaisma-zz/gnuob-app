@@ -73,7 +73,7 @@ public class CustomerViewOrEditPanel extends Panel {
           if (((Customer) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
             CancelAjaxLink.this.setDefaultModelObject(customerDataProvider.findById((Customer) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(CustomerViewOrEditPanel.this.add(new CustomerViewFragement()).setOutputMarkupId(true));
+          target.add(CustomerViewOrEditPanel.this.add(CustomerViewOrEditPanel.this.new CustomerViewFragement()).setOutputMarkupId(true));
         }
       }
 
@@ -102,9 +102,9 @@ public class CustomerViewOrEditPanel extends Panel {
           boolean isException = false;
           try {
             if (((Customer) form.getDefaultModelObject()).getId() == 0) {
-              CustomerEditTable.this.setDefaultModelObject(customerDataProvider.findById(customerDataProvider.persist(((Customer) form.getDefaultModelObject()))));
+              CustomerEditTable.this.setDefaultModelObject(customerDataProvider.findById(customerDataProvider.persist((Customer) form.getDefaultModelObject())));
             } else {
-              CustomerEditTable.this.setDefaultModelObject(customerDataProvider.findById(customerDataProvider.merge(((Customer) form.getDefaultModelObject()))));
+              CustomerEditTable.this.setDefaultModelObject(customerDataProvider.findById(customerDataProvider.merge((Customer) form.getDefaultModelObject())));
             }
           } catch (final RuntimeException e) {
             isException = true;
@@ -227,7 +227,7 @@ public class CustomerViewOrEditPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           CustomerViewOrEditPanel.this.removeAll();
-          target.add(CustomerViewOrEditPanel.this.add(new CustomerEditFragement().setOutputMarkupId(true)));
+          target.add(CustomerViewOrEditPanel.this.add(CustomerViewOrEditPanel.this.new CustomerEditFragement().setOutputMarkupId(true)));
         }
       }
 

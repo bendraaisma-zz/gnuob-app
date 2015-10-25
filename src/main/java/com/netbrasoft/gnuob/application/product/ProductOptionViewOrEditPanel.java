@@ -36,7 +36,7 @@ import wicket.contrib.tinymce4.ajax.TinyMceAjaxSubmitModifier;
 public class ProductOptionViewOrEditPanel extends Panel {
 
   @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class ProductOptionEditFragement extends Fragment {
+  class ProductOptionEditFragment extends Fragment {
 
     @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
     class OptionEditTable extends WebMarkupContainer {
@@ -46,25 +46,33 @@ public class ProductOptionViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<Option> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<Option> form,
+            final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(ProductOptionViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY))), new TinyMceAjaxSubmitModifier());
+          add(new LoadingBehavior(Model.of(ProductOptionViewOrEditPanel.this
+              .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY))),
+              new TinyMceAjaxSubmitModifier());
         }
 
         @Override
         protected void onError(AjaxRequestTarget target, Form<?> form) {
           target.add(form.add(new TooltipValidation()));
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductOptionViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
+          target.add(
+              SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductOptionViewOrEditPanel.this
+                  .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
           if (((Option) form.getDefaultModelObject()).getId() == 0) {
-            ((Product) ProductOptionViewOrEditPanel.this.getDefaultModelObject()).getOptions().add((Option) form.getDefaultModelObject());
+            ((Product) ProductOptionViewOrEditPanel.this.getDefaultModelObject()).getOptions()
+                .add((Option) form.getDefaultModelObject());
           }
           target.add(form.setOutputMarkupId(true));
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductOptionViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
+          target.add(
+              SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductOptionViewOrEditPanel.this
+                  .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
           target.add(ProductOptionViewOrEditPanel.this.getParent().setOutputMarkupId(true));
         }
       }
@@ -79,21 +87,30 @@ public class ProductOptionViewOrEditPanel extends Panel {
 
       public OptionEditTable(final String id, final IModel<Product> model) {
         super(id, model);
-        optionEditForm = new BootstrapForm<Option>("optionEditForm", new CompoundPropertyModel<Option>(ProductOptionViewOrEditPanel.this.selectedModel));
-        productSubOptionPanel = new ProductSubOptionPanel("productSubOptionPanel", (IModel<Product>) OptionEditTable.this.getDefaultModel());
+        optionEditForm = new BootstrapForm<Option>("optionEditForm",
+            new CompoundPropertyModel<Option>(ProductOptionViewOrEditPanel.this.selectedModel));
+        productSubOptionPanel = new ProductSubOptionPanel("productSubOptionPanel",
+            (IModel<Product>) OptionEditTable.this.getDefaultModel());
         productSubOptionPanel.setSelectedModel(ProductOptionViewOrEditPanel.this.selectedModel);
-        saveAjaxButton = new SaveAjaxButton("save", Model.of(ProductOptionViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)), optionEditForm,
-            Buttons.Type.Primary);
+        saveAjaxButton = new SaveAjaxButton("save",
+            Model.of(ProductOptionViewOrEditPanel.this
+                .getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)),
+            optionEditForm, Buttons.Type.Primary);
       }
 
       @Override
       protected void onInitialize() {
-        optionEditForm.add(new NumberTextField<Integer>("position").setMinimum(0).setOutputMarkupId(true));
-        optionEditForm.add(new TextArea<String>("value").add(StringValidator.maximumLength(128)).setRequired(true).setOutputMarkupId(true));
-        optionEditForm.add(new TextArea<String>("description").add(StringValidator.maximumLength(128)).setRequired(true).setOutputMarkupId(true));
+        optionEditForm
+            .add(new NumberTextField<Integer>("position").setMinimum(0).setOutputMarkupId(true));
+        optionEditForm.add(new TextArea<String>("value").add(StringValidator.maximumLength(128))
+            .setRequired(true).setOutputMarkupId(true));
+        optionEditForm.add(new TextArea<String>("description")
+            .add(StringValidator.maximumLength(128)).setRequired(true).setOutputMarkupId(true));
         optionEditForm.add(new BootstrapCheckbox("disabled").setOutputMarkupId(true));
         optionEditForm.add(saveAjaxButton.setOutputMarkupId(true));
-        optionEditForm.add(productSubOptionPanel.add(productSubOptionPanel.new ProductSubOptionEditFragement()).setOutputMarkupId(true));
+        optionEditForm.add(
+            productSubOptionPanel.add(productSubOptionPanel.new ProductSubOptionEditFragement())
+                .setOutputMarkupId(true));
         add(optionEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         super.onInitialize();
       }
@@ -103,9 +120,11 @@ public class ProductOptionViewOrEditPanel extends Panel {
 
     private final OptionEditTable optionEditTable;
 
-    public ProductOptionEditFragement() {
-      super("productOptionViewOrEditFragement", "productOptionEditFragement", ProductOptionViewOrEditPanel.this, ProductOptionViewOrEditPanel.this.getDefaultModel());
-      optionEditTable = new OptionEditTable("optionEditTable", (IModel<Product>) ProductOptionViewOrEditPanel.this.getDefaultModel());
+    public ProductOptionEditFragment() {
+      super("productOptionViewOrEditFragment", "productOptionEditFragment",
+          ProductOptionViewOrEditPanel.this, ProductOptionViewOrEditPanel.this.getDefaultModel());
+      optionEditTable = new OptionEditTable("optionEditTable",
+          (IModel<Product>) ProductOptionViewOrEditPanel.this.getDefaultModel());
     }
 
     @Override
@@ -116,7 +135,7 @@ public class ProductOptionViewOrEditPanel extends Panel {
   }
 
   @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class ProductOptionViewFragement extends Fragment {
+  class ProductOptionViewFragment extends Fragment {
 
     @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
     class OptionViewTable extends WebMarkupContainer {
@@ -129,8 +148,10 @@ public class ProductOptionViewOrEditPanel extends Panel {
 
       public OptionViewTable(final String id, final IModel<Product> model) {
         super(id, model);
-        optionViewForm = new BootstrapForm<Option>("optionViewForm", new CompoundPropertyModel<Option>(ProductOptionViewOrEditPanel.this.selectedModel));
-        productSubOptionPanel = new ProductSubOptionPanel("productSubOptionPanel", (IModel<Product>) OptionViewTable.this.getDefaultModel());
+        optionViewForm = new BootstrapForm<Option>("optionViewForm",
+            new CompoundPropertyModel<Option>(ProductOptionViewOrEditPanel.this.selectedModel));
+        productSubOptionPanel = new ProductSubOptionPanel("productSubOptionPanel",
+            (IModel<Product>) OptionViewTable.this.getDefaultModel());
         productSubOptionPanel.setSelectedModel(ProductOptionViewOrEditPanel.this.selectedModel);
       }
 
@@ -140,7 +161,9 @@ public class ProductOptionViewOrEditPanel extends Panel {
         optionViewForm.add(new TextArea<String>("value").setOutputMarkupId(true));
         optionViewForm.add(new TextArea<String>("description").setOutputMarkupId(true));
         optionViewForm.add(new TextField<String>("disabled").setOutputMarkupId(true));
-        optionViewForm.add(productSubOptionPanel.add(productSubOptionPanel.new ProductSubOptionViewFragement()).setOutputMarkupId(true));
+        optionViewForm.add(
+            productSubOptionPanel.add(productSubOptionPanel.new ProductSubOptionViewFragement())
+                .setOutputMarkupId(true));
         add(optionViewForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         super.onInitialize();
       }
@@ -150,9 +173,11 @@ public class ProductOptionViewOrEditPanel extends Panel {
 
     private final OptionViewTable optionViewTable;
 
-    public ProductOptionViewFragement() {
-      super("productOptionViewOrEditFragement", "productOptionViewFragement", ProductOptionViewOrEditPanel.this, ProductOptionViewOrEditPanel.this.getDefaultModel());
-      optionViewTable = new OptionViewTable("optionViewTable", (IModel<Product>) ProductOptionViewOrEditPanel.this.getDefaultModel());
+    public ProductOptionViewFragment() {
+      super("productOptionViewOrEditFragment", "productOptionViewFragment",
+          ProductOptionViewOrEditPanel.this, ProductOptionViewOrEditPanel.this.getDefaultModel());
+      optionViewTable = new OptionViewTable("optionViewTable",
+          (IModel<Product>) ProductOptionViewOrEditPanel.this.getDefaultModel());
     }
 
     @Override
