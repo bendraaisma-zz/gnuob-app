@@ -19,18 +19,13 @@ public class AdministrationTab extends AbstractTab {
 
   private static final long serialVersionUID = 4835579949680085443L;
 
-  private ITab groupTab = new GroupTab(Model.of("Group"));
-  private ITab settingTab = new SettingTab(Model.of("Setting"));
-  private ITab siteTab = new SiteTab(Model.of("Site"));
-  private ITab userTab = new UserTab(Model.of("User"));
-
   public AdministrationTab(final IModel<String> title) {
     super(title);
   }
 
   @Override
   public WebMarkupContainer getPanel(final String panelId) {
-    BootstrapTabbedPanel<ITab> administrationTabbedPanel = new BootstrapTabbedPanel<ITab>(panelId, new ArrayList<ITab>()) {
+    final BootstrapTabbedPanel<ITab> administrationTabbedPanel = new BootstrapTabbedPanel<ITab>(panelId, new ArrayList<ITab>()) {
 
       private static final long serialVersionUID = -8650291789763661400L;
 
@@ -40,10 +35,10 @@ public class AdministrationTab extends AbstractTab {
       }
     };
 
-    administrationTabbedPanel.getTabs().add(userTab);
-    administrationTabbedPanel.getTabs().add(groupTab);
-    administrationTabbedPanel.getTabs().add(siteTab);
-    administrationTabbedPanel.getTabs().add(settingTab);
+    administrationTabbedPanel.getTabs().add(new GroupTab(Model.of("Group")));
+    administrationTabbedPanel.getTabs().add(new SettingTab(Model.of("Setting")));
+    administrationTabbedPanel.getTabs().add(new SiteTab(Model.of("Site")));
+    administrationTabbedPanel.getTabs().add(new UserTab(Model.of("User")));
 
     return administrationTabbedPanel;
   }

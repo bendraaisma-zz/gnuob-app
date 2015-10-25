@@ -48,10 +48,10 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.To
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class ProductViewOrEditPanel extends Panel {
 
-  @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
   class ProductEditFragement extends Fragment {
 
-    @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+    @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
     class ProductEditTable extends WebMarkupContainer {
 
       @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})

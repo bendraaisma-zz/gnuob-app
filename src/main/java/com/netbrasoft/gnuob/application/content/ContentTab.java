@@ -9,7 +9,7 @@ import com.netbrasoft.gnuob.api.Content;
 
 public class ContentTab extends AbstractTab {
 
-  private static final long serialVersionUID = 4835579949680085443L;
+  private static final long serialVersionUID = 1461232963628306073L;
 
   public ContentTab(final IModel<String> title) {
     super(title);

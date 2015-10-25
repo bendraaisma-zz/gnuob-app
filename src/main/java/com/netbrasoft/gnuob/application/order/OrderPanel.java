@@ -42,6 +42,12 @@ import de.agilecoders.wicket.core.util.Attributes;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationConfig;
 
+/**
+ * Panel for viewing, selecting and editing {@link Order} entities.
+ *
+ * @author Bernard Arjan Draaisma
+ *
+ */
 @SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class OrderPanel extends Panel {

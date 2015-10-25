@@ -32,8 +32,6 @@ import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthent
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
-import de.agilecoders.wicket.core.markup.html.bootstrap.block.WellBehavior;
-import de.agilecoders.wicket.core.markup.html.bootstrap.block.WellBehavior.Size;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
@@ -106,7 +104,7 @@ public class ProductPanel extends Panel {
                 LOGGER.warn(e.getMessage(), e);
                 productTableContainer.warn(e.getLocalizedMessage());
               } finally {
-                target.add(target.getPage());
+                target.add(productTableContainer.setOutputMarkupId(true));
               }
             }
           }
@@ -164,7 +162,7 @@ public class ProductPanel extends Panel {
 
         private static final long serialVersionUID = 7937233338451825416L;
 
-        private static final int ITEMS_PER_PAGE = 10;
+        private static final int ITEMS_PER_PAGE = 5;
 
         private final ProductDataview productDataview;
 
@@ -232,7 +230,7 @@ public class ProductPanel extends Panel {
     @Override
     protected void onInitialize() {
       add(productTableContainer.add(new TableBehavior().hover()).setOutputMarkupId(true));
-      add(productViewOrEditPanel.add(productViewOrEditPanel.new ProductViewFragement()).add(new WellBehavior(Size.Small)).setOutputMarkupId(true));
+      add(productViewOrEditPanel.add(productViewOrEditPanel.new ProductViewFragement()).setOutputMarkupId(true));
       super.onInitialize();
     }
   }
