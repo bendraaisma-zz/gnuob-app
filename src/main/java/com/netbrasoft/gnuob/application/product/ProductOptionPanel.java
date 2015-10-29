@@ -30,7 +30,6 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
-import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
@@ -52,8 +51,7 @@ public class ProductOptionPanel extends Panel {
 
         private static final long serialVersionUID = 9191172039973638020L;
 
-        public AddAjaxLink(String id, IModel<Product> model, Buttons.Type type,
-            IModel<String> labelModel) {
+        public AddAjaxLink(String id, IModel<Product> model, Buttons.Type type, IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -62,13 +60,10 @@ public class ProductOptionPanel extends Panel {
         @Override
         public void onClick(AjaxRequestTarget target) {
           ((Product) AddAjaxLink.this.getDefaultModelObject()).getOptions().add(new Option());
-          optionDataviewContainer.optionDataview.index =
-              ((Product) AddAjaxLink.this.getDefaultModelObject()).getOptions().size() - 1;
+          optionDataviewContainer.optionDataview.index = ((Product) AddAjaxLink.this.getDefaultModelObject()).getOptions().size() - 1;
           productOptionViewOrEditPanel.removeAll();
           target.add(optionDataviewContainer.setOutputMarkupId(true));
-          target.add(productOptionViewOrEditPanel
-              .add(productOptionViewOrEditPanel.new ProductOptionEditFragment())
-              .setOutputMarkupId(true));
+          target.add(productOptionViewOrEditPanel.add(productOptionViewOrEditPanel.new ProductOptionEditFragment()).setOutputMarkupId(true));
         }
       }
 
@@ -83,8 +78,7 @@ public class ProductOptionPanel extends Panel {
 
             private static final long serialVersionUID = -6950515027229520882L;
 
-            public RemoveAjaxLink(String id, IModel<Option> model, Buttons.Type type,
-                IModel<String> labelModel) {
+            public RemoveAjaxLink(String id, IModel<Option> model, Buttons.Type type, IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
@@ -92,16 +86,11 @@ public class ProductOptionPanel extends Panel {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-              ((Product) OptionDataviewContainer.this.getDefaultModelObject()).getOptions()
-                  .remove(RemoveAjaxLink.this.getDefaultModelObject());
-              optionDataview.index =
-                  ((Product) OptionDataviewContainer.this.getDefaultModelObject()).getOptions()
-                      .size() - 1;
+              ((Product) OptionDataviewContainer.this.getDefaultModelObject()).getOptions().remove(RemoveAjaxLink.this.getDefaultModelObject());
+              optionDataview.index = ((Product) OptionDataviewContainer.this.getDefaultModelObject()).getOptions().size() - 1;
               productOptionViewOrEditPanel.removeAll();
               target.add(optionDataviewContainer.setOutputMarkupId(true));
-              target.add(productOptionViewOrEditPanel
-                  .add(productOptionViewOrEditPanel.new ProductOptionEditFragment())
-                  .setOutputMarkupId(true));
+              target.add(productOptionViewOrEditPanel.add(productOptionViewOrEditPanel.new ProductOptionEditFragment()).setOutputMarkupId(true));
             }
           }
 
@@ -109,8 +98,7 @@ public class ProductOptionPanel extends Panel {
 
           private int index = 0;
 
-          protected OptionDataview(final String id, final IDataProvider<Option> dataProvider,
-              final long itemsPerPage) {
+          protected OptionDataview(final String id, final IDataProvider<Option> dataProvider, final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -125,23 +113,17 @@ public class ProductOptionPanel extends Panel {
 
           @Override
           protected void onConfigure() {
-            final IModel<Product> model =
-                (IModel<Product>) OptionDataviewContainer.this.getDefaultModel();
+            final IModel<Product> model = (IModel<Product>) OptionDataviewContainer.this.getDefaultModel();
             if (!model.getObject().getOptions().isEmpty()) {
               productOptionViewOrEditPanel.setEnabled(true);
               productOptionViewOrEditPanel.removeAll();
-              productOptionViewOrEditPanel
-                  .setSelectedModel(Model.of(model.getObject().getOptions().get(index)));
-              productOptionViewOrEditPanel
-                  .add(productOptionViewOrEditPanel.new ProductOptionEditFragment())
-                  .setOutputMarkupId(true);
+              productOptionViewOrEditPanel.setSelectedModel(Model.of(model.getObject().getOptions().get(index)));
+              productOptionViewOrEditPanel.add(productOptionViewOrEditPanel.new ProductOptionEditFragment()).setOutputMarkupId(true);
             } else {
               productOptionViewOrEditPanel.setEnabled(false);
               productOptionViewOrEditPanel.removeAll();
               productOptionViewOrEditPanel.setSelectedModel(Model.of(new Option()));
-              productOptionViewOrEditPanel
-                  .add(productOptionViewOrEditPanel.new ProductOptionEditFragment())
-                  .setOutputMarkupId(true);
+              productOptionViewOrEditPanel.add(productOptionViewOrEditPanel.new ProductOptionEditFragment()).setOutputMarkupId(true);
             }
             super.onConfigure();
           }
@@ -162,33 +144,24 @@ public class ProductOptionPanel extends Panel {
                 productOptionViewOrEditPanel.setSelectedModel(item.getModel());
                 productOptionViewOrEditPanel.removeAll();
                 target.add(optionDataviewContainer.setOutputMarkupId(true));
-                target.add(productOptionViewOrEditPanel
-                    .add(productOptionViewOrEditPanel.new ProductOptionEditFragment())
-                    .setOutputMarkupId(true));
+                target.add(productOptionViewOrEditPanel.add(productOptionViewOrEditPanel.new ProductOptionEditFragment()).setOutputMarkupId(true));
               }
             });
-            item.add(new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default,
-                Model.of(ProductOptionPanel.this
-                    .getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                        .add(new ConfirmationBehavior() {
+            item.add(
+                new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default, Model.of(ProductOptionPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                    .add(new ConfirmationBehavior() {
 
-                          private static final long serialVersionUID = 7744720444161839031L;
+                      private static final long serialVersionUID = 7744720444161839031L;
 
-                          @Override
-                          public void renderHead(Component component, IHeaderResponse response) {
-                            response.render($(component)
-                                .chain("confirmation",
-                                    new ConfirmationConfig()
-                                        .withTitle(getString(
-                                            NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY))
-                                    .withSingleton(true).withPopout(true)
-                                    .withBtnOkLabel(getString(
-                                        NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                                    .withBtnCancelLabel(getString(
-                                        NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                                .asDomReadyScript());
-                          }
-                        }));
+                      @Override
+                      public void renderHead(Component component, IHeaderResponse response) {
+                        response.render($(component).chain("confirmation",
+                            new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
+                                .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                            .asDomReadyScript());
+                      }
+                    }));
           }
         }
 
@@ -199,7 +172,7 @@ public class ProductOptionPanel extends Panel {
         private final ListDataProvider<Option> optionListDataProvider;
 
         public OptionDataviewContainer(final String id, final IModel<Product> model) {
-          super("optionDataviewContainer", model);
+          super(id, model);
           optionListDataProvider = new ListDataProvider<Option>() {
 
             private static final long serialVersionUID = -3261859241046697057L;
@@ -209,8 +182,7 @@ public class ProductOptionPanel extends Panel {
               return ((Product) OptionDataviewContainer.this.getDefaultModelObject()).getOptions();
             }
           };
-          optionDataview =
-              new OptionDataview("optionDataview", optionListDataProvider, ITEMS_PER_PAGE);
+          optionDataview = new OptionDataview("optionDataview", optionListDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -232,17 +204,11 @@ public class ProductOptionPanel extends Panel {
 
       public OptionEditTable(final String id, final IModel<Product> model) {
         super(id, model);
-        addAjaxLink = new AddAjaxLink("add",
-            (IModel<Product>) OptionEditTable.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(
-                ProductOptionPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        optionDataviewContainer = new OptionDataviewContainer("optionDataviewContainer",
-            (IModel<Product>) OptionEditTable.this.getDefaultModel());
-        optionPagingNavigator = new BootstrapPagingNavigator("optionPagingNavigator",
-            optionDataviewContainer.optionDataview);
-        productOptionViewOrEditPanel =
-            new ProductOptionViewOrEditPanel("productOptionViewOrEditPanel",
-                (IModel<Product>) OptionEditTable.this.getDefaultModel());
+        addAjaxLink = new AddAjaxLink("add", (IModel<Product>) OptionEditTable.this.getDefaultModel(), Buttons.Type.Primary,
+            Model.of(ProductOptionPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
+        optionDataviewContainer = new OptionDataviewContainer("optionDataviewContainer", (IModel<Product>) OptionEditTable.this.getDefaultModel());
+        optionPagingNavigator = new BootstrapPagingNavigator("optionPagingNavigator", optionDataviewContainer.optionDataview);
+        productOptionViewOrEditPanel = new ProductOptionViewOrEditPanel("productOptionViewOrEditPanel", (IModel<Product>) OptionEditTable.this.getDefaultModel());
       }
 
       @Override
@@ -250,9 +216,7 @@ public class ProductOptionPanel extends Panel {
         add(addAjaxLink.setOutputMarkupId(true));
         add(optionDataviewContainer.setOutputMarkupId(true));
         add(optionPagingNavigator.setOutputMarkupId(true));
-        add(productOptionViewOrEditPanel
-            .add(productOptionViewOrEditPanel.new ProductOptionEditFragment())
-            .setOutputMarkupId(true));
+        add(productOptionViewOrEditPanel.add(productOptionViewOrEditPanel.new ProductOptionEditFragment()).setOutputMarkupId(true));
         super.onInitialize();
       }
     }
@@ -262,10 +226,8 @@ public class ProductOptionPanel extends Panel {
     private final OptionEditTable optionEditTable;
 
     public ProductOptionEditFragement() {
-      super("productOptionViewOrEditFragement", "productOptionEditFragement",
-          ProductOptionPanel.this, ProductOptionPanel.this.getDefaultModel());
-      optionEditTable = new OptionEditTable("optionEditTable",
-          (IModel<Product>) ProductOptionEditFragement.this.getDefaultModel());
+      super("productOptionViewOrEditFragement", "productOptionEditFragement", ProductOptionPanel.this, ProductOptionPanel.this.getDefaultModel());
+      optionEditTable = new OptionEditTable("optionEditTable", (IModel<Product>) ProductOptionEditFragement.this.getDefaultModel());
     }
 
     @Override
@@ -291,8 +253,7 @@ public class ProductOptionPanel extends Panel {
 
           private int index = 0;
 
-          protected OptionDataview(final String id, final IDataProvider<Option> dataProvider,
-              final long itemsPerPage) {
+          protected OptionDataview(final String id, final IDataProvider<Option> dataProvider, final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -307,21 +268,15 @@ public class ProductOptionPanel extends Panel {
 
           @Override
           protected void onConfigure() {
-            final IModel<Product> model =
-                (IModel<Product>) OptionDataviewContainer.this.getDefaultModel();
+            final IModel<Product> model = (IModel<Product>) OptionDataviewContainer.this.getDefaultModel();
             if (!model.getObject().getOptions().isEmpty()) {
               productOptionViewOrEditPanel.removeAll();
-              productOptionViewOrEditPanel
-                  .setSelectedModel(Model.of(model.getObject().getOptions().get(index)));
-              productOptionViewOrEditPanel
-                  .add(productOptionViewOrEditPanel.new ProductOptionViewFragment())
-                  .setOutputMarkupId(true);
+              productOptionViewOrEditPanel.setSelectedModel(Model.of(model.getObject().getOptions().get(index)));
+              productOptionViewOrEditPanel.add(productOptionViewOrEditPanel.new ProductOptionViewFragment()).setOutputMarkupId(true);
             } else {
               productOptionViewOrEditPanel.removeAll();
               productOptionViewOrEditPanel.setSelectedModel(Model.of(new Option()));
-              productOptionViewOrEditPanel
-                  .add(productOptionViewOrEditPanel.new ProductOptionViewFragment())
-                  .setOutputMarkupId(true);
+              productOptionViewOrEditPanel.add(productOptionViewOrEditPanel.new ProductOptionViewFragment()).setOutputMarkupId(true);
             }
             super.onConfigure();
           }
@@ -342,9 +297,7 @@ public class ProductOptionPanel extends Panel {
                 productOptionViewOrEditPanel.setSelectedModel(item.getModel());
                 productOptionViewOrEditPanel.removeAll();
                 target.add(optionDataviewContainer.setOutputMarkupId(true));
-                target.add(productOptionViewOrEditPanel
-                    .add(productOptionViewOrEditPanel.new ProductOptionViewFragment())
-                    .setOutputMarkupId(true));
+                target.add(productOptionViewOrEditPanel.add(productOptionViewOrEditPanel.new ProductOptionViewFragment()).setOutputMarkupId(true));
               }
             });
           }
@@ -367,8 +320,7 @@ public class ProductOptionPanel extends Panel {
               return ((Product) OptionDataviewContainer.this.getDefaultModelObject()).getOptions();
             }
           };
-          optionDataview =
-              new OptionDataview("optionDataview", optionListDataProvider, ITEMS_PER_PAGE);
+          optionDataview = new OptionDataview("optionDataview", optionListDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -380,8 +332,6 @@ public class ProductOptionPanel extends Panel {
 
       private static final long serialVersionUID = -5522048858537112825L;
 
-      private final NotificationPanel feedbackPanel;
-
       private final OptionDataviewContainer optionDataviewContainer;
 
       private final BootstrapPagingNavigator optionPagingNavigator;
@@ -390,24 +340,16 @@ public class ProductOptionPanel extends Panel {
 
       public OptionViewTable(final String id, final IModel<Product> model) {
         super(id, model);
-        feedbackPanel = new NotificationPanel("feedback");
-        optionDataviewContainer = new OptionDataviewContainer("optionDataviewContainer",
-            (IModel<Product>) OptionViewTable.this.getDefaultModel());
-        optionPagingNavigator = new BootstrapPagingNavigator("optionPagingNavigator",
-            optionDataviewContainer.optionDataview);
-        productOptionViewOrEditPanel =
-            new ProductOptionViewOrEditPanel("productOptionViewOrEditPanel",
-                (IModel<Product>) OptionViewTable.this.getDefaultModel());
+        optionDataviewContainer = new OptionDataviewContainer("optionDataviewContainer", (IModel<Product>) OptionViewTable.this.getDefaultModel());
+        optionPagingNavigator = new BootstrapPagingNavigator("optionPagingNavigator", optionDataviewContainer.optionDataview);
+        productOptionViewOrEditPanel = new ProductOptionViewOrEditPanel("productOptionViewOrEditPanel", (IModel<Product>) OptionViewTable.this.getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
-        add(feedbackPanel.setOutputMarkupId(true));
         add(optionDataviewContainer.setOutputMarkupId(true));
         add(optionPagingNavigator.setOutputMarkupId(true));
-        add(productOptionViewOrEditPanel
-            .add(productOptionViewOrEditPanel.new ProductOptionViewFragment())
-            .setOutputMarkupId(true));
+        add(productOptionViewOrEditPanel.add(productOptionViewOrEditPanel.new ProductOptionViewFragment()).setOutputMarkupId(true));
         super.onInitialize();
       }
     }
@@ -417,10 +359,8 @@ public class ProductOptionPanel extends Panel {
     private final OptionViewTable optionViewTable;
 
     public ProductOptionViewFragement() {
-      super("productOptionViewOrEditFragement", "productOptionViewFragement",
-          ProductOptionPanel.this, ProductOptionPanel.this.getDefaultModel());
-      optionViewTable = new OptionViewTable("optionViewTable",
-          (IModel<Product>) ProductOptionViewFragement.this.getDefaultModel());
+      super("productOptionViewOrEditFragement", "productOptionViewFragement", ProductOptionPanel.this, ProductOptionPanel.this.getDefaultModel());
+      optionViewTable = new OptionViewTable("optionViewTable", (IModel<Product>) ProductOptionViewFragement.this.getDefaultModel());
     }
 
     @Override

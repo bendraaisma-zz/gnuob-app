@@ -349,7 +349,7 @@ public class OrderViewOrEditPanel extends Panel {
         orderViewForm.add(new TextField<String>("shipment.address.internationalStreet").setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>("shipment.address.internationalStateAndCity").setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>("shipment.address.phone").setOutputMarkupId(true));
-        orderViewForm.add(orderRecordPanel.add(orderRecordPanel.new OrderRecordViewFragement()).setOutputMarkupId(true));
+        orderViewForm.add(orderRecordPanel.add(orderRecordPanel.new OrderRecordViewFragment()).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>("invoice.invoiceId"));
         orderViewForm.add(new RequiredTextField<String>("invoice.address.postalCode").setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>("invoice.address.number").setOutputMarkupId(true));

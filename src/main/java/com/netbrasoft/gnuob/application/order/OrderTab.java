@@ -18,9 +18,9 @@ public class OrderTab extends AbstractTab {
 
   @Override
   public WebMarkupContainer getPanel(final String panelId) {
-	  Order order = new Order();
-	  order.setActive(true);
-	  order.setInvoice(new Invoice());
+    Order order = new Order();
+    order.setActive(true);
+    order.setInvoice(new Invoice());
     return new OrderPanel(panelId, Model.of(order));
   }
 }

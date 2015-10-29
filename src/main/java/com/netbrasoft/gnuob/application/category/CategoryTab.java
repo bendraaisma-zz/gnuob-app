@@ -19,6 +19,6 @@ public class CategoryTab extends AbstractTab {
   public WebMarkupContainer getPanel(final String panelId) {
     Category category = new Category();
     category.setActive(true);
-	return new CategoryPanel(panelId, Model.of(category));
+    return new CategoryPanel(panelId, Model.of(category));
   }
 }

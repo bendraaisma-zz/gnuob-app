@@ -59,8 +59,7 @@ public class ProductViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public CancelAjaxLink(String id, IModel<Product> model, Buttons.Type type,
-            IModel<String> labelModel) {
+        public CancelAjaxLink(String id, IModel<Product> model, Buttons.Type type, IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setSize(Buttons.Size.Small);
         }
@@ -69,11 +68,9 @@ public class ProductViewOrEditPanel extends Panel {
         public void onClick(AjaxRequestTarget target) {
           ProductViewOrEditPanel.this.removeAll();
           if (((Product) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
-            CancelAjaxLink.this.setDefaultModelObject(productDataProvider
-                .findById((Product) CancelAjaxLink.this.getDefaultModelObject()));
+            CancelAjaxLink.this.setDefaultModelObject(productDataProvider.findById((Product) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(ProductViewOrEditPanel.this
-              .add(ProductViewOrEditPanel.this.new ProductViewFragment()).setOutputMarkupId(true));
+          target.add(ProductViewOrEditPanel.this.add(ProductViewOrEditPanel.this.new ProductViewFragment()).setOutputMarkupId(true));
         }
       }
 
@@ -85,17 +82,14 @@ public class ProductViewOrEditPanel extends Panel {
         public SaveAjaxButton(String id, IModel<String> model, Form<?> form, Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(ProductViewOrEditPanel.this
-              .getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
+          add(new LoadingBehavior(Model.of(ProductViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
         }
 
         @Override
         protected void onError(AjaxRequestTarget target, Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target
-              .add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductViewOrEditPanel.this
-                  .getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
         }
 
         @Override
@@ -103,26 +97,20 @@ public class ProductViewOrEditPanel extends Panel {
           boolean isException = false;
           try {
             if (((Product) form.getDefaultModelObject()).getId() == 0) {
-              ProductEditTable.this.setDefaultModelObject(productDataProvider
-                  .findById(productDataProvider.persist(((Product) form.getDefaultModelObject()))));
+              ProductEditTable.this.setDefaultModelObject(productDataProvider.findById(productDataProvider.persist(((Product) form.getDefaultModelObject()))));
             } else {
-              ProductEditTable.this.setDefaultModelObject(productDataProvider
-                  .findById(productDataProvider.merge(((Product) form.getDefaultModelObject()))));
+              ProductEditTable.this.setDefaultModelObject(productDataProvider.findById(productDataProvider.merge(((Product) form.getDefaultModelObject()))));
             }
           } catch (final RuntimeException e) {
             isException = true;
             LOGGER.warn(e.getMessage(), e);
             feedbackPanel.warn(e.getLocalizedMessage());
             target.add(feedbackPanel.setOutputMarkupId(true));
-            target.add(
-                SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductViewOrEditPanel.this
-                    .getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ProductViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
           } finally {
             if (!isException) {
               ProductViewOrEditPanel.this.removeAll();
-              target.add(ProductViewOrEditPanel.this
-                  .add(ProductViewOrEditPanel.this.new ProductViewFragment())
-                  .setOutputMarkupId(true));
+              target.add(ProductViewOrEditPanel.this.add(ProductViewOrEditPanel.this.new ProductViewFragment()).setOutputMarkupId(true));
             }
           }
         }
@@ -146,77 +134,45 @@ public class ProductViewOrEditPanel extends Panel {
 
       public ProductEditTable(final String id, final IModel<Product> model) {
         super(id, model);
-        productEditForm =
-            new BootstrapForm<Product>("productEditForm", new CompoundPropertyModel<Product>(
-                (IModel<Product>) ProductEditTable.this.getDefaultModel()));
-        productOptionPanel = new ProductOptionPanel("optionViewOrEditPanel",
-            (IModel<Product>) ProductEditTable.this.getDefaultModel());
-        contentViewOrEditPanel = new ProductContentPanel("contentViewOrEditPanel",
-            (IModel<Product>) ProductEditTable.this.getDefaultModel());
-        subCategoryViewOrEditPanel = new ProductSubCategoryPanel("subCategoryViewOrEditPanel",
-            (IModel<Product>) ProductEditTable.this.getDefaultModel());
-        cancelAjaxLink = new CancelAjaxLink("cancel", model, Buttons.Type.Default,
-            Model.of(ProductViewOrEditPanel.this
-                .getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
-        saveAjaxButton = new SaveAjaxButton("save",
-            Model.of(ProductViewOrEditPanel.this
-                .getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)),
-            productEditForm, Buttons.Type.Primary);
+        productEditForm = new BootstrapForm<Product>("productEditForm", new CompoundPropertyModel<Product>((IModel<Product>) ProductEditTable.this.getDefaultModel()));
+        productOptionPanel = new ProductOptionPanel("optionViewOrEditPanel", (IModel<Product>) ProductEditTable.this.getDefaultModel());
+        contentViewOrEditPanel = new ProductContentPanel("contentViewOrEditPanel", (IModel<Product>) ProductEditTable.this.getDefaultModel());
+        subCategoryViewOrEditPanel = new ProductSubCategoryPanel("subCategoryViewOrEditPanel", (IModel<Product>) ProductEditTable.this.getDefaultModel());
+        cancelAjaxLink =
+            new CancelAjaxLink("cancel", model, Buttons.Type.Default, Model.of(ProductViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
+        saveAjaxButton = new SaveAjaxButton("save", Model.of(ProductViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)), productEditForm,
+            Buttons.Type.Primary);
         feedbackPanel = new NotificationPanel("feedback");
       }
 
       @Override
       protected void onInitialize() {
-        productEditForm.add(new RequiredTextField<String>("number")
-            .add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
-        productEditForm.add(new RequiredTextField<String>("name")
-            .add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        productEditForm.add(new TextArea<String>("description")
-            .add(StringValidator.maximumLength(128)).setRequired(true).setOutputMarkupId(true));
-        productEditForm.add(new UrlTextField("itemUrl",
-            new PropertyModel<String>(getDefaultModelObject(), "itemUrl")).setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigDecimal>("amount").setMinimum(BigDecimal.ZERO)
-            .setRequired(true).setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigDecimal>("discount").setMinimum(BigDecimal.ZERO)
-            .setRequired(true).setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigDecimal>("shippingCost")
-            .setMinimum(BigDecimal.ZERO).setRequired(true).setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigDecimal>("tax").setMinimum(BigDecimal.ZERO)
-            .setRequired(true).setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigDecimal>("itemHeight")
-            .setMinimum(BigDecimal.ZERO).setOutputMarkupId(true));
-        productEditForm.add(new TextField<String>("itemHeightUnit")
-            .add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigDecimal>("itemLength")
-            .setMinimum(BigDecimal.ZERO).setOutputMarkupId(true));
-        productEditForm.add(new TextField<String>("itemLengthUnit")
-            .add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigDecimal>("itemWeight")
-            .setMinimum(BigDecimal.ZERO).setRequired(true).setOutputMarkupId(true));
-        productEditForm.add(new TextField<String>("itemWeightUnit")
-            .add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigDecimal>("itemWidth").setMinimum(BigDecimal.ZERO)
-            .setOutputMarkupId(true));
-        productEditForm.add(new TextField<String>("itemWidthUnit")
-            .add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+        productEditForm.add(new RequiredTextField<String>("number").add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
+        productEditForm.add(new RequiredTextField<String>("name").add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        productEditForm.add(new TextArea<String>("description").add(StringValidator.maximumLength(128)).setRequired(true).setOutputMarkupId(true));
+        productEditForm.add(new UrlTextField("itemUrl", new PropertyModel<String>(getDefaultModelObject(), "itemUrl")).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigDecimal>("amount").setMinimum(BigDecimal.ZERO).setRequired(true).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigDecimal>("discount").setMinimum(BigDecimal.ZERO).setRequired(true).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigDecimal>("shippingCost").setMinimum(BigDecimal.ZERO).setRequired(true).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigDecimal>("tax").setMinimum(BigDecimal.ZERO).setRequired(true).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigDecimal>("itemHeight").setMinimum(BigDecimal.ZERO).setOutputMarkupId(true));
+        productEditForm.add(new TextField<String>("itemHeightUnit").add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigDecimal>("itemLength").setMinimum(BigDecimal.ZERO).setOutputMarkupId(true));
+        productEditForm.add(new TextField<String>("itemLengthUnit").add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigDecimal>("itemWeight").setMinimum(BigDecimal.ZERO).setRequired(true).setOutputMarkupId(true));
+        productEditForm.add(new TextField<String>("itemWeightUnit").add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigDecimal>("itemWidth").setMinimum(BigDecimal.ZERO).setOutputMarkupId(true));
+        productEditForm.add(new TextField<String>("itemWidthUnit").add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
         productEditForm.add(new BootstrapCheckbox("bestsellers").setOutputMarkupId(true));
         productEditForm.add(new BootstrapCheckbox("latestCollection").setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<Integer>("rating").setMinimum(0).setMinimum(0)
-            .setMaximum(5).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<Integer>("rating").setMinimum(0).setMinimum(0).setMaximum(5).setOutputMarkupId(true));
         productEditForm.add(new BootstrapCheckbox("recommended").setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigInteger>("stock.maxQuantity")
-            .setMinimum(BigInteger.ZERO).setRequired(true).setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigInteger>("stock.minQuantity")
-            .setMinimum(BigInteger.ZERO).setRequired(true).setOutputMarkupId(true));
-        productEditForm.add(new NumberTextField<BigInteger>("stock.quantity")
-            .setMinimum(BigInteger.ZERO).setRequired(true).setOutputMarkupId(true));
-        productEditForm.add(productOptionPanel
-            .add(productOptionPanel.new ProductOptionEditFragement()).setOutputMarkupId(true));
-        productEditForm.add(contentViewOrEditPanel
-            .add(contentViewOrEditPanel.new ProductContentEditFragement()).setOutputMarkupId(true));
-        productEditForm.add(subCategoryViewOrEditPanel
-            .add(subCategoryViewOrEditPanel.new ProductSubCategoryEditFragement())
-            .setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigInteger>("stock.maxQuantity").setMinimum(BigInteger.ZERO).setRequired(true).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigInteger>("stock.minQuantity").setMinimum(BigInteger.ZERO).setRequired(true).setOutputMarkupId(true));
+        productEditForm.add(new NumberTextField<BigInteger>("stock.quantity").setMinimum(BigInteger.ZERO).setRequired(true).setOutputMarkupId(true));
+        productEditForm.add(productOptionPanel.add(productOptionPanel.new ProductOptionEditFragement()).setOutputMarkupId(true));
+        productEditForm.add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ProductContentEditFragement()).setOutputMarkupId(true));
+        productEditForm.add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new ProductSubCategoryEditFragement()).setOutputMarkupId(true));
         add(productEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(cancelAjaxLink.setOutputMarkupId(true));
         add(saveAjaxButton.setOutputMarkupId(true));
@@ -230,10 +186,8 @@ public class ProductViewOrEditPanel extends Panel {
     private final ProductEditTable productEditTable;
 
     public ProductEditFragment() {
-      super("productViewOrEditFragment", "productEditFragment", ProductViewOrEditPanel.this,
-          ProductViewOrEditPanel.this.getDefaultModel());
-      productEditTable = new ProductEditTable("productEditTable",
-          (IModel<Product>) ProductEditFragment.this.getDefaultModel());
+      super("productViewOrEditFragment", "productEditFragment", ProductViewOrEditPanel.this, ProductViewOrEditPanel.this.getDefaultModel());
+      productEditTable = new ProductEditTable("productEditTable", (IModel<Product>) ProductEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -251,8 +205,7 @@ public class ProductViewOrEditPanel extends Panel {
 
       private static final long serialVersionUID = 4267535261864907719L;
 
-      public EditAjaxLink(String id, IModel<Product> model, Buttons.Type type,
-          IModel<String> labelModel) {
+      public EditAjaxLink(String id, IModel<Product> model, Buttons.Type type, IModel<String> labelModel) {
         super(id, model, type, labelModel);
         setIconType(GlyphIconType.edit);
         setSize(Buttons.Size.Small);
@@ -261,8 +214,7 @@ public class ProductViewOrEditPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         ProductViewOrEditPanel.this.removeAll();
-        target.add(ProductViewOrEditPanel.this
-            .add(ProductViewOrEditPanel.this.new ProductEditFragment().setOutputMarkupId(true)));
+        target.add(ProductViewOrEditPanel.this.add(ProductViewOrEditPanel.this.new ProductEditFragment().setOutputMarkupId(true)));
       }
     }
 
@@ -283,18 +235,11 @@ public class ProductViewOrEditPanel extends Panel {
 
       public ProductViewTable(String id, IModel<Product> model) {
         super(id, model);
-        productViewForm =
-            new BootstrapForm<Product>("productViewForm", new CompoundPropertyModel<Product>(
-                (IModel<Product>) ProductViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink("edit", model, Buttons.Type.Primary,
-            Model.of(ProductViewOrEditPanel.this
-                .getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
-        productOptionPanel = new ProductOptionPanel("optionViewOrEditPanel",
-            (IModel<Product>) ProductViewTable.this.getDefaultModel());
-        contentViewOrEditPanel = new ProductContentPanel("contentViewOrEditPanel",
-            (IModel<Product>) ProductViewTable.this.getDefaultModel());
-        subCategoryViewOrEditPanel = new ProductSubCategoryPanel("subCategoryViewOrEditPanel",
-            (IModel<Product>) ProductViewTable.this.getDefaultModel());
+        productViewForm = new BootstrapForm<Product>("productViewForm", new CompoundPropertyModel<Product>((IModel<Product>) ProductViewTable.this.getDefaultModel()));
+        editAjaxLink = new EditAjaxLink("edit", model, Buttons.Type.Primary, Model.of(ProductViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        productOptionPanel = new ProductOptionPanel("optionViewOrEditPanel", (IModel<Product>) ProductViewTable.this.getDefaultModel());
+        contentViewOrEditPanel = new ProductContentPanel("contentViewOrEditPanel", (IModel<Product>) ProductViewTable.this.getDefaultModel());
+        subCategoryViewOrEditPanel = new ProductSubCategoryPanel("subCategoryViewOrEditPanel", (IModel<Product>) ProductViewTable.this.getDefaultModel());
       }
 
       @Override
@@ -302,8 +247,7 @@ public class ProductViewOrEditPanel extends Panel {
         productViewForm.add(new RequiredTextField<String>("number").setOutputMarkupId(true));
         productViewForm.add(new RequiredTextField<String>("name").setOutputMarkupId(true));
         productViewForm.add(new TextArea<String>("description").setOutputMarkupId(true));
-        productViewForm.add(new UrlTextField("itemUrl",
-            new PropertyModel<String>(getDefaultModelObject(), "itemUrl")).setOutputMarkupId(true));
+        productViewForm.add(new UrlTextField("itemUrl", new PropertyModel<String>(getDefaultModelObject(), "itemUrl")).setOutputMarkupId(true));
         productViewForm.add(new NumberTextField<Integer>("amount").setOutputMarkupId(true));
         productViewForm.add(new NumberTextField<Integer>("discount").setOutputMarkupId(true));
         productViewForm.add(new NumberTextField<Integer>("shippingCost").setOutputMarkupId(true));
@@ -320,18 +264,12 @@ public class ProductViewOrEditPanel extends Panel {
         productViewForm.add(new TextField<String>("latestCollection").setOutputMarkupId(true));
         productViewForm.add(new NumberTextField<Integer>("rating").setOutputMarkupId(true));
         productViewForm.add(new TextField<String>("recommended").setOutputMarkupId(true));
-        productViewForm
-            .add(new NumberTextField<Integer>("stock.maxQuantity").setOutputMarkupId(true));
-        productViewForm
-            .add(new NumberTextField<Integer>("stock.minQuantity").setOutputMarkupId(true));
+        productViewForm.add(new NumberTextField<Integer>("stock.maxQuantity").setOutputMarkupId(true));
+        productViewForm.add(new NumberTextField<Integer>("stock.minQuantity").setOutputMarkupId(true));
         productViewForm.add(new NumberTextField<Integer>("stock.quantity").setOutputMarkupId(true));
-        productViewForm.add(productOptionPanel
-            .add(productOptionPanel.new ProductOptionViewFragement()).setOutputMarkupId(true));
-        productViewForm.add(contentViewOrEditPanel
-            .add(contentViewOrEditPanel.new ProductContentViewFragement()).setOutputMarkupId(true));
-        productViewForm.add(subCategoryViewOrEditPanel
-            .add(subCategoryViewOrEditPanel.new ProductSubCategoryViewFragement())
-            .setOutputMarkupId(true));
+        productViewForm.add(productOptionPanel.add(productOptionPanel.new ProductOptionViewFragement()).setOutputMarkupId(true));
+        productViewForm.add(contentViewOrEditPanel.add(contentViewOrEditPanel.new ProductContentViewFragement()).setOutputMarkupId(true));
+        productViewForm.add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new ProductSubCategoryViewFragement()).setOutputMarkupId(true));
         add(productViewForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(editAjaxLink.setOutputMarkupId(true));
         super.onInitialize();
@@ -343,10 +281,8 @@ public class ProductViewOrEditPanel extends Panel {
     private final ProductViewTable productViewTable;
 
     public ProductViewFragment() {
-      super("productViewOrEditFragment", "productViewFragment", ProductViewOrEditPanel.this,
-          ProductViewOrEditPanel.this.getDefaultModel());
-      productViewTable = new ProductViewTable("productViewTable",
-          (IModel<Product>) ProductViewFragment.this.getDefaultModel());
+      super("productViewOrEditFragment", "productViewFragment", ProductViewOrEditPanel.this, ProductViewOrEditPanel.this.getDefaultModel());
+      productViewTable = new ProductViewTable("productViewTable", (IModel<Product>) ProductViewFragment.this.getDefaultModel());
     }
 
     @Override
