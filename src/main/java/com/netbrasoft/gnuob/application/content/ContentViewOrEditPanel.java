@@ -114,7 +114,7 @@ public class ContentViewOrEditPanel extends Panel {
 
       private static final String NAME_ID = "name";
 
-      private static final String FEEDBACK_ID = "feedback";
+      private static final String FEEDBACK_MARKUP_ID = "feedback";
 
       private static final String SAVE_ID = "save";
 
@@ -139,7 +139,7 @@ public class ContentViewOrEditPanel extends Panel {
             new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default, Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
         saveAjaxButton = new SaveAjaxButton(SAVE_ID, Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)), contentEditForm,
             Buttons.Type.Primary);
-        feedbackPanel = new NotificationPanel(FEEDBACK_ID);
+        feedbackPanel = new NotificationPanel(FEEDBACK_MARKUP_ID);
       }
 
       @Override
