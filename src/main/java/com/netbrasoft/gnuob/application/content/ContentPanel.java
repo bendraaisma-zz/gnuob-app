@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Content;
+import com.netbrasoft.gnuob.api.content.ContentDataProvider;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
@@ -53,6 +54,8 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class ContentPanel extends Panel {
 
+  private static final String CONTENT_PANEL_CONTAINER_ID = "contentPanelContainer";
+
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
   class ContentPanelContainer extends WebMarkupContainer {
 
@@ -64,14 +67,14 @@ public class ContentPanel extends Panel {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(String id, IModel<Content> model, Buttons.Type type, IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Content> model, final Buttons.Type type, final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
         }
 
         @Override
-        public void onClick(AjaxRequestTarget target) {
+        public void onClick(final AjaxRequestTarget target) {
           final Content content = new Content();
           content.setActive(true);
           AddAjaxLink.this.setDefaultModelObject(content);
@@ -97,7 +100,7 @@ public class ContentPanel extends Panel {
             }
 
             @Override
-            public void onClick(AjaxRequestTarget target) {
+            public void onClick(final AjaxRequestTarget target) {
               try {
                 contentDataProvider.remove((Content) RemoveAjaxLink.this.getDefaultModelObject());
               } catch (final RuntimeException e) {
@@ -109,6 +112,20 @@ public class ContentPanel extends Panel {
             }
           }
 
+          private static final String CONFIRMATION_FUNCTION_NAME = "confirmation";
+
+          private static final String REMOVE_ID = "remove";
+
+          private static final String CLICK_EVENT = "click";
+
+          private static final String FORMAT_ID = FORMAT_PROPERTY;
+
+          private static final String NAME_ID = NAME_PROPERTY;
+
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
+
           private static final long serialVersionUID = -9196412070291572169L;
 
           private int index;
@@ -118,47 +135,48 @@ public class ContentPanel extends Panel {
           }
 
           @Override
-          protected Item<Content> newItem(String id, int index, IModel<Content> model) {
+          protected Item<Content> newItem(final String id, final int index, final IModel<Content> model) {
             final Item<Content> item = super.newItem(id, index, model);
             if (this.index == index) {
-              item.add(new AttributeModifier("class", "info"));
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
             }
             return item;
           }
 
           @Override
-          protected void populateItem(Item<Content> item) {
+          protected void populateItem(final Item<Content> item) {
             item.setModel(new CompoundPropertyModel<Content>(item.getModelObject()));
-            item.add(new Label("name"));
-            item.add(new Label("format"));
-            item.add(new AjaxEventBehavior("click") {
+            item.add(new Label(NAME_ID));
+            item.add(new Label(FORMAT_ID));
+            item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
 
               @Override
-              public void onEvent(AjaxRequestTarget target) {
+              public void onEvent(final AjaxRequestTarget target) {
                 index = item.getIndex();
                 target.add(contentDataviewContainer.setDefaultModelObject(item.getModelObject()).setOutputMarkupId(true));
                 target.add(contentViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(
-                new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default, Model.of(ContentPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                    .add(new ConfirmationBehavior() {
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(ContentPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                .add(new ConfirmationBehavior() {
 
-                      private static final long serialVersionUID = 7744720444161839031L;
+                  private static final long serialVersionUID = 7744720444161839031L;
 
-                      @Override
-                      public void renderHead(Component component, IHeaderResponse response) {
-                        response.render($(component).chain("confirmation",
-                            new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                                .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                                .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                            .asDomReadyScript());
-                      }
-                    }));
+                  @Override
+                  public void renderHead(final Component component, final IHeaderResponse response) {
+                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
+                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
+                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                        .asDomReadyScript());
+                  }
+                }));
           }
         }
+
+        private static final String CONTENT_DATAVIEW_ID = "contentDataview";
 
         private static final long serialVersionUID = -6700605975126870961L;
 
@@ -168,7 +186,7 @@ public class ContentPanel extends Panel {
 
         public ContentDataviewContainer(final String id, final IModel<Content> model) {
           super(id, model);
-          contentDataview = new ContentDataview("contentDataview", contentDataProvider, ITEMS_PER_PAGE);
+          contentDataview = new ContentDataview(CONTENT_DATAVIEW_ID, contentDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -177,6 +195,22 @@ public class ContentPanel extends Panel {
           super.onInitialize();
         }
       }
+
+      private static final String CONTENT_PAGING_NAVIGATOR_MARKUP_ID = "contentPagingNavigator";
+
+      private static final String CONTENT_DATAVIEW_CONTAINER_ID = "contentDataviewContainer";
+
+      private static final String NAME_PROPERTY = "name";
+
+      private static final String ORDER_BY_NAME_ID = "orderByName";
+
+      private static final String FORMAT_PROPERTY = "format";
+
+      private static final String ORDER_BY_FORMAT_ID = "orderByFormat";
+
+      private static final String ADD_ID = "add";
+
+      private static final String FEEDBACK_ID = "feedback";
 
       private static final long serialVersionUID = -2899790701873445919L;
 
@@ -194,13 +228,13 @@ public class ContentPanel extends Panel {
 
       public ContentTableContainer(final String id, final IModel<Content> model) {
         super(id, model);
-        feedbackPanel = new NotificationPanel("feedback");
-        addAjaxLink = new AddAjaxLink("add", (IModel<Content>) ContentTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
+        feedbackPanel = new NotificationPanel(FEEDBACK_ID);
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Content>) ContentTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
             Model.of(ContentPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        orderByFormat = new OrderByBorder<String>("orderByFormat", "format", contentDataProvider);
-        orderByName = new OrderByBorder<String>("orderByName", "name", contentDataProvider);
-        contentDataviewContainer = new ContentDataviewContainer("contentDataviewContainer", (IModel<Content>) ContentTableContainer.this.getDefaultModel());
-        contentPagingNavigator = new BootstrapPagingNavigator("contentPagingNavigator", contentDataviewContainer.contentDataview);
+        orderByFormat = new OrderByBorder<String>(ORDER_BY_FORMAT_ID, FORMAT_PROPERTY, contentDataProvider);
+        orderByName = new OrderByBorder<String>(ORDER_BY_NAME_ID, NAME_PROPERTY, contentDataProvider);
+        contentDataviewContainer = new ContentDataviewContainer(CONTENT_DATAVIEW_CONTAINER_ID, (IModel<Content>) ContentTableContainer.this.getDefaultModel());
+        contentPagingNavigator = new BootstrapPagingNavigator(CONTENT_PAGING_NAVIGATOR_MARKUP_ID, contentDataviewContainer.contentDataview);
       }
 
       @Override
@@ -215,6 +249,10 @@ public class ContentPanel extends Panel {
       }
     }
 
+    private static final String CONTENT_VIEW_OR_EDIT_PANEL_ID = "contentViewOrEditPanel";
+
+    private static final String CONTENT_TABLE_CONTAINER_ID = "contentTableContainer";
+
     private static final long serialVersionUID = -3393167428708739654L;
 
     private final ContentViewOrEditPanel contentViewOrEditPanel;
@@ -223,8 +261,8 @@ public class ContentPanel extends Panel {
 
     public ContentPanelContainer(final String id, final IModel<Content> model) {
       super(id, model);
-      contentTableContainer = new ContentTableContainer("contentTableContainer", (IModel<Content>) ContentPanelContainer.this.getDefaultModel());
-      contentViewOrEditPanel = new ContentViewOrEditPanel("contentViewOrEditPanel", (IModel<Content>) ContentPanelContainer.this.getDefaultModel());
+      contentTableContainer = new ContentTableContainer(CONTENT_TABLE_CONTAINER_ID, (IModel<Content>) ContentPanelContainer.this.getDefaultModel());
+      contentViewOrEditPanel = new ContentViewOrEditPanel(CONTENT_VIEW_OR_EDIT_PANEL_ID, (IModel<Content>) ContentPanelContainer.this.getDefaultModel());
     }
 
     @Override
@@ -239,14 +277,14 @@ public class ContentPanel extends Panel {
 
   private static final long serialVersionUID = 3703226064705246155L;
 
-  @SpringBean(name = "ContentDataProvider", required = true)
+  @SpringBean(name = ContentDataProvider.CONTENT_DATA_PROVIDER_NAME, required = true)
   private GenericTypeDataProvider<Content> contentDataProvider;
 
   private final ContentPanelContainer contentPanelContainer;
 
   public ContentPanel(final String id, final IModel<Content> model) {
     super(id, model);
-    contentPanelContainer = new ContentPanelContainer("contentPanelContainer", (IModel<Content>) ContentPanel.this.getDefaultModel());
+    contentPanelContainer = new ContentPanelContainer(CONTENT_PANEL_CONTAINER_ID, (IModel<Content>) ContentPanel.this.getDefaultModel());
   }
 
   @Override
@@ -264,7 +302,7 @@ public class ContentPanel extends Panel {
       private static final long serialVersionUID = -4903722864597601489L;
 
       @Override
-      public void onComponentTag(Component component, ComponentTag tag) {
+      public void onComponentTag(final Component component, final ComponentTag tag) {
         Attributes.addClass(tag, MediumSpanType.SPAN10);
       }
     }).setOutputMarkupId(true));
