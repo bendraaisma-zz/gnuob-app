@@ -22,6 +22,7 @@ import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+
 import com.netbrasoft.gnuob.api.Order;
 import com.netbrasoft.gnuob.api.OrderRecord;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
@@ -50,14 +51,14 @@ public class OrderRecordPanel extends Panel {
 
         private static final long serialVersionUID = 9191172039973638020L;
 
-        public AddAjaxLink(String id, IModel<Order> model, Buttons.Type type, IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Order> model, final Buttons.Type type, final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
         }
 
         @Override
-        public void onClick(AjaxRequestTarget target) {
+        public void onClick(final AjaxRequestTarget target) {
           ((Order) AddAjaxLink.this.getDefaultModelObject()).getRecords().add(new OrderRecord());
           orderRecordDataviewContainer.orderRecordDataview.index = ((Order) AddAjaxLink.this.getDefaultModelObject()).getRecords().size() - 1;
           orderRecordViewOrEditPanel.removeAll();
@@ -77,14 +78,14 @@ public class OrderRecordPanel extends Panel {
 
             private static final long serialVersionUID = -6950515027229520882L;
 
-            public RemoveAjaxLink(String id, IModel<OrderRecord> model, Buttons.Type type, IModel<String> labelModel) {
+            public RemoveAjaxLink(final String id, final IModel<OrderRecord> model, final Buttons.Type type, final IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
             }
 
             @Override
-            public void onClick(AjaxRequestTarget target) {
+            public void onClick(final AjaxRequestTarget target) {
               ((Order) OrderRecordDataviewContainer.this.getDefaultModelObject()).getRecords().remove(RemoveAjaxLink.this.getDefaultModelObject());
               orderRecordDataview.index = ((Order) OrderRecordDataviewContainer.this.getDefaultModelObject()).getRecords().size() - 1;
               orderRecordViewOrEditPanel.removeAll();
@@ -92,6 +93,12 @@ public class OrderRecordPanel extends Panel {
               target.add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordEditFragment()).setOutputMarkupId(true));
             }
           }
+
+          private static final String CONFIRMATION_FUNCTION_NAME = "confirmation";
+
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
 
           private static final long serialVersionUID = 8996562822101409998L;
 
@@ -102,10 +109,10 @@ public class OrderRecordPanel extends Panel {
           }
 
           @Override
-          protected Item<OrderRecord> newItem(String id, int index, IModel<OrderRecord> model) {
+          protected Item<OrderRecord> newItem(final String id, final int index, final IModel<OrderRecord> model) {
             final Item<OrderRecord> item = super.newItem(id, index, model);
             if (this.index == index) {
-              item.add(new AttributeModifier("class", "info"));
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
             }
             return item;
           }
@@ -128,7 +135,7 @@ public class OrderRecordPanel extends Panel {
           }
 
           @Override
-          protected void populateItem(Item<OrderRecord> item) {
+          protected void populateItem(final Item<OrderRecord> item) {
             item.setModel(new CompoundPropertyModel<OrderRecord>(item.getModelObject()));
             item.add(new Label("name"));
             item.add(new Label("description"));
@@ -137,7 +144,7 @@ public class OrderRecordPanel extends Panel {
               private static final long serialVersionUID = 1L;
 
               @Override
-              public void onEvent(AjaxRequestTarget target) {
+              public void onEvent(final AjaxRequestTarget target) {
                 index = item.getIndex();
                 orderRecordViewOrEditPanel.setSelectedModel(item.getModel());
                 orderRecordViewOrEditPanel.removeAll();
@@ -152,8 +159,8 @@ public class OrderRecordPanel extends Panel {
                       private static final long serialVersionUID = 7744720444161839031L;
 
                       @Override
-                      public void renderHead(Component component, IHeaderResponse response) {
-                        response.render($(component).chain("confirmation",
+                      public void renderHead(final Component component, final IHeaderResponse response) {
+                        response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
                             new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
                                 .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
                                 .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
@@ -162,6 +169,8 @@ public class OrderRecordPanel extends Panel {
                     }));
           }
         }
+
+        private static final String ORDER_RECORD_DATAVIEW_ID = "orderRecordDataview";
 
         private static final long serialVersionUID = 7156170012562240536L;
 
@@ -180,7 +189,7 @@ public class OrderRecordPanel extends Panel {
               return ((Order) OrderRecordDataviewContainer.this.getDefaultModelObject()).getRecords();
             }
           };
-          orderRecordDataview = new OrderRecordDataview("orderRecordDataview", orderRecordListDataProvider, ITEMS_PER_PAGE);
+          orderRecordDataview = new OrderRecordDataview(ORDER_RECORD_DATAVIEW_ID, orderRecordListDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -189,6 +198,14 @@ public class OrderRecordPanel extends Panel {
           super.onInitialize();
         }
       }
+
+      private static final String ORDER_RECORD_VIEW_OR_EDIT_PANEL_ID = "orderRecordViewOrEditPanel";
+
+      private static final String ORDER_RECORD_PAGING_NAVIGATOR_MARKUP_ID = "orderRecordPagingNavigator";
+
+      private static final String ORDER_RECORD_DATAVIEW_CONTAINER_ID = "orderRecordDataviewContainer";
+
+      private static final String ADD_ID = "add";
 
       private static final long serialVersionUID = -4165310537311768675L;
 
@@ -202,11 +219,11 @@ public class OrderRecordPanel extends Panel {
 
       public OrderRecordEditTable(final String id, final IModel<Order> model) {
         super(id, model);
-        addAjaxLink = new AddAjaxLink("add", (IModel<Order>) OrderRecordEditTable.this.getDefaultModel(), Buttons.Type.Primary,
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Order>) OrderRecordEditTable.this.getDefaultModel(), Buttons.Type.Primary,
             Model.of(OrderRecordPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        orderRecordDataviewContainer = new OrderRecordDataviewContainer("orderRecordDataviewContainer", (IModel<Order>) OrderRecordEditTable.this.getDefaultModel());
-        orderRecordPagingNavigator = new BootstrapPagingNavigator("orderRecordPagingNavigator", orderRecordDataviewContainer.orderRecordDataview);
-        orderRecordViewOrEditPanel = new OrderRecordViewOrEditPanel("orderRecordViewOrEditPanel", (IModel<Order>) OrderRecordEditTable.this.getDefaultModel());
+        orderRecordDataviewContainer = new OrderRecordDataviewContainer(ORDER_RECORD_DATAVIEW_CONTAINER_ID, (IModel<Order>) OrderRecordEditTable.this.getDefaultModel());
+        orderRecordPagingNavigator = new BootstrapPagingNavigator(ORDER_RECORD_PAGING_NAVIGATOR_MARKUP_ID, orderRecordDataviewContainer.orderRecordDataview);
+        orderRecordViewOrEditPanel = new OrderRecordViewOrEditPanel(ORDER_RECORD_VIEW_OR_EDIT_PANEL_ID, (IModel<Order>) OrderRecordEditTable.this.getDefaultModel());
       }
 
       @Override
@@ -219,13 +236,19 @@ public class OrderRecordPanel extends Panel {
       }
     }
 
+    private static final String ORDER_RECORD_EDIT_TABLE_ID = "orderRecordEditTable";
+
+    private static final String ORDER_RECORD_EDIT_FRAGMENT_MARKUP_ID = "orderRecordEditFragment";
+
+    private static final String ORDER_RECORD_VIEW_OR_EDIT_FRAGMENT_ID = "orderRecordViewOrEditFragment";
+
     private static final long serialVersionUID = -8851058614310416237L;
 
     private final OrderRecordEditTable orderRecordEditTable;
 
     public OrderRecordEditFragment() {
-      super("orderRecordViewOrEditFragment", "orderRecordEditFragment", OrderRecordPanel.this, OrderRecordPanel.this.getDefaultModel());
-      orderRecordEditTable = new OrderRecordEditTable("orderRecordEditTable", (IModel<Order>) OrderRecordEditFragment.this.getDefaultModel());
+      super(ORDER_RECORD_VIEW_OR_EDIT_FRAGMENT_ID, ORDER_RECORD_EDIT_FRAGMENT_MARKUP_ID, OrderRecordPanel.this, OrderRecordPanel.this.getDefaultModel());
+      orderRecordEditTable = new OrderRecordEditTable(ORDER_RECORD_EDIT_TABLE_ID, (IModel<Order>) OrderRecordEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -247,6 +270,16 @@ public class OrderRecordPanel extends Panel {
         @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
         class OrderRecordDataview extends DataView<OrderRecord> {
 
+          private static final String CLICK_EVENT = "click";
+
+          private static final String DESCRIPTION_ID = "description";
+
+          private static final String NAME_ID = "name";
+
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
+
           private static final long serialVersionUID = 8996562822101409998L;
 
           private int index = 0;
@@ -256,10 +289,10 @@ public class OrderRecordPanel extends Panel {
           }
 
           @Override
-          protected Item<OrderRecord> newItem(String id, int index, IModel<OrderRecord> model) {
+          protected Item<OrderRecord> newItem(final String id, final int index, final IModel<OrderRecord> model) {
             final Item<OrderRecord> item = super.newItem(id, index, model);
             if (this.index == index) {
-              item.add(new AttributeModifier("class", "info"));
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
             }
             return item;
           }
@@ -280,16 +313,16 @@ public class OrderRecordPanel extends Panel {
           }
 
           @Override
-          protected void populateItem(Item<OrderRecord> item) {
+          protected void populateItem(final Item<OrderRecord> item) {
             item.setModel(new CompoundPropertyModel<OrderRecord>(item.getModelObject()));
-            item.add(new Label("name"));
-            item.add(new Label("description"));
-            item.add(new AjaxEventBehavior("click") {
+            item.add(new Label(NAME_ID));
+            item.add(new Label(DESCRIPTION_ID));
+            item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
 
               @Override
-              public void onEvent(AjaxRequestTarget target) {
+              public void onEvent(final AjaxRequestTarget target) {
                 index = item.getIndex();
                 orderRecordViewOrEditPanel.setSelectedModel(item.getModel());
                 orderRecordViewOrEditPanel.removeAll();
@@ -299,6 +332,8 @@ public class OrderRecordPanel extends Panel {
             });
           }
         }
+
+        private static final String ORDER_RECORD_DATAVIEW_ID = "orderRecordDataview";
 
         private static final long serialVersionUID = 7156170012562240536L;
 
@@ -317,7 +352,7 @@ public class OrderRecordPanel extends Panel {
               return ((Order) OrderRecordDataviewContainer.this.getDefaultModelObject()).getRecords();
             }
           };
-          orderRecordDataview = new OrderRecordDataview("orderRecordDataview", orderRecordListDataProvider, ITEMS_PER_PAGE);
+          orderRecordDataview = new OrderRecordDataview(ORDER_RECORD_DATAVIEW_ID, orderRecordListDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -326,6 +361,12 @@ public class OrderRecordPanel extends Panel {
           super.onInitialize();
         }
       }
+
+      private static final String ORDER_RECORD_VIEW_OR_EDIT_PANEL_ID = "orderRecordViewOrEditPanel";
+
+      private static final String ORDER_RECORD_PAGING_NAVIGATOR_MARKUP_ID = "orderRecordPagingNavigator";
+
+      private static final String ORDER_RECORD_DATAVIEW_CONTAINER_ID = "orderRecordDataviewContainer";
 
       private static final long serialVersionUID = -4165310537311768675L;
 
@@ -337,27 +378,33 @@ public class OrderRecordPanel extends Panel {
 
       public OrderRecordViewTable(final String id, final IModel<Order> model) {
         super(id, model);
-        orderRecordDataviewContainer = new OrderRecordDataviewContainer("orderRecordDataviewContainer", (IModel<Order>) OrderRecordViewTable.this.getDefaultModel());
-        orderRecordPagingNavigator = new BootstrapPagingNavigator("orderRecordPagingNavigator", orderRecordDataviewContainer.orderRecordDataview);
-        orderRecordViewOrEditPanel = new OrderRecordViewOrEditPanel("orderRecordViewOrEditPanel", (IModel<Order>) OrderRecordViewTable.this.getDefaultModel());
+        orderRecordDataviewContainer = new OrderRecordDataviewContainer(ORDER_RECORD_DATAVIEW_CONTAINER_ID, (IModel<Order>) OrderRecordViewTable.this.getDefaultModel());
+        orderRecordPagingNavigator = new BootstrapPagingNavigator(ORDER_RECORD_PAGING_NAVIGATOR_MARKUP_ID, orderRecordDataviewContainer.orderRecordDataview);
+        orderRecordViewOrEditPanel = new OrderRecordViewOrEditPanel(ORDER_RECORD_VIEW_OR_EDIT_PANEL_ID, (IModel<Order>) OrderRecordViewTable.this.getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
         add(orderRecordDataviewContainer.setOutputMarkupId(true));
         add(orderRecordPagingNavigator.setOutputMarkupId(true));
-        add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordEditFragment()).setOutputMarkupId(true));
+        add(orderRecordViewOrEditPanel.add(orderRecordViewOrEditPanel.new OrderRecordViewFragment()).setOutputMarkupId(true));
         super.onInitialize();
       }
     }
+
+    private static final String ORDER_RECORD_VIEW_TABLE_ID = "orderRecordViewTable";
+
+    private static final String ORDER_RECORD_VIEW_FRAGMENT_MARKUP_ID = "orderRecordViewFragment";
+
+    private static final String ORDER_RECORD_VIEW_OR_EDIT_FRAGMENT_ID = "orderRecordViewOrEditFragment";
 
     private static final long serialVersionUID = -8851058614310416237L;
 
     private final OrderRecordViewTable orderRecordViewTable;
 
     public OrderRecordViewFragment() {
-      super("orderRecordViewOrEditFragment", "orderRecordViewFragment", OrderRecordPanel.this, OrderRecordPanel.this.getDefaultModel());
-      orderRecordViewTable = new OrderRecordViewTable("orderRecordViewTable", (IModel<Order>) OrderRecordViewFragment.this.getDefaultModel());
+      super(ORDER_RECORD_VIEW_OR_EDIT_FRAGMENT_ID, ORDER_RECORD_VIEW_FRAGMENT_MARKUP_ID, OrderRecordPanel.this, OrderRecordPanel.this.getDefaultModel());
+      orderRecordViewTable = new OrderRecordViewTable(ORDER_RECORD_VIEW_TABLE_ID, (IModel<Order>) OrderRecordViewFragment.this.getDefaultModel());
     }
 
     @Override

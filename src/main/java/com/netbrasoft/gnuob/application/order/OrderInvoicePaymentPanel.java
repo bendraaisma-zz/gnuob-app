@@ -23,6 +23,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.convert.IConverter;
+
 import com.netbrasoft.gnuob.api.Order;
 import com.netbrasoft.gnuob.api.OrderRecord;
 import com.netbrasoft.gnuob.api.Payment;
@@ -53,19 +54,19 @@ public class OrderInvoicePaymentPanel extends Panel {
 
         private static final long serialVersionUID = 9191172039973638020L;
 
-        public AddAjaxLink(String id, IModel<Order> model, Buttons.Type type, IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Order> model, final Buttons.Type type, final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
         }
 
         @Override
-        public void onClick(AjaxRequestTarget target) {
+        public void onClick(final AjaxRequestTarget target) {
           ((Order) AddAjaxLink.this.getDefaultModelObject()).getRecords().add(new OrderRecord());
           paymentDataviewContainer.paymentDataview.index = ((Order) AddAjaxLink.this.getDefaultModelObject()).getInvoice().getPayments().size() - 1;
-          orderInvoicePaymentViewOrEditPanel.removeAll();
+          paymentViewOrEditPanel.removeAll();
           target.add(paymentDataviewContainer.setOutputMarkupId(true));
-          target.add(orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
+          target.add(paymentViewOrEditPanel.add(paymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
         }
       }
 
@@ -80,21 +81,33 @@ public class OrderInvoicePaymentPanel extends Panel {
 
             private static final long serialVersionUID = -6950515027229520882L;
 
-            public RemoveAjaxLink(String id, IModel<Payment> model, Buttons.Type type, IModel<String> labelModel) {
+            public RemoveAjaxLink(final String id, final IModel<Payment> model, final Buttons.Type type, final IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
             }
 
             @Override
-            public void onClick(AjaxRequestTarget target) {
+            public void onClick(final AjaxRequestTarget target) {
               ((Order) PaymentDataviewContainer.this.getDefaultModelObject()).getInvoice().getPayments().remove(RemoveAjaxLink.this.getDefaultModelObject());
               paymentDataview.index = ((Order) PaymentDataviewContainer.this.getDefaultModelObject()).getInvoice().getPayments().size() - 1;
-              orderInvoicePaymentViewOrEditPanel.removeAll();
+              paymentViewOrEditPanel.removeAll();
               target.add(paymentDataviewContainer.setOutputMarkupId(true));
-              target.add(orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
+              target.add(paymentViewOrEditPanel.add(paymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
             }
           }
+
+          private static final String CONFIRMATION_FUNCTION_NAME = "confirmation";
+
+          private static final String CLICK_EVENT = "click";
+
+          private static final String PAYMENT_STATUS_ID = "paymentStatus";
+
+          private static final String PAYMENT_DATE_ID = "paymentDate";
+
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
 
           private static final long serialVersionUID = 8996562822101409998L;
 
@@ -105,10 +118,10 @@ public class OrderInvoicePaymentPanel extends Panel {
           }
 
           @Override
-          protected Item<Payment> newItem(String id, int index, IModel<Payment> model) {
+          protected Item<Payment> newItem(final String id, final int index, final IModel<Payment> model) {
             final Item<Payment> item = super.newItem(id, index, model);
             if (this.index == index) {
-              item.add(new AttributeModifier("class", "info"));
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
             }
             return item;
           }
@@ -117,23 +130,23 @@ public class OrderInvoicePaymentPanel extends Panel {
           protected void onConfigure() {
             final IModel<Order> model = (IModel<Order>) PaymentDataviewContainer.this.getDefaultModel();
             if (!model.getObject().getInvoice().getPayments().isEmpty()) {
-              orderInvoicePaymentViewOrEditPanel.setEnabled(true);
-              orderInvoicePaymentViewOrEditPanel.removeAll();
-              orderInvoicePaymentViewOrEditPanel.setSelectedModel(Model.of(model.getObject().getInvoice().getPayments().get(index)));
-              orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true);
+              paymentViewOrEditPanel.setEnabled(true);
+              paymentViewOrEditPanel.removeAll();
+              paymentViewOrEditPanel.setSelectedModel(Model.of(model.getObject().getInvoice().getPayments().get(index)));
+              paymentViewOrEditPanel.add(paymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true);
             } else {
-              orderInvoicePaymentViewOrEditPanel.setEnabled(false);
-              orderInvoicePaymentViewOrEditPanel.removeAll();
-              orderInvoicePaymentViewOrEditPanel.setSelectedModel(Model.of(new Payment()));
-              orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true);
+              paymentViewOrEditPanel.setEnabled(false);
+              paymentViewOrEditPanel.removeAll();
+              paymentViewOrEditPanel.setSelectedModel(Model.of(new Payment()));
+              paymentViewOrEditPanel.add(paymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true);
             }
             super.onConfigure();
           }
 
           @Override
-          protected void populateItem(Item<Payment> item) {
+          protected void populateItem(final Item<Payment> item) {
             item.setModel(new CompoundPropertyModel<Payment>(item.getModelObject()));
-            item.add(new Label("paymentDate") {
+            item.add(new Label(PAYMENT_DATE_ID) {
 
               private static final long serialVersionUID = 3621260522785287715L;
 
@@ -142,18 +155,18 @@ public class OrderInvoicePaymentPanel extends Panel {
                 return (IConverter<C>) new XmlGregorianCalendarConverter();
               }
             });
-            item.add(new Label("paymentStatus"));
-            item.add(new AjaxEventBehavior("click") {
+            item.add(new Label(PAYMENT_STATUS_ID));
+            item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
 
               @Override
-              public void onEvent(AjaxRequestTarget target) {
+              public void onEvent(final AjaxRequestTarget target) {
                 index = item.getIndex();
-                orderInvoicePaymentViewOrEditPanel.setSelectedModel(item.getModel());
-                orderInvoicePaymentViewOrEditPanel.removeAll();
+                paymentViewOrEditPanel.setSelectedModel(item.getModel());
+                paymentViewOrEditPanel.removeAll();
                 target.add(paymentDataviewContainer.setOutputMarkupId(true));
-                target.add(orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
+                target.add(paymentViewOrEditPanel.add(paymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
               }
             });
             item.add(new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default,
@@ -162,16 +175,18 @@ public class OrderInvoicePaymentPanel extends Panel {
                   private static final long serialVersionUID = 7744720444161839031L;
 
                   @Override
-                  public void renderHead(Component component, IHeaderResponse response) {
-                    response.render($(component).chain("confirmation",
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                  public void renderHead(final Component component, final IHeaderResponse response) {
+                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
+                        new ConfirmationConfig().withTitle(OrderInvoicePaymentPanel.this.getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY))
+                            .withSingleton(true).withPopout(true).withBtnOkLabel(OrderInvoicePaymentPanel.this.getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                            .withBtnCancelLabel(OrderInvoicePaymentPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
                         .asDomReadyScript());
                   }
                 }));
           }
         }
+
+        private static final String PAYMENT_DATAVIEW_ID = "paymentDataview";
 
         private static final long serialVersionUID = -3279939331726432855L;
 
@@ -190,7 +205,7 @@ public class OrderInvoicePaymentPanel extends Panel {
               return ((Order) PaymentDataviewContainer.this.getDefaultModelObject()).getInvoice().getPayments();
             }
           };
-          paymentDataview = new PaymentDataview("paymentDataview", paymentListDataProvider, ITEMS_PER_PAGE);
+          paymentDataview = new PaymentDataview(PAYMENT_DATAVIEW_ID, paymentListDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -200,6 +215,14 @@ public class OrderInvoicePaymentPanel extends Panel {
         }
       }
 
+      private static final String PAYMENT_VIEW_OR_EDIT_PANEL_ID = "paymentViewOrEditPanel";
+
+      private static final String PAYMENT_PAGING_NAVIGATOR_MARKUP_ID = "paymentPagingNavigator";
+
+      private static final String PAYMENT_DATAVIEW_CONTAINER_ID = "paymentDataviewContainer";
+
+      private static final String ADD_ID = "add";
+
       private static final long serialVersionUID = -6153754314386660526L;
 
       private final AddAjaxLink addAjaxLink;
@@ -208,15 +231,15 @@ public class OrderInvoicePaymentPanel extends Panel {
 
       private final BootstrapPagingNavigator paymentPagingNavigator;
 
-      private final OrderInvoicePaymentViewOrEditPanel orderInvoicePaymentViewOrEditPanel;
+      private final OrderInvoicePaymentViewOrEditPanel paymentViewOrEditPanel;
 
       public PaymentEditTable(final String id, final IModel<Order> model) {
         super(id, model);
-        addAjaxLink = new AddAjaxLink("add", (IModel<Order>) PaymentEditTable.this.getDefaultModel(), Buttons.Type.Primary,
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Order>) PaymentEditTable.this.getDefaultModel(), Buttons.Type.Primary,
             Model.of(OrderInvoicePaymentPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        paymentDataviewContainer = new PaymentDataviewContainer("orderRecordDataviewContainer", (IModel<Order>) PaymentEditTable.this.getDefaultModel());
-        paymentPagingNavigator = new BootstrapPagingNavigator("orderRecordPagingNavigator", paymentDataviewContainer.paymentDataview);
-        orderInvoicePaymentViewOrEditPanel = new OrderInvoicePaymentViewOrEditPanel("orderInvoicePaymentViewOrEditPanel", (IModel<Order>) PaymentEditTable.this.getDefaultModel());
+        paymentDataviewContainer = new PaymentDataviewContainer(PAYMENT_DATAVIEW_CONTAINER_ID, (IModel<Order>) PaymentEditTable.this.getDefaultModel());
+        paymentPagingNavigator = new BootstrapPagingNavigator(PAYMENT_PAGING_NAVIGATOR_MARKUP_ID, paymentDataviewContainer.paymentDataview);
+        paymentViewOrEditPanel = new OrderInvoicePaymentViewOrEditPanel(PAYMENT_VIEW_OR_EDIT_PANEL_ID, (IModel<Order>) PaymentEditTable.this.getDefaultModel());
       }
 
       @Override
@@ -224,18 +247,25 @@ public class OrderInvoicePaymentPanel extends Panel {
         add(addAjaxLink.setOutputMarkupId(true));
         add(paymentDataviewContainer.setOutputMarkupId(true));
         add(paymentPagingNavigator.setOutputMarkupId(true));
-        add(orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
+        add(paymentViewOrEditPanel.add(paymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
         super.onInitialize();
       }
     }
+
+    private static final String PAYMENT_EDIT_TABLE_ID = "paymentEditTable";
+
+    private static final String ORDER_INVOICE_PAYMENT_EDIT_FRAGMENT_MARKUP_ID = "orderInvoicePaymentEditFragment";
+
+    private static final String ORDER_INVOICE_PAYMENT_VIEW_OR_EDIT_FRAGMENT_ID = "orderInvoicePaymentViewOrEditFragment";
 
     private static final long serialVersionUID = 3709791409078428685L;
 
     private final PaymentEditTable paymentEditTable;
 
     public OrderInvoicePaymentEditFragment() {
-      super("orderInvoicePaymentViewOrEditFragment", "orderInvoicePaymentEditFragment", OrderInvoicePaymentPanel.this, OrderInvoicePaymentPanel.this.getDefaultModel());
-      paymentEditTable = new PaymentEditTable("paymentEditTable", (IModel<Order>) OrderInvoicePaymentEditFragment.this.getDefaultModel());
+      super(ORDER_INVOICE_PAYMENT_VIEW_OR_EDIT_FRAGMENT_ID, ORDER_INVOICE_PAYMENT_EDIT_FRAGMENT_MARKUP_ID, OrderInvoicePaymentPanel.this,
+          OrderInvoicePaymentPanel.this.getDefaultModel());
+      paymentEditTable = new PaymentEditTable(PAYMENT_EDIT_TABLE_ID, (IModel<Order>) OrderInvoicePaymentEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -257,6 +287,16 @@ public class OrderInvoicePaymentPanel extends Panel {
         @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
         class PaymentDataview extends DataView<Payment> {
 
+          private static final String CLICK_EVENT = "click";
+
+          private static final String PAYMENT_STATUS_ID = "paymentStatus";
+
+          private static final String PAYMENT_DATE_ID = "paymentDate";
+
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
+
           private static final long serialVersionUID = 8996562822101409998L;
 
           private int index = 0;
@@ -266,10 +306,10 @@ public class OrderInvoicePaymentPanel extends Panel {
           }
 
           @Override
-          protected Item<Payment> newItem(String id, int index, IModel<Payment> model) {
+          protected Item<Payment> newItem(final String id, final int index, final IModel<Payment> model) {
             final Item<Payment> item = super.newItem(id, index, model);
             if (this.index == index) {
-              item.add(new AttributeModifier("class", "info"));
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
             }
             return item;
           }
@@ -278,21 +318,21 @@ public class OrderInvoicePaymentPanel extends Panel {
           protected void onConfigure() {
             final IModel<Order> model = (IModel<Order>) PaymentDataviewContainer.this.getDefaultModel();
             if (!model.getObject().getInvoice().getPayments().isEmpty()) {
-              orderInvoicePaymentViewOrEditPanel.removeAll();
-              orderInvoicePaymentViewOrEditPanel.setSelectedModel(Model.of(model.getObject().getInvoice().getPayments().get(index)));
-              orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentViewFragement()).setOutputMarkupId(true);
+              paymentViewOrEditPanel.removeAll();
+              paymentViewOrEditPanel.setSelectedModel(Model.of(model.getObject().getInvoice().getPayments().get(index)));
+              paymentViewOrEditPanel.add(paymentViewOrEditPanel.new OrderInvoicePaymentViewFragement()).setOutputMarkupId(true);
             } else {
-              orderInvoicePaymentViewOrEditPanel.removeAll();
-              orderInvoicePaymentViewOrEditPanel.setSelectedModel(Model.of(new Payment()));
-              orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentViewFragement()).setOutputMarkupId(true);
+              paymentViewOrEditPanel.removeAll();
+              paymentViewOrEditPanel.setSelectedModel(Model.of(new Payment()));
+              paymentViewOrEditPanel.add(paymentViewOrEditPanel.new OrderInvoicePaymentViewFragement()).setOutputMarkupId(true);
             }
             super.onConfigure();
           }
 
           @Override
-          protected void populateItem(Item<Payment> item) {
+          protected void populateItem(final Item<Payment> item) {
             item.setModel(new CompoundPropertyModel<Payment>(item.getModelObject()));
-            item.add(new Label("paymentDate") {
+            item.add(new Label(PAYMENT_DATE_ID) {
 
               private static final long serialVersionUID = 3621260522785287715L;
 
@@ -301,22 +341,24 @@ public class OrderInvoicePaymentPanel extends Panel {
                 return (IConverter<C>) new XmlGregorianCalendarConverter();
               }
             });
-            item.add(new Label("paymentStatus"));
-            item.add(new AjaxEventBehavior("click") {
+            item.add(new Label(PAYMENT_STATUS_ID));
+            item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
 
               @Override
-              public void onEvent(AjaxRequestTarget target) {
+              public void onEvent(final AjaxRequestTarget target) {
                 index = item.getIndex();
-                orderInvoicePaymentViewOrEditPanel.setSelectedModel(item.getModel());
-                orderInvoicePaymentViewOrEditPanel.removeAll();
+                paymentViewOrEditPanel.setSelectedModel(item.getModel());
+                paymentViewOrEditPanel.removeAll();
                 target.add(paymentDataviewContainer.setOutputMarkupId(true));
-                target.add(orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentViewFragement()).setOutputMarkupId(true));
+                target.add(paymentViewOrEditPanel.add(paymentViewOrEditPanel.new OrderInvoicePaymentViewFragement()).setOutputMarkupId(true));
               }
             });
           }
         }
+
+        private static final String PAYMENT_DATAVIEW_ID = "paymentDataview";
 
         private static final long serialVersionUID = -3279939331726432855L;
 
@@ -335,7 +377,7 @@ public class OrderInvoicePaymentPanel extends Panel {
               return ((Order) PaymentDataviewContainer.this.getDefaultModelObject()).getInvoice().getPayments();
             }
           };
-          paymentDataview = new PaymentDataview("paymentDataview", paymentListDataProvider, ITEMS_PER_PAGE);
+          paymentDataview = new PaymentDataview(PAYMENT_DATAVIEW_ID, paymentListDataProvider, ITEMS_PER_PAGE);
 
         }
 
@@ -346,37 +388,50 @@ public class OrderInvoicePaymentPanel extends Panel {
         }
       }
 
+      private static final String PAYMENT_VIEW_OR_EDIT_PANEL_ID = "paymentViewOrEditPanel";
+
+      private static final String PAYMENT_PAGING_NAVIGATOR_MARKUP_ID = "paymentPagingNavigator";
+
+      private static final String PAYMENT_DATAVIEW_CONTAINER_ID = "paymentDataviewContainer";
+
       private static final long serialVersionUID = -6153754314386660526L;
 
       private final PaymentDataviewContainer paymentDataviewContainer;
 
       private final BootstrapPagingNavigator paymentPagingNavigator;
 
-      private final OrderInvoicePaymentViewOrEditPanel orderInvoicePaymentViewOrEditPanel;
+      private final OrderInvoicePaymentViewOrEditPanel paymentViewOrEditPanel;
 
       public PaymentViewTable(final String id, final IModel<Order> model) {
         super(id, model);
-        paymentDataviewContainer = new PaymentDataviewContainer("orderRecordDataviewContainer", (IModel<Order>) PaymentViewTable.this.getDefaultModel());
-        paymentPagingNavigator = new BootstrapPagingNavigator("orderRecordPagingNavigator", paymentDataviewContainer.paymentDataview);
-        orderInvoicePaymentViewOrEditPanel = new OrderInvoicePaymentViewOrEditPanel("orderInvoicePaymentViewOrEditPanel", (IModel<Order>) PaymentViewTable.this.getDefaultModel());
+        paymentDataviewContainer = new PaymentDataviewContainer(PAYMENT_DATAVIEW_CONTAINER_ID, (IModel<Order>) PaymentViewTable.this.getDefaultModel());
+        paymentPagingNavigator = new BootstrapPagingNavigator(PAYMENT_PAGING_NAVIGATOR_MARKUP_ID, paymentDataviewContainer.paymentDataview);
+        paymentViewOrEditPanel = new OrderInvoicePaymentViewOrEditPanel(PAYMENT_VIEW_OR_EDIT_PANEL_ID, (IModel<Order>) PaymentViewTable.this.getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
         add(paymentDataviewContainer.setOutputMarkupId(true));
         add(paymentPagingNavigator.setOutputMarkupId(true));
-        add(orderInvoicePaymentViewOrEditPanel.add(orderInvoicePaymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
+        add(paymentViewOrEditPanel.add(paymentViewOrEditPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
         super.onInitialize();
       }
     }
+
+    private static final String PAYMENT_VIEW_TABLE_ID = "paymentViewTable";
+
+    private static final String ORDER_INVOICE_PAYMENT_VIEW_FRAGMENT_MARKUP_ID = "orderInvoicePaymentViewFragment";
+
+    private static final String ORDER_INVOICE_PAYMENT_VIEW_OR_EDIT_FRAGMENT_ID = "orderInvoicePaymentViewOrEditFragment";
 
     private static final long serialVersionUID = 3709791409078428685L;
 
     private final PaymentViewTable paymentViewTable;
 
     public OrderInvoicePaymentViewFragment() {
-      super("orderInvoicePaymentViewOrEditFragment", "orderInvoicePaymentViewFragment", OrderInvoicePaymentPanel.this, OrderInvoicePaymentPanel.this.getDefaultModel());
-      paymentViewTable = new PaymentViewTable("paymentViewTable", (IModel<Order>) OrderInvoicePaymentViewFragment.this.getDefaultModel());
+      super(ORDER_INVOICE_PAYMENT_VIEW_OR_EDIT_FRAGMENT_ID, ORDER_INVOICE_PAYMENT_VIEW_FRAGMENT_MARKUP_ID, OrderInvoicePaymentPanel.this,
+          OrderInvoicePaymentPanel.this.getDefaultModel());
+      paymentViewTable = new PaymentViewTable(PAYMENT_VIEW_TABLE_ID, (IModel<Order>) OrderInvoicePaymentViewFragment.this.getDefaultModel());
     }
 
     @Override

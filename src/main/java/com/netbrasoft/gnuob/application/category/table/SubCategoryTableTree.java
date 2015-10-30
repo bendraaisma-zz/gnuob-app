@@ -47,7 +47,7 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
     private boolean inverse;
 
     @Override
-    public boolean add(SubCategory subCategory) {
+    public boolean add(final SubCategory subCategory) {
       if (inverse) {
         return ids.remove(subCategory.getId());
       } else {
@@ -56,7 +56,7 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
     }
 
     @Override
-    public boolean addAll(Collection<? extends SubCategory> c) {
+    public boolean addAll(final Collection<? extends SubCategory> c) {
       throw new UnsupportedOperationException();
     }
 
@@ -71,7 +71,7 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
     }
 
     @Override
-    public boolean contains(Object object) {
+    public boolean contains(final Object object) {
       final SubCategory subCategory = (SubCategory) object;
       if (inverse) {
         return !ids.contains(subCategory.getId());
@@ -81,7 +81,7 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(final Collection<?> c) {
       throw new UnsupportedOperationException();
     }
 
@@ -110,7 +110,7 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
     }
 
     @Override
-    public boolean remove(Object object) {
+    public boolean remove(final Object object) {
       final SubCategory subCategory = (SubCategory) object;
       if (inverse) {
         return ids.add(subCategory.getId());
@@ -120,12 +120,12 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(final Collection<?> c) {
       throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(final Collection<?> c) {
       throw new UnsupportedOperationException();
     }
 
@@ -140,7 +140,7 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
+    public <T> T[] toArray(final T[] a) {
       throw new UnsupportedOperationException();
     }
   }
@@ -158,7 +158,7 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
       }
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
+      public void onClick(final AjaxRequestTarget target) {
         new SubCategoryExpansion().get().expandAll();
         target.add(SubCategoryTableTree.this.setOutputMarkupId(true));
       }
@@ -192,14 +192,14 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
   }
 
   @Override
-  protected Component newContentComponent(String id, IModel<SubCategory> model) {
+  protected Component newContentComponent(final String id, final IModel<SubCategory> model) {
     return new Label(id, model.getObject().getName());
   }
 
   public abstract Item<SubCategory> newItem(Item<SubCategory> item, IModel<SubCategory> model);
 
   @Override
-  protected Item<SubCategory> newRowItem(String id, int index, IModel<SubCategory> model) {
+  protected Item<SubCategory> newRowItem(final String id, final int index, final IModel<SubCategory> model) {
     final Item<SubCategory> item = super.newRowItem(id, index, model);
     return newItem(item, model);
   }

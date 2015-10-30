@@ -17,8 +17,8 @@ public class OfferTab extends AbstractTab {
 
   @Override
   public WebMarkupContainer getPanel(final String panelId) {
-    Offer offer = new Offer();
+    final Offer offer = new Offer();
     offer.setActive(true);
-	return new OfferPanel(panelId, Model.of(offer));
+    return new OfferPanel(panelId, Model.of(offer));
   }
 }

@@ -65,13 +65,13 @@ public class OrderRecordViewOrEditPanel extends Panel {
         }
 
         @Override
-        protected void onError(AjaxRequestTarget target, Form<?> form) {
+        protected void onError(final AjaxRequestTarget target, final Form<?> form) {
           target.add(form.add(new TooltipValidation()));
           target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(OrderRecordViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)))));
         }
 
         @Override
-        protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+        protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
           if (((OrderRecord) form.getDefaultModelObject()).getId() == 0) {
             ((Order) OrderRecordViewOrEditPanel.this.getDefaultModelObject()).getRecords().add((OrderRecord) form.getDefaultModelObject());
           }
@@ -81,6 +81,52 @@ public class OrderRecordViewOrEditPanel extends Panel {
         }
       }
 
+      private static final String ITEM_WIDTH_UNIT_ID = "itemWidthUnit";
+
+      private static final String ITEM_WIDTH_ID = "itemWidth";
+
+      private static final String ITEM_WEIGHT_UNIT_ID = "itemWeightUnit";
+
+      private static final String ITEM_WEIGHT_ID = "itemWeight";
+
+      private static final String ITEM_LENGTH_UNIT_ID = "itemLengthUnit";
+
+      private static final String ITEM_LENGTH_ID = "itemLength";
+
+      private static final String ITEM_HEIGHT_UNIT_ID = "itemHeightUnit";
+
+      private static final String ITEM_HEIGHT_ID = "itemHeight";
+
+      private static final String TAX_ID = "tax";
+
+      private static final String SHIPPING_COST_ID = "shippingCost";
+
+      private static final String DISCOUNT_ID = "discount";
+
+      private static final String AMOUNT_ID = "amount";
+
+      private static final String QUANTITY_ID = "quantity";
+
+      private static final String ITEM_URL_ID = "itemUrl";
+
+      private static final String DESCRIPTION_ID = "description";
+
+      private static final String OPTION_ID = "option";
+
+      private static final String NAME_ID = "name";
+
+      private static final String PRODUCT_NUMBER_ID = "productNumber";
+
+      private static final String DD_MM_YYYY_FORMAT = "dd-MM-YYYY";
+
+      private static final String DELIVERY_DATE_ID = "deliveryDate";
+
+      private static final String ORDER_RECORD_ID_ID = "orderRecordId";
+
+      private static final String SAVE_ID = "save";
+
+      private static final String ORDER_RECORD_EDIT_FORM_COMPONENT_ID = "orderRecordEditForm";
+
       private static final long serialVersionUID = 8716967873428915351L;
 
       private final BootstrapForm<OrderRecord> orderRecordEditForm;
@@ -89,15 +135,16 @@ public class OrderRecordViewOrEditPanel extends Panel {
 
       public OrderRecordEditTable(final String id, final IModel<Order> model) {
         super(id, model);
-        orderRecordEditForm = new BootstrapForm<OrderRecord>("orderRecordEditForm", new CompoundPropertyModel<OrderRecord>(OrderRecordViewOrEditPanel.this.selectedModel));
-        saveAjaxButton = new SaveAjaxButton("save", Model.of(OrderRecordViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)), orderRecordEditForm,
+        orderRecordEditForm =
+            new BootstrapForm<OrderRecord>(ORDER_RECORD_EDIT_FORM_COMPONENT_ID, new CompoundPropertyModel<OrderRecord>(OrderRecordViewOrEditPanel.this.selectedModel));
+        saveAjaxButton = new SaveAjaxButton(SAVE_ID, Model.of(OrderRecordViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_MESSAGE_KEY)), orderRecordEditForm,
             Buttons.Type.Primary);
       }
 
       @Override
       protected void onInitialize() {
-        orderRecordEditForm.add(new RequiredTextField<String>("orderRecordId").add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new DatetimePicker("deliveryDate", new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat("dd-MM-YYYY")) {
+        orderRecordEditForm.add(new RequiredTextField<String>(ORDER_RECORD_ID_ID).add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new DatetimePicker(DELIVERY_DATE_ID, new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat(DD_MM_YYYY_FORMAT)) {
 
           private static final long serialVersionUID = 1209354725150726556L;
 
@@ -110,25 +157,25 @@ public class OrderRecordViewOrEditPanel extends Panel {
             }
           }
         }.setOutputMarkupId(true));
-        orderRecordEditForm.add(new RequiredTextField<String>("productNumber").add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new RequiredTextField<String>("name").add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new TextField<String>("option").add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new TextArea<String>("description").add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new UrlTextField("itemUrl", new PropertyModel<String>(orderRecordEditForm.getDefaultModelObject(), "itemUrl")).setOutputMarkupId(true));
+        orderRecordEditForm.add(new RequiredTextField<String>(PRODUCT_NUMBER_ID).add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new RequiredTextField<String>(NAME_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new TextField<String>(OPTION_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new TextArea<String>(DESCRIPTION_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new UrlTextField(ITEM_URL_ID, new PropertyModel<String>(orderRecordEditForm.getDefaultModelObject(), ITEM_URL_ID)).setOutputMarkupId(true));
         orderRecordEditForm
-            .add(new NumberTextField<BigInteger>("quantity").setRequired(true).add(RangeValidator.range(BigDecimal.ZERO, BigDecimal.valueOf(50))).setOutputMarkupId(true));
-        orderRecordEditForm.add(new NumberTextField<BigDecimal>("amount").setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new NumberTextField<BigDecimal>("discount").setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new NumberTextField<BigDecimal>("shippingCost").setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new NumberTextField<BigDecimal>("tax").setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new NumberTextField<BigDecimal>("itemHeight").setOutputMarkupId(true));
-        orderRecordEditForm.add(new TextField<String>("itemHeightUnit").add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new NumberTextField<BigDecimal>("itemLength").add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new TextField<String>("itemLengthUnit").add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new NumberTextField<BigDecimal>("itemWeight").add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new TextField<String>("itemWeightUnit").add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new NumberTextField<BigDecimal>("itemWidth").add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderRecordEditForm.add(new TextField<String>("itemWidthUnit").add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+            .add(new NumberTextField<BigInteger>(QUANTITY_ID).setRequired(true).add(RangeValidator.range(BigDecimal.ZERO, BigDecimal.valueOf(50))).setOutputMarkupId(true));
+        orderRecordEditForm.add(new NumberTextField<BigDecimal>(AMOUNT_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new NumberTextField<BigDecimal>(DISCOUNT_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new NumberTextField<BigDecimal>(SHIPPING_COST_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new NumberTextField<BigDecimal>(TAX_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new NumberTextField<BigDecimal>(ITEM_HEIGHT_ID).setOutputMarkupId(true));
+        orderRecordEditForm.add(new TextField<String>(ITEM_HEIGHT_UNIT_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new NumberTextField<BigDecimal>(ITEM_LENGTH_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new TextField<String>(ITEM_LENGTH_UNIT_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new NumberTextField<BigDecimal>(ITEM_WEIGHT_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new TextField<String>(ITEM_WEIGHT_UNIT_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new NumberTextField<BigDecimal>(ITEM_WIDTH_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderRecordEditForm.add(new TextField<String>(ITEM_WIDTH_UNIT_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
         orderRecordEditForm.add(saveAjaxButton.setOutputMarkupId(true));
         add(orderRecordEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         super.onInitialize();
@@ -158,19 +205,64 @@ public class OrderRecordViewOrEditPanel extends Panel {
     @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
     class OrderRecordViewTable extends WebMarkupContainer {
 
+      private static final String ITEM_WIDTH_UNIT_ID = "itemWidthUnit";
+
+      private static final String ITEM_WIDTH_ID = "itemWidth";
+
+      private static final String ITEM_WEIGHT_UNIT_ID = "itemWeightUnit";
+
+      private static final String ITEM_WEIGHT_ID = "itemWeight";
+
+      private static final String ITEM_LENGTH_UNIT_ID = "itemLengthUnit";
+
+      private static final String ITEM_LENGTH_ID = "itemLength";
+
+      private static final String ITEM_HEIGHT_UNIT_ID = "itemHeightUnit";
+
+      private static final String ITEM_HEIGHT_ID = "itemHeight";
+
+      private static final String TAX_ID = "tax";
+
+      private static final String SHIPPING_COST_ID = "shippingCost";
+
+      private static final String DISCOUNT_ID = "discount";
+
+      private static final String AMOUNT_ID = "amount";
+
+      private static final String QUANTITY_ID = "quantity";
+
+      private static final String ITEM_URL_ID = "itemUrl";
+
+      private static final String DESCRIPTION_ID = "description";
+
+      private static final String OPTION_ID = "option";
+
+      private static final String NAME_ID = "name";
+
+      private static final String PRODUCT_NUMBER_ID = "productNumber";
+
+      private static final String DD_MM_YYYY_FORMAT = "dd-MM-YYYY";
+
+      private static final String DELIVERY_DATE_ID = "deliveryDate";
+
+      private static final String ORDER_RECORD_ID_ID = "orderRecordId";
+
+      private static final String ORDER_RECORD_VIEW_FORM_COMPONENT_ID = "orderRecordViewForm";
+
       private static final long serialVersionUID = 5781878310530984048L;
 
       private final BootstrapForm<OrderRecord> orderRecorViewForm;
 
       public OrderRecordViewTable(final String id, final IModel<Order> model) {
         super(id, model);
-        orderRecorViewForm = new BootstrapForm<OrderRecord>("orderRecordViewForm", new CompoundPropertyModel<OrderRecord>(OrderRecordViewOrEditPanel.this.selectedModel));
+        orderRecorViewForm =
+            new BootstrapForm<OrderRecord>(ORDER_RECORD_VIEW_FORM_COMPONENT_ID, new CompoundPropertyModel<OrderRecord>(OrderRecordViewOrEditPanel.this.selectedModel));
       }
 
       @Override
       protected void onInitialize() {
-        orderRecorViewForm.add(new RequiredTextField<String>("orderRecordId").setOutputMarkupId(true));
-        orderRecorViewForm.add(new DatetimePicker("deliveryDate", new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat("dd-MM-YYYY")) {
+        orderRecorViewForm.add(new RequiredTextField<String>(ORDER_RECORD_ID_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new DatetimePicker(DELIVERY_DATE_ID, new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat(DD_MM_YYYY_FORMAT)) {
 
           private static final long serialVersionUID = 1209354725150726556L;
 
@@ -183,36 +275,42 @@ public class OrderRecordViewOrEditPanel extends Panel {
             }
           }
         }.setOutputMarkupId(true));
-        orderRecorViewForm.add(new RequiredTextField<String>("productNumber").setOutputMarkupId(true));
-        orderRecorViewForm.add(new RequiredTextField<String>("name").setOutputMarkupId(true));
-        orderRecorViewForm.add(new TextField<String>("option").setOutputMarkupId(true));
-        orderRecorViewForm.add(new TextArea<String>("description").setOutputMarkupId(true));
-        orderRecorViewForm.add(new UrlTextField("itemUrl", new PropertyModel<String>(orderRecorViewForm.getDefaultModelObject(), "itemUrl")).setOutputMarkupId(true));
-        orderRecorViewForm.add(new NumberTextField<Integer>("quantity").setRequired(true).setOutputMarkupId(true));
-        orderRecorViewForm.add(new NumberTextField<Integer>("amount").setRequired(true).setOutputMarkupId(true));
-        orderRecorViewForm.add(new NumberTextField<Integer>("discount").setRequired(true).setOutputMarkupId(true));
-        orderRecorViewForm.add(new NumberTextField<Integer>("shippingCost").setRequired(true).setOutputMarkupId(true));
-        orderRecorViewForm.add(new NumberTextField<Integer>("tax").setRequired(true).setOutputMarkupId(true));
-        orderRecorViewForm.add(new NumberTextField<Integer>("itemHeight").setOutputMarkupId(true));
-        orderRecorViewForm.add(new TextField<String>("itemHeightUnit").setOutputMarkupId(true));
-        orderRecorViewForm.add(new NumberTextField<Integer>("itemLength").setOutputMarkupId(true));
-        orderRecorViewForm.add(new TextField<String>("itemLengthUnit").setOutputMarkupId(true));
-        orderRecorViewForm.add(new NumberTextField<Integer>("itemWeight").setOutputMarkupId(true));
-        orderRecorViewForm.add(new TextField<String>("itemWeightUnit").setOutputMarkupId(true));
-        orderRecorViewForm.add(new NumberTextField<Integer>("itemWidth").setOutputMarkupId(true));
-        orderRecorViewForm.add(new TextField<String>("itemWidthUnit").setOutputMarkupId(true));
+        orderRecorViewForm.add(new RequiredTextField<String>(PRODUCT_NUMBER_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new RequiredTextField<String>(NAME_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new TextField<String>(OPTION_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new TextArea<String>(DESCRIPTION_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new UrlTextField(ITEM_URL_ID, new PropertyModel<String>(orderRecorViewForm.getDefaultModelObject(), ITEM_URL_ID)).setOutputMarkupId(true));
+        orderRecorViewForm.add(new NumberTextField<Integer>(QUANTITY_ID).setRequired(true).setOutputMarkupId(true));
+        orderRecorViewForm.add(new NumberTextField<Integer>(AMOUNT_ID).setRequired(true).setOutputMarkupId(true));
+        orderRecorViewForm.add(new NumberTextField<Integer>(DISCOUNT_ID).setRequired(true).setOutputMarkupId(true));
+        orderRecorViewForm.add(new NumberTextField<Integer>(SHIPPING_COST_ID).setRequired(true).setOutputMarkupId(true));
+        orderRecorViewForm.add(new NumberTextField<Integer>(TAX_ID).setRequired(true).setOutputMarkupId(true));
+        orderRecorViewForm.add(new NumberTextField<Integer>(ITEM_HEIGHT_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new TextField<String>(ITEM_HEIGHT_UNIT_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new NumberTextField<Integer>(ITEM_LENGTH_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new TextField<String>(ITEM_LENGTH_UNIT_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new NumberTextField<Integer>(ITEM_WEIGHT_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new TextField<String>(ITEM_WEIGHT_UNIT_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new NumberTextField<Integer>(ITEM_WIDTH_ID).setOutputMarkupId(true));
+        orderRecorViewForm.add(new TextField<String>(ITEM_WIDTH_UNIT_ID).setOutputMarkupId(true));
         add(orderRecorViewForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         super.onInitialize();
       }
     }
+
+    private static final String ORDER_RECORD_VIEW_TABLE_ID = "orderRecordViewTable";
+
+    private static final String ORDER_RECORD_VIEW_FRAGMENT_MARKUP_ID = "orderRecordViewFragment";
+
+    private static final String ORDER_RECORD_VIEW_OR_EDIT_FRAGMENT_ID = "orderRecordViewOrEditFragment";
 
     private static final long serialVersionUID = 6927997909191615786L;
 
     private final OrderRecordViewTable orderRecordViewTable;
 
     public OrderRecordViewFragment() {
-      super("orderRecordViewOrEditFragment", "orderRecordViewFragment", OrderRecordViewOrEditPanel.this, OrderRecordViewOrEditPanel.this.getDefaultModel());
-      orderRecordViewTable = new OrderRecordViewTable("orderRecordViewTable", (IModel<Order>) OrderRecordViewFragment.this.getDefaultModel());
+      super(ORDER_RECORD_VIEW_OR_EDIT_FRAGMENT_ID, ORDER_RECORD_VIEW_FRAGMENT_MARKUP_ID, OrderRecordViewOrEditPanel.this, OrderRecordViewOrEditPanel.this.getDefaultModel());
+      orderRecordViewTable = new OrderRecordViewTable(ORDER_RECORD_VIEW_TABLE_ID, (IModel<Order>) OrderRecordViewFragment.this.getDefaultModel());
     }
 
     @Override

@@ -247,7 +247,7 @@ public class ProductSubOptionPanel extends Panel {
 
     private static final String PRODUCT_SUB_OPTION_EDIT_FRAGMENT_MARKUP_ID = "productSubOptionEditFragment";
 
-    private static final String PRODUCT_SUB_OPTION_VIEW_OR_EDIT_FRAGEMENT_ID = "productSubOptionViewOrEditFragement";
+    private static final String PRODUCT_SUB_OPTION_VIEW_OR_EDIT_FRAGEMENT_ID = "productSubOptionViewOrEditFragment";
 
     private static final long serialVersionUID = -3434639671937275356L;
 

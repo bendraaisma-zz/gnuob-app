@@ -45,7 +45,7 @@ public class AppServletContainerAuthenticatedWebSession extends ServletContainer
     return ServletContainerAuthenticatedWebSession.getUserName();
   }
 
-  public AppServletContainerAuthenticatedWebSession(Request request) {
+  public AppServletContainerAuthenticatedWebSession(final Request request) {
     super(request);
   }
 }
