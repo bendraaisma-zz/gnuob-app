@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Customer;
+import com.netbrasoft.gnuob.api.customer.CustomerDataProvider;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
@@ -53,6 +54,8 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class CustomerPanel extends Panel {
 
+  private static final String CUSTOMER_PANEL_CONTAINER_ID = "customerPanelContainer";
+
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
   class CustomerPanelContainer extends WebMarkupContainer {
 
@@ -64,14 +67,14 @@ public class CustomerPanel extends Panel {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(String id, IModel<Customer> model, Buttons.Type type, IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Customer> model, final Buttons.Type type, final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
         }
 
         @Override
-        public void onClick(AjaxRequestTarget target) {
+        public void onClick(final AjaxRequestTarget target) {
           final Customer customer = new Customer();
           customer.setActive(true);
           AddAjaxLink.this.setDefaultModelObject(customer);
@@ -97,7 +100,7 @@ public class CustomerPanel extends Panel {
             }
 
             @Override
-            public void onClick(AjaxRequestTarget target) {
+            public void onClick(final AjaxRequestTarget target) {
               try {
                 customerDataProvider.remove((Customer) RemoveAjaxLink.this.getDefaultModelObject());
               } catch (final RuntimeException e) {
@@ -109,6 +112,20 @@ public class CustomerPanel extends Panel {
             }
           }
 
+          private static final String CONFIRMATION_FUNCTION_NAME = "confirmation";
+
+          private static final String REMOVE_ID = "remove";
+
+          private static final String CLICK_EVENT = "click";
+
+          private static final String LAST_NAME_ID = LAST_NAME_PROPERTY;
+
+          private static final String FIRST_NAME_ID = FIRST_NAME_PROPERTY;
+
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
+
           private static final long serialVersionUID = -5039874949058607907L;
 
           private int index;
@@ -118,47 +135,48 @@ public class CustomerPanel extends Panel {
           }
 
           @Override
-          protected Item<Customer> newItem(String id, int index, final IModel<Customer> model) {
+          protected Item<Customer> newItem(final String id, final int index, final IModel<Customer> model) {
             final Item<Customer> item = super.newItem(id, index, model);
             if (this.index == index) {
-              item.add(new AttributeModifier("class", "info"));
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
             }
             return item;
           }
 
           @Override
-          protected void populateItem(Item<Customer> item) {
+          protected void populateItem(final Item<Customer> item) {
             item.setModel(new CompoundPropertyModel<Customer>(item.getModelObject()));
-            item.add(new Label("firstName"));
-            item.add(new Label("lastName"));
-            item.add(new AjaxEventBehavior("click") {
+            item.add(new Label(FIRST_NAME_ID));
+            item.add(new Label(LAST_NAME_ID));
+            item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
 
               @Override
-              public void onEvent(AjaxRequestTarget target) {
+              public void onEvent(final AjaxRequestTarget target) {
                 index = item.getIndex();
                 target.add(customerDataviewContainer.setDefaultModelObject(item.getModelObject()).setOutputMarkupId(true));
                 target.add(customerViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(
-                new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default, Model.of(CustomerPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                    .add(new ConfirmationBehavior() {
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(CustomerPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                .add(new ConfirmationBehavior() {
 
-                      private static final long serialVersionUID = 7744720444161839031L;
+                  private static final long serialVersionUID = 7744720444161839031L;
 
-                      @Override
-                      public void renderHead(Component component, IHeaderResponse response) {
-                        response.render($(component).chain("confirmation",
-                            new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                                .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                                .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                            .asDomReadyScript());
-                      }
-                    }));
+                  @Override
+                  public void renderHead(final Component component, final IHeaderResponse response) {
+                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
+                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
+                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                        .asDomReadyScript());
+                  }
+                }));
           }
         }
+
+        private static final String CUSTOMER_DATAVIEW_ID = "customerDataview";
 
         private static final long serialVersionUID = -1663362426819980106L;
 
@@ -168,7 +186,7 @@ public class CustomerPanel extends Panel {
 
         public CustomerDataviewContainer(final String id, final IModel<Customer> model) {
           super(id, model);
-          customerDataview = new CustomerDataview("customerDataview", customerDataProvider, ITEMS_PER_PAGE);
+          customerDataview = new CustomerDataview(CUSTOMER_DATAVIEW_ID, customerDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -177,6 +195,22 @@ public class CustomerPanel extends Panel {
           super.onInitialize();
         }
       }
+
+      private static final String CUSTOMER_PAGING_NAVIGATOR_MARKUP_ID = "customerPagingNavigator";
+
+      private static final String CUSTOMER_DATAVIEW_CONTAINER_ID = "customerDataviewContainer";
+
+      private static final String LAST_NAME_PROPERTY = "lastName";
+
+      private static final String ORDER_BY_LAST_NAME_ID = "orderByLastName";
+
+      private static final String FIRST_NAME_PROPERTY = "firstName";
+
+      private static final String ORDER_BY_FIRST_NAME_ID = "orderByFirstName";
+
+      private static final String ADD_ID = "add";
+
+      private static final String FEEDBACK_ID = "feedback";
 
       private static final long serialVersionUID = 7545082431853829693L;
 
@@ -192,15 +226,15 @@ public class CustomerPanel extends Panel {
 
       private final BootstrapPagingNavigator customerPagingNavigator;
 
-      public CustomerTableContainer(String id, IModel<Customer> model) {
+      public CustomerTableContainer(final String id, final IModel<Customer> model) {
         super(id, model);
-        feedbackPanel = new NotificationPanel("feedback");
-        addAjaxLink = new AddAjaxLink("add", (IModel<Customer>) CustomerTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
+        feedbackPanel = new NotificationPanel(FEEDBACK_ID);
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Customer>) CustomerTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
             Model.of(CustomerPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        orderByFirstName = new OrderByBorder<String>("orderByFirstName", "firstName", customerDataProvider);
-        orderByLastName = new OrderByBorder<String>("orderByLastName", "lastName", customerDataProvider);
-        customerDataviewContainer = new CustomerDataviewContainer("customerDataviewContainer", (IModel<Customer>) CustomerTableContainer.this.getDefaultModel());
-        customerPagingNavigator = new BootstrapPagingNavigator("customerPagingNavigator", customerDataviewContainer.customerDataview);
+        orderByFirstName = new OrderByBorder<String>(ORDER_BY_FIRST_NAME_ID, FIRST_NAME_PROPERTY, customerDataProvider);
+        orderByLastName = new OrderByBorder<String>(ORDER_BY_LAST_NAME_ID, LAST_NAME_PROPERTY, customerDataProvider);
+        customerDataviewContainer = new CustomerDataviewContainer(CUSTOMER_DATAVIEW_CONTAINER_ID, (IModel<Customer>) CustomerTableContainer.this.getDefaultModel());
+        customerPagingNavigator = new BootstrapPagingNavigator(CUSTOMER_PAGING_NAVIGATOR_MARKUP_ID, customerDataviewContainer.customerDataview);
       }
 
       @Override
@@ -215,22 +249,26 @@ public class CustomerPanel extends Panel {
       }
     }
 
+    private static final String CUSTOMER_VIEW_OR_EDIT_PANEL_ID = "customerViewOrEditPanel";
+
+    private static final String CUSTOMER_TABLE_CONTAINER_ID = "customerTableContainer";
+
     private static final long serialVersionUID = 8636350252647277916L;
 
     private final CustomerViewOrEditPanel customerViewOrEditPanel;
 
     private final CustomerTableContainer customerTableContainer;
 
-    public CustomerPanelContainer(String id, IModel<Customer> model) {
+    public CustomerPanelContainer(final String id, final IModel<Customer> model) {
       super(id, model);
-      customerTableContainer = new CustomerTableContainer("customerTableContainer", (IModel<Customer>) CustomerPanelContainer.this.getDefaultModel());
-      customerViewOrEditPanel = new CustomerViewOrEditPanel("customerViewOrEditPanel", (IModel<Customer>) CustomerPanelContainer.this.getDefaultModel());
+      customerTableContainer = new CustomerTableContainer(CUSTOMER_TABLE_CONTAINER_ID, (IModel<Customer>) CustomerPanelContainer.this.getDefaultModel());
+      customerViewOrEditPanel = new CustomerViewOrEditPanel(CUSTOMER_VIEW_OR_EDIT_PANEL_ID, (IModel<Customer>) CustomerPanelContainer.this.getDefaultModel());
     }
 
     @Override
     protected void onInitialize() {
       add(customerTableContainer.add(new TableBehavior().hover()).setOutputMarkupId(true));
-      add(customerViewOrEditPanel.add(customerViewOrEditPanel.new CustomerViewFragement()).setOutputMarkupId(true));
+      add(customerViewOrEditPanel.add(customerViewOrEditPanel.new CustomerViewFragment()).setOutputMarkupId(true));
       super.onInitialize();
     }
   }
@@ -239,14 +277,14 @@ public class CustomerPanel extends Panel {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CustomerPanel.class);
 
-  @SpringBean(name = "CustomerDataProvider", required = true)
+  @SpringBean(name = CustomerDataProvider.CUSTOMER_DATA_PROVIDER_NAME, required = true)
   private GenericTypeDataProvider<Customer> customerDataProvider;
 
   private final CustomerPanelContainer customerPanelContainer;
 
   public CustomerPanel(final String id, final IModel<Customer> model) {
     super(id, model);
-    customerPanelContainer = new CustomerPanelContainer("customerPanelContainer", (IModel<Customer>) CustomerPanel.this.getDefaultModel());
+    customerPanelContainer = new CustomerPanelContainer(CUSTOMER_PANEL_CONTAINER_ID, (IModel<Customer>) CustomerPanel.this.getDefaultModel());
   }
 
   @Override
@@ -264,7 +302,7 @@ public class CustomerPanel extends Panel {
       private static final long serialVersionUID = -4903722864597601489L;
 
       @Override
-      public void onComponentTag(Component component, ComponentTag tag) {
+      public void onComponentTag(final Component component, final ComponentTag tag) {
         Attributes.addClass(tag, MediumSpanType.SPAN10);
       }
     }).setOutputMarkupId(true));
