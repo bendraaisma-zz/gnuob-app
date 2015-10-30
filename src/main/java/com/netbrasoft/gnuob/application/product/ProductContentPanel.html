@@ -4,8 +4,8 @@
   cursor: pointer;
 }
 </style>
-  <wicket:container wicket:id="productContentViewOrEditFragement" />
-  <wicket:fragment wicket:id="productContentEditFragement">
+  <wicket:container wicket:id="productContentViewOrEditFragment" />
+  <wicket:fragment wicket:id="productContentEditFragment">
     <table wicket:id="contentEditTable">
       <thead>
         <tr>
@@ -33,12 +33,9 @@
       </tfoot>
     </table>
   </wicket:fragment>
-  <wicket:fragment wicket:id="productContentViewFragement">
+  <wicket:fragment wicket:id="productContentViewFragment">
     <table wicket:id="contentViewTable">
       <thead>
-        <tr>
-          <td style="border-top: none;" colspan="3"><span wicket:id="feedback"></span></td>
-        </tr>
         <tr>
           <th style="border-top: none;"><small><wicket:message key="nameMessage" /></small></th>
           <th colspan="2" style="border-top: none;"><small><wicket:message key="formatMessage" /></small></th>

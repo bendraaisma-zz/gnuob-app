@@ -227,7 +227,7 @@ public class OrderViewOrEditPanel extends Panel {
         orderEditForm.add(new TextField<String>("invoice.address.internationalStreet").add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
         orderEditForm.add(new TextField<String>("invoice.address.internationalStateAndCity").add(StringValidator.maximumLength(80)).setOutputMarkupId(true));
         orderEditForm.add(new TextField<String>("invoice.address.phone").add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        orderEditForm.add(orderInvoicePaymentPanel.add(orderInvoicePaymentPanel.new OrderInvoicePaymentEditFragement()).setOutputMarkupId(true));
+        orderEditForm.add(orderInvoicePaymentPanel.add(orderInvoicePaymentPanel.new OrderInvoicePaymentEditFragment()).setOutputMarkupId(true));
         add(orderEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(feedbackPanel.hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
         add(cancelAjaxLink.setOutputMarkupId(true));

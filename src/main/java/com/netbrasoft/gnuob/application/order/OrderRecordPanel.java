@@ -129,8 +129,7 @@ public class OrderRecordPanel extends Panel {
 
           @Override
           protected void populateItem(Item<OrderRecord> item) {
-            final IModel<OrderRecord> compound = new CompoundPropertyModel<OrderRecord>(item.getModelObject());
-            item.setModel(compound);
+            item.setModel(new CompoundPropertyModel<OrderRecord>(item.getModelObject()));
             item.add(new Label("name"));
             item.add(new Label("description"));
             item.add(new AjaxEventBehavior("click") {
@@ -282,8 +281,7 @@ public class OrderRecordPanel extends Panel {
 
           @Override
           protected void populateItem(Item<OrderRecord> item) {
-            final IModel<OrderRecord> compound = new CompoundPropertyModel<OrderRecord>(item.getModelObject());
-            item.setModel(compound);
+            item.setModel(new CompoundPropertyModel<OrderRecord>(item.getModelObject()));
             item.add(new Label("name"));
             item.add(new Label("description"));
             item.add(new AjaxEventBehavior("click") {

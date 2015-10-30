@@ -130,7 +130,7 @@ public class OrderRecordViewOrEditPanel extends Panel {
         orderRecordEditForm.add(new NumberTextField<BigDecimal>("itemWidth").add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
         orderRecordEditForm.add(new TextField<String>("itemWidthUnit").add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
         orderRecordEditForm.add(saveAjaxButton.setOutputMarkupId(true));
-        add(orderRecordEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true).setOutputMarkupId(true));
+        add(orderRecordEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         super.onInitialize();
       }
     }
@@ -201,11 +201,10 @@ public class OrderRecordViewOrEditPanel extends Panel {
         orderRecorViewForm.add(new TextField<String>("itemWeightUnit").setOutputMarkupId(true));
         orderRecorViewForm.add(new NumberTextField<Integer>("itemWidth").setOutputMarkupId(true));
         orderRecorViewForm.add(new TextField<String>("itemWidthUnit").setOutputMarkupId(true));
-        add(orderRecorViewForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true).setOutputMarkupId(true));
+        add(orderRecorViewForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         super.onInitialize();
       }
     }
-
 
     private static final long serialVersionUID = 6927997909191615786L;
 
@@ -218,7 +217,7 @@ public class OrderRecordViewOrEditPanel extends Panel {
 
     @Override
     protected void onInitialize() {
-      add(orderRecordViewTable.setOutputMarkupId(true));
+      add(orderRecordViewTable.add(new TableBehavior()).setOutputMarkupId(true));
       super.onInitialize();
     }
   }

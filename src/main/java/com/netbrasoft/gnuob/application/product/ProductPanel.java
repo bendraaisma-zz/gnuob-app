@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Product;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.api.product.ProductDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -53,26 +54,47 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class ProductPanel extends Panel {
 
+  private static final String PRODUCT_PANEL_CONTAINER_ID = "productPanelContainer";
+
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
   class ProductPanelContainer extends WebMarkupContainer {
 
+    private static final String PRODUCT_VIEW_OR_EDIT_PANEL_ID = "productViewOrEditPanel";
+
+    private static final String PRODUCT_TABLE_CONTAINER_ID = "productTableContainer";
+
     @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
     class ProductTableContainer extends WebMarkupContainer {
+
+      private static final String PRODUCT_PAGING_NAVIGATOR_MARKUP_ID = "productPagingNavigator";
+
+      private static final String PRODUCT_DATAVIEW_CONTAINER_ID = "productDataviewContainer";
+
+      private static final String NAME_PROPERTY = "name";
+
+      private static final String ORDER_BY_NAME_ID = "orderByName";
+
+      private static final String NUMBER_PROPERTY = "number";
+
+      private static final String ORDER_BY_NUMBER_ID = "orderByNumber";
+
+      private static final String ADD_ID = "add";
+
+      private static final String FEEDBACK_ID = "feedback";
 
       @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
       class AddAjaxLink extends BootstrapAjaxLink<Product> {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(String id, IModel<Product> model, Buttons.Type type,
-            IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Product> model, final Buttons.Type type, final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
         }
 
         @Override
-        public void onClick(AjaxRequestTarget target) {
+        public void onClick(final AjaxRequestTarget target) {
           final Product product = new Product();
           product.setActive(true);
           AddAjaxLink.this.setDefaultModelObject(product);
@@ -83,23 +105,38 @@ public class ProductPanel extends Panel {
       @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
       class ProductDataviewContainer extends WebMarkupContainer {
 
+        private static final String PRODUCT_DATAVIEW_ID = "productDataview";
+
         @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
         class ProductDataview extends DataView<Product> {
+
+          private static final String CONFIRMATION_FUNCTION_NAME = "confirmation";
+
+          private static final String REMOVE_ID = "remove";
+
+          private static final String CLICK_EVENT = "click";
+
+          private static final String NAME_ID = NAME_PROPERTY;
+
+          private static final String NUMBER_ID = NUMBER_PROPERTY;
+
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
 
           @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
           class RemoveAjaxLink extends BootstrapAjaxLink<Product> {
 
             private static final long serialVersionUID = -8317730269644885290L;
 
-            public RemoveAjaxLink(final String id, final IModel<Product> model,
-                final Buttons.Type type, final IModel<String> labelModel) {
+            public RemoveAjaxLink(final String id, final IModel<Product> model, final Buttons.Type type, final IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
             }
 
             @Override
-            public void onClick(AjaxRequestTarget target) {
+            public void onClick(final AjaxRequestTarget target) {
               try {
                 productDataProvider.remove((Product) RemoveAjaxLink.this.getDefaultModelObject());
               } catch (final RuntimeException e) {
@@ -115,61 +152,49 @@ public class ProductPanel extends Panel {
 
           private int index = 0;
 
-          protected ProductDataview(final String id, final IDataProvider<Product> dataProvider,
-              final long itemsPerPage) {
+          protected ProductDataview(final String id, final IDataProvider<Product> dataProvider, final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
           @Override
-          protected Item<Product> newItem(String id, int index, IModel<Product> model) {
+          protected Item<Product> newItem(final String id, final int index, final IModel<Product> model) {
             final Item<Product> item = super.newItem(id, index, model);
             if (this.index == index) {
-              item.add(new AttributeModifier("class", "info"));
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
             }
             return item;
           }
 
           @Override
-          protected void populateItem(Item<Product> item) {
+          protected void populateItem(final Item<Product> item) {
             item.setModel(new CompoundPropertyModel<Product>(item.getModelObject()));
-            item.add(new Label("number").setOutputMarkupId(true));
-            item.add(new Label("name").setOutputMarkupId(true));
-            item.add(new AjaxEventBehavior("click") {
+            item.add(new Label(NUMBER_ID).setOutputMarkupId(true));
+            item.add(new Label(NAME_ID).setOutputMarkupId(true));
+            item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
 
               @Override
-              public void onEvent(AjaxRequestTarget target) {
+              public void onEvent(final AjaxRequestTarget target) {
                 index = item.getIndex();
-                target.add(productDataviewContainer.setDefaultModelObject(item.getModelObject())
-                    .setOutputMarkupId(true));
+                target.add(productDataviewContainer.setDefaultModelObject(item.getModelObject()).setOutputMarkupId(true));
                 target.add(productViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(
-                new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default,
-                    Model.of(ProductPanel.this
-                        .getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                            .add(new ConfirmationBehavior() {
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(ProductPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                .add(new ConfirmationBehavior() {
 
-                              private static final long serialVersionUID = 7744720444161839031L;
+                  private static final long serialVersionUID = 7744720444161839031L;
 
-                              @Override
-                              public void renderHead(Component component,
-                                  IHeaderResponse response) {
-                                response.render($(component)
-                                    .chain("confirmation",
-                                        new ConfirmationConfig()
-                                            .withTitle(getString(
-                                                NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY))
-                                        .withSingleton(true).withPopout(true)
-                                        .withBtnOkLabel(getString(
-                                            NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                                        .withBtnCancelLabel(getString(
-                                            NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                                    .asDomReadyScript());
-                              }
-                            }));
+                  @Override
+                  public void renderHead(final Component component, final IHeaderResponse response) {
+                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
+                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
+                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                        .asDomReadyScript());
+                  }
+                }));
           }
         }
 
@@ -181,8 +206,7 @@ public class ProductPanel extends Panel {
 
         public ProductDataviewContainer(final String id, final IModel<Product> model) {
           super(id, model);
-          productDataview =
-              new ProductDataview("productDataview", productDataProvider, ITEMS_PER_PAGE);
+          productDataview = new ProductDataview(PRODUCT_DATAVIEW_ID, productDataProvider, ITEMS_PER_PAGE);
         }
 
         @Override
@@ -208,16 +232,13 @@ public class ProductPanel extends Panel {
 
       public ProductTableContainer(final String id, final IModel<Product> model) {
         super(id, model);
-        feedbackPanel = new NotificationPanel("feedback");
-        addAjaxLink = new AddAjaxLink("add",
-            (IModel<Product>) ProductTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
+        feedbackPanel = new NotificationPanel(FEEDBACK_ID);
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Product>) ProductTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
             Model.of(ProductPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        orderByNumber = new OrderByBorder<String>("orderByNumber", "number", productDataProvider);
-        orderByName = new OrderByBorder<String>("orderByName", "name", productDataProvider);
-        productDataviewContainer = new ProductDataviewContainer("productDataviewContainer",
-            (IModel<Product>) ProductTableContainer.this.getDefaultModel());
-        productPagingNavigator = new BootstrapPagingNavigator("productPagingNavigator",
-            productDataviewContainer.productDataview);
+        orderByNumber = new OrderByBorder<String>(ORDER_BY_NUMBER_ID, NUMBER_PROPERTY, productDataProvider);
+        orderByName = new OrderByBorder<String>(ORDER_BY_NAME_ID, NAME_PROPERTY, productDataProvider);
+        productDataviewContainer = new ProductDataviewContainer(PRODUCT_DATAVIEW_CONTAINER_ID, (IModel<Product>) ProductTableContainer.this.getDefaultModel());
+        productPagingNavigator = new BootstrapPagingNavigator(PRODUCT_PAGING_NAVIGATOR_MARKUP_ID, productDataviewContainer.productDataview);
       }
 
       @Override
@@ -240,17 +261,14 @@ public class ProductPanel extends Panel {
 
     public ProductPanelContainer(final String id, final IModel<Product> model) {
       super(id, model);
-      productTableContainer = new ProductTableContainer("productTableContainer",
-          (IModel<Product>) ProductPanelContainer.this.getDefaultModel());
-      productViewOrEditPanel = new ProductViewOrEditPanel("productViewOrEditPanel",
-          (IModel<Product>) ProductPanelContainer.this.getDefaultModel());
+      productTableContainer = new ProductTableContainer(PRODUCT_TABLE_CONTAINER_ID, (IModel<Product>) ProductPanelContainer.this.getDefaultModel());
+      productViewOrEditPanel = new ProductViewOrEditPanel(PRODUCT_VIEW_OR_EDIT_PANEL_ID, (IModel<Product>) ProductPanelContainer.this.getDefaultModel());
     }
 
     @Override
     protected void onInitialize() {
       add(productTableContainer.add(new TableBehavior().hover()).setOutputMarkupId(true));
-      add(productViewOrEditPanel.add(productViewOrEditPanel.new ProductViewFragment())
-          .setOutputMarkupId(true));
+      add(productViewOrEditPanel.add(productViewOrEditPanel.new ProductViewFragment()).setOutputMarkupId(true));
       super.onInitialize();
     }
   }
@@ -259,15 +277,14 @@ public class ProductPanel extends Panel {
 
   private static final long serialVersionUID = 3703226064705246155L;
 
-  @SpringBean(name = "ProductDataProvider", required = true)
+  @SpringBean(name = ProductDataProvider.PRODUCT_DATA_PROVIDER_NAME, required = true)
   private GenericTypeDataProvider<Product> productDataProvider;
 
   private final ProductPanelContainer productPanelContainer;
 
   public ProductPanel(final String id, final IModel<Product> model) {
     super(id, model);
-    productPanelContainer = new ProductPanelContainer("productPanelContainer",
-        (IModel<Product>) ProductPanel.this.getDefaultModel());
+    productPanelContainer = new ProductPanelContainer(PRODUCT_PANEL_CONTAINER_ID, (IModel<Product>) ProductPanel.this.getDefaultModel());
   }
 
   @Override
@@ -285,7 +302,7 @@ public class ProductPanel extends Panel {
       private static final long serialVersionUID = -4903722864597601489L;
 
       @Override
-      public void onComponentTag(Component component, ComponentTag tag) {
+      public void onComponentTag(final Component component, final ComponentTag tag) {
         Attributes.addClass(tag, MediumSpanType.SPAN10);
       }
     }).setOutputMarkupId(true));

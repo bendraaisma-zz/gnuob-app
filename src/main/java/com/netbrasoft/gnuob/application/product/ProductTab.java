@@ -17,7 +17,7 @@ public class ProductTab extends AbstractTab {
 
   @Override
   public WebMarkupContainer getPanel(final String panelId) {
-    Product product = new Product();
+    final Product product = new Product();
     product.setActive(true);
     return new ProductPanel(panelId, Model.of(product));
   }
