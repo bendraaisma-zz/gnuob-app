@@ -49,7 +49,7 @@ public class OfferViewOrEditPanel extends Panel {
     }
 
     @Override
-    public void onClick(AjaxRequestTarget target) {
+    public void onClick(final AjaxRequestTarget target) {
       OfferViewOrEditPanel.this.removeAll();
       OfferViewOrEditPanel.this.add(new OfferViewFragement()).setOutputMarkupId(true);
 
@@ -72,7 +72,7 @@ public class OfferViewOrEditPanel extends Panel {
     }
 
     @Override
-    public void onClick(AjaxRequestTarget target) {
+    public void onClick(final AjaxRequestTarget target) {
       OfferViewOrEditPanel.this.removeAll();
       OfferViewOrEditPanel.this.add(new OfferEditFragement().setOutputMarkupId(true));
       target.add(OfferViewOrEditPanel.this);
@@ -111,7 +111,7 @@ public class OfferViewOrEditPanel extends Panel {
           offerEditForm.add(new NumberTextField<Integer>("shippingDiscount").setRequired(true));
           offerEditForm.add(new NumberTextField<Integer>("taxTotal"));
           offerEditForm.add(new NumberTextField<Integer>("offerTotal"));
-          offerEditForm.add(offerRecordPanel.add(offerRecordPanel.new OfferRecordEditFragement()).setOutputMarkupId(true));
+          offerEditForm.add(offerRecordPanel.add(offerRecordPanel.new OfferRecordEditFragment()).setOutputMarkupId(true));
           add(offerEditForm.setOutputMarkupId(true));
           add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
           add(new CancelAjaxLink().setOutputMarkupId(true));
@@ -162,7 +162,7 @@ public class OfferViewOrEditPanel extends Panel {
           offerViewForm.add(new Label("shippingDiscount"));
           offerViewForm.add(new Label("taxTotal"));
           offerViewForm.add(new Label("offerTotal"));
-          offerViewForm.add(offerRecordPanel.add(offerRecordPanel.new OfferRecordViewFragement()).setOutputMarkupId(true));
+          offerViewForm.add(offerRecordPanel.add(offerRecordPanel.new OfferRecordViewFragment()).setOutputMarkupId(true));
           add(new EditAjaxLink().setOutputMarkupId(true));
           add(offerViewForm.setOutputMarkupId(true));
           add(new TableBehavior());
@@ -184,21 +184,21 @@ public class OfferViewOrEditPanel extends Panel {
 
     private static final long serialVersionUID = 2695394292963384938L;
 
-    public SaveAjaxButton(Form<?> form) {
+    public SaveAjaxButton(final Form<?> form) {
       super("save", Model.of(OfferViewOrEditPanel.this.getString("saveAndCloseMessage")), form, Buttons.Type.Primary);
       setSize(Buttons.Size.Small);
       add(new LoadingBehavior(Model.of(OfferViewOrEditPanel.this.getString("saveAndCloseMessage"))));
     }
 
     @Override
-    protected void onError(AjaxRequestTarget target, Form<?> form) {
+    protected void onError(final AjaxRequestTarget target, final Form<?> form) {
       form.add(new TooltipValidation());
       target.add(form);
       target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(OfferViewOrEditPanel.this.getString("saveAndCloseMessage")))));
     }
 
     @Override
-    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+    protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
       try {
         final Offer offer = (Offer) form.getDefaultModelObject();
         offer.setActive(true);
