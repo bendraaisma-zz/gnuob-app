@@ -6,18 +6,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
-import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
 import org.apache.wicket.extensions.markup.html.repeater.tree.table.TreeColumn;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -30,163 +29,199 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Category;
 import com.netbrasoft.gnuob.api.SubCategory;
+import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.category.table.SubCategoryTableTree;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
-import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
 import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
-import de.agilecoders.wicket.core.util.Attributes;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationConfig;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class SubCategoryPanel extends Panel {
 
   @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class RemoveAjaxLink extends BootstrapAjaxLink<SubCategory> {
+  class SubCategoryEditFragement extends Fragment {
 
-    private static final long serialVersionUID = -8317730269644885290L;
+    @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+    class SubCategoryEditTable extends WebMarkupContainer {
 
-    public RemoveAjaxLink(final IModel<SubCategory> model) {
-      super("remove", model, Buttons.Type.Default, Model.of(SubCategoryPanel.this.getString("removeMessage")));
-      setIconType(GlyphIconType.remove);
-      setSize(Buttons.Size.Mini);
-    }
+      @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+      class SubCategoriesDataViewContainer extends WebMarkupContainer {
 
-    @Override
-    public void onClick(AjaxRequestTarget target) {
-      try {
-        removeSubCategory(((Category) SubCategoryPanel.this.getDefaultModelObject()).getSubCategories(), (SubCategory) getDefaultModelObject());
-      } catch (final RuntimeException e) {
-        LOGGER.warn(e.getMessage(), e);
-        warn(e.getLocalizedMessage());
-      } finally {
-        target.add(subCategoriesDataViewContainer.setOutputMarkupId(true));
-      }
-    }
+        @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+        class SubCategoryDataview extends SubCategoryTableTree {
 
-    private void removeSubCategory(List<SubCategory> subCategories, SubCategory subCategory) {
-      if (subCategories.contains(subCategory)) {
-        subCategories.remove(subCategory);
-      } else {
-        for (final SubCategory sub : subCategories) {
-          removeSubCategory(sub.getSubCategories(), subCategory);
-        }
-      }
-    }
-  }
+          @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+          class RemoveAjaxLink extends BootstrapAjaxLink<SubCategory> {
 
-  @SuppressWarnings("unchecked")
-  class RemoveSubCategoryPanel extends Panel {
+            private static final String REMOVE_ID = "remove";
 
-    static final long serialVersionUID = 1136516888736878750L;
+            private static final long serialVersionUID = -8317730269644885290L;
 
-    public RemoveSubCategoryPanel(final String id, final IModel<SubCategory> model) {
-      super(id, model);
-    }
+            public RemoveAjaxLink(final IModel<SubCategory> model) {
+              super(REMOVE_ID, model, Buttons.Type.Default, Model.of(SubCategoryPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)));
+              setIconType(GlyphIconType.remove);
+              setSize(Buttons.Size.Mini);
+            }
 
-    @Override
-    protected void onInitialize() {
-      add(new RemoveAjaxLink((IModel<SubCategory>) getDefaultModel()).add(new ConfirmationBehavior() {
+            @Override
+            public void onClick(final AjaxRequestTarget target) {
+              try {
+                removeSubCategory(((Category) SubCategoryPanel.this.getDefaultModelObject()).getSubCategories(), (SubCategory) getDefaultModelObject());
+              } catch (final RuntimeException e) {
+                LOGGER.warn(e.getMessage(), e);
+                warn(e.getLocalizedMessage());
+              } finally {
+                target.add(subCategoriesDataViewContainer.setOutputMarkupId(true));
+              }
+            }
 
-        private static final long serialVersionUID = 7744720444161839031L;
+            private void removeSubCategory(final List<SubCategory> subCategories, final SubCategory subCategory) {
+              if (subCategories.contains(subCategory)) {
+                subCategories.remove(subCategory);
+              } else {
+                for (final SubCategory sub : subCategories) {
+                  removeSubCategory(sub.getSubCategories(), subCategory);
+                }
+              }
+            }
+          }
 
-        @Override
-        public void renderHead(Component component, IHeaderResponse response) {
-          response.render($(component).chain("confirmation", new ConfirmationConfig().withTitle(getString("confirmationTitleMessage")).withSingleton(true).withPopout(true)
-              .withBtnOkLabel(getString("confirmMessage")).withBtnCancelLabel(getString("cancelMessage"))).asDomReadyScript());
-        }
-      }));
-      super.onInitialize();
-    }
-  }
+          @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+          class RemoveSubCategoryPanel extends Panel {
 
-  @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
-  class SubCategoryDataview extends SubCategoryTableTree {
+            private static final long serialVersionUID = 1136516888736878750L;
 
-    private static final long serialVersionUID = 7493141095626794439L;
+            private static final String CONFIRMATION_FUNCTION_NAME = "confirmation";
 
-    private boolean removeAjaxLinkVisable;
+            public RemoveSubCategoryPanel(final String id, final IModel<SubCategory> model) {
+              super(id, model);
+            }
 
-    private long selectedObjectId;
+            @Override
+            protected void onInitialize() {
+              add(new RemoveAjaxLink((IModel<SubCategory>) getDefaultModel()).add(new ConfirmationBehavior() {
 
-    public SubCategoryDataview(List<? extends IColumn<SubCategory, String>> columns) {
-      super("subCategoriesDataView", columns, subCategoryTreeProvider, Integer.MAX_VALUE);
-    }
+                private static final long serialVersionUID = 7744720444161839031L;
 
-    public boolean isRemoveAjaxLinkVisable() {
-      return removeAjaxLinkVisable;
-    }
+                @Override
+                public void renderHead(final Component component, final IHeaderResponse response) {
+                  response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
+                      new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
+                          .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                          .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                      .asDomReadyScript());
+                }
+              }));
+              super.onInitialize();
+            }
+          }
 
-    @Override
-    public Item<SubCategory> newItem(Item<SubCategory> item, IModel<SubCategory> model) {
-      final long modelObjectId = ((SubCategory) subCategoryViewOrEditPanel.getDefaultModelObject()).getId();
+          private static final String EMPTY_VALUE = "";
 
-      if ((model.getObject().getId() == modelObjectId) || modelObjectId == 0) {
-        item.add(new BootstrapBaseBehavior() {
+          private static final String CLICK_EVENT = "click";
 
-          private static final long serialVersionUID = -4903722864597601489L;
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
+
+          private static final long serialVersionUID = 7493141095626794439L;
+
+          private Item<SubCategory> item;
+
+          public SubCategoryDataview(final String id, final List<? extends IColumn<SubCategory, String>> columns, final ITreeProvider<SubCategory> provider,
+              final long rowsPerPage) {
+            super(id, columns, provider, rowsPerPage);
+          }
 
           @Override
-          public void onComponentTag(Component component, ComponentTag tag) {
-            Attributes.addClass(tag, "info");
+          protected Item<SubCategory> newRowItem(final String id, final int index, final IModel<SubCategory> model) {
+            final Item<SubCategory> item = super.newRowItem(id, index, model);
+            if (SubCategoryDataview.this.item == null || SubCategoryDataview.this.item.getIndex() == index) {
+              SubCategoryDataview.this.item = (Item<SubCategory>) item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
+            }
+            item.add(new AjaxEventBehavior(CLICK_EVENT) {
+
+              private static final long serialVersionUID = 3378951512633587481L;
+
+              @Override
+              protected void onEvent(final AjaxRequestTarget target) {
+                SubCategoryDataview.this.item.add(new AttributeModifier(CLASS_ATTRIBUTE, EMPTY_VALUE));
+                SubCategoryDataview.this.item = (Item<SubCategory>) item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
+                subCategoryViewOrEditPanelToolbarPanel.setSelectedModel(item.getModel());
+                target.add(subCategoriesDataViewContainer.setOutputMarkupId(true));
+              }
+            });
+            return item;
           }
-        });
+
+          @Override
+          protected void onConfigure() {
+            subCategoryViewOrEditPanelToolbarPanel.removeAll();
+            subCategoryViewOrEditPanelToolbarPanel.add(subCategoryViewOrEditPanelToolbarPanel.new SubCategoryEditFragment()).setOutputMarkupId(true);
+            super.onConfigure();
+          }
+        }
+
+        private static final String SUB_CATEGORY_DATAVIEW_ID = "subCategoryDataview";
+
+        private static final long serialVersionUID = -5435165517396427026L;
+
+        private final SubCategoryDataview subCategoryDataview;
+
+        private final SubCategoryViewOrEditToolbarPanel subCategoryViewOrEditPanelToolbarPanel;
+
+        public SubCategoriesDataViewContainer(final String id, final IModel<Category> model) {
+          super(id, model);
+          subCategoryDataview = new SubCategoryDataview(SUB_CATEGORY_DATAVIEW_ID, createColumns(), subCategoryTreeProvider, Integer.MAX_VALUE);
+          subCategoryViewOrEditPanelToolbarPanel =
+              new SubCategoryViewOrEditToolbarPanel((IModel<Category>) SubCategoriesDataViewContainer.this.getDefaultModel(), subCategoryDataview.getTable());
+        }
+
+        @Override
+        protected void onInitialize() {
+          subCategoryDataview.getTable().addBottomToolbar(
+              (AbstractToolbar) subCategoryViewOrEditPanelToolbarPanel.add(subCategoryViewOrEditPanelToolbarPanel.new SubCategoryEditFragment()).setOutputMarkupId(true));
+          add(subCategoryDataview.setOutputMarkupId(true));
+          super.onInitialize();
+        }
       }
-      return item;
-    }
 
-    @Override
-    protected void onConfigure() {
-      if (selectedObjectId != ((Category) SubCategoryPanel.this.getDefaultModelObject()).getId()) {
-        selectedObjectId = ((Category) SubCategoryPanel.this.getDefaultModelObject()).getId();
-        subCategoryViewOrEditPanel.setDefaultModelObject(new SubCategory());
+      private static final String SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID = "subCategoriesDataViewContainer";
+
+      private static final long serialVersionUID = 3120969231215664092L;
+
+      private final SubCategoriesDataViewContainer subCategoriesDataViewContainer;
+
+      public SubCategoryEditTable(final String id, final IModel<Category> model) {
+        super(id, model);
+        subCategoriesDataViewContainer = new SubCategoriesDataViewContainer(SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID, (IModel<Category>) SubCategoryEditTable.this.getDefaultModel());
       }
-      super.onConfigure();
+
+      @Override
+      protected void onInitialize() {
+        add(subCategoriesDataViewContainer.setOutputMarkupId(true));
+        super.onInitialize();
+      }
     }
 
-    /*
-     * @Override public void populateItem(Item<SubCategory> item) { item.add(new
-     * AjaxEventBehavior("click") {
-     * 
-     * private static final long serialVersionUID = 1L;
-     * 
-     * @Override public void onEvent(AjaxRequestTarget target) { selectedItem.add(new
-     * BootstrapBaseBehavior() {
-     * 
-     * private static final long serialVersionUID = -4903722864597601489L;
-     * 
-     * @Override public void onComponentTag(Component component, ComponentTag tag) {
-     * Attributes.removeClass(tag, "info"); } }); selectedItem = item; item.add(new
-     * BootstrapBaseBehavior() {
-     * 
-     * private static final long serialVersionUID = -4903722864597601489L;
-     * 
-     * @Override public void onComponentTag(Component component, ComponentTag tag) {
-     * Attributes.addClass(tag, "info"); } });
-     * subCategoryViewOrEditPanel.setDefaultModelObject(item.getDefaultModelObject());
-     * target.add(subCategoriesDataViewContainer.setOutputMarkupId(true));
-     * target.add(subCategoryViewOrEditPanel.setOutputMarkupId(true)); } });
-     * 
-     * if (item.getIndex() == 0 && ((SubCategory)
-     * subCategoryViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
-     * subCategoryViewOrEditPanel.setDefaultModelObject(item.getModelObject()); } }
-     */
+    private static final String SUB_CATEGORY_EDIT_TABLE_ID = "subCategoryEditTable";
 
-    public void setRemoveAjaxLinkVisable(boolean removeAjaxLinkVisable) {
-      this.removeAjaxLinkVisable = removeAjaxLinkVisable;
-    }
-  }
+    private static final String SUB_CATEGORY_EDIT_FRAGEMENT_MARKUP_ID = "subCategoryEditFragement";
 
-  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class SubCategoryEditFragement extends Fragment {
+    private static final String SUB_CATEGORY_VIEW_OR_EDIT_FRAGEMENT_ID = "subCategoryViewOrEditFragement";
 
     private static final long serialVersionUID = 3162058383568556008L;
 
+    private final SubCategoryEditTable subCategoryEditTable;
+
     public SubCategoryEditFragement() {
-      super("subCategoryViewOrEditFragement", "subCategoryEditFragement", SubCategoryPanel.this, SubCategoryPanel.this.getDefaultModel());
+      super(SUB_CATEGORY_VIEW_OR_EDIT_FRAGEMENT_ID, SUB_CATEGORY_EDIT_FRAGEMENT_MARKUP_ID, SubCategoryPanel.this, SubCategoryPanel.this.getDefaultModel());
+      subCategoryEditTable = new SubCategoryEditTable(SUB_CATEGORY_EDIT_TABLE_ID, (IModel<Category>) SubCategoryEditFragement.this.getDefaultModel());
     }
 
     @Override
@@ -207,7 +242,7 @@ public class SubCategoryPanel extends Panel {
     }
 
     @Override
-    public Iterator<? extends SubCategory> getChildren(SubCategory node) {
+    public Iterator<? extends SubCategory> getChildren(final SubCategory node) {
       return node.getSubCategories().iterator();
     }
 
@@ -217,12 +252,12 @@ public class SubCategoryPanel extends Panel {
     }
 
     @Override
-    public boolean hasChildren(SubCategory node) {
+    public boolean hasChildren(final SubCategory node) {
       return !node.getSubCategories().isEmpty();
     }
 
     @Override
-    public IModel<SubCategory> model(SubCategory object) {
+    public IModel<SubCategory> model(final SubCategory object) {
       return Model.of(object);
     }
   }
@@ -230,10 +265,114 @@ public class SubCategoryPanel extends Panel {
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
   class SubCategoryViewFragement extends Fragment {
 
+    @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+    class SubCategoryViewTable extends WebMarkupContainer {
+
+      @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+      class SubCategoriesDataViewContainer extends WebMarkupContainer {
+
+        @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+        class SubCategoryDataview extends SubCategoryTableTree {
+
+          private static final String CLICK_EVENT = "click";
+
+          private static final long serialVersionUID = 7493141095626794439L;
+
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
+
+          private Item<SubCategory> item;
+
+          public SubCategoryDataview(final String id, final List<? extends IColumn<SubCategory, String>> columns, final ITreeProvider<SubCategory> provider,
+              final long rowsPerPage) {
+            super(id, columns, provider, rowsPerPage);
+          }
+
+          @Override
+          protected Item<SubCategory> newRowItem(final String id, final int index, final IModel<SubCategory> model) {
+            final Item<SubCategory> item = super.newRowItem(id, index, model);
+            if (SubCategoryDataview.this.item == null || SubCategoryDataview.this.item.getIndex() == index) {
+              SubCategoryDataview.this.item = (Item<SubCategory>) item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
+            }
+            item.add(new AjaxEventBehavior(CLICK_EVENT) {
+
+              private static final long serialVersionUID = 3378951512633587481L;
+
+              @Override
+              protected void onEvent(final AjaxRequestTarget target) {
+                SubCategoryDataview.this.item.add(new AttributeModifier(CLASS_ATTRIBUTE, ""));
+                SubCategoryDataview.this.item = (Item<SubCategory>) item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
+                subCategoryViewOrEditPanelToolbarPanel.setSelectedModel(item.getModel());
+                target.add(subCategoriesDataViewContainer.setOutputMarkupId(true));
+              }
+            });
+            return item;
+          }
+
+          @Override
+          protected void onConfigure() {
+            subCategoryViewOrEditPanelToolbarPanel.removeAll();
+            subCategoryViewOrEditPanelToolbarPanel.add(subCategoryViewOrEditPanelToolbarPanel.new SubCategoryViewFragment()).setOutputMarkupId(true);
+            super.onConfigure();
+          }
+        }
+
+        private static final String SUB_CATEGORY_DATAVIEW_ID = "subCategoryDataview";
+
+        private static final long serialVersionUID = 8773466731948831695L;
+
+        private final SubCategoryDataview subCategoryDataview;
+
+        private final SubCategoryViewOrEditToolbarPanel subCategoryViewOrEditPanelToolbarPanel;
+
+        public SubCategoriesDataViewContainer(final String id, final IModel<Category> model) {
+          super(id, model);
+          subCategoryDataview = new SubCategoryDataview(SUB_CATEGORY_DATAVIEW_ID, createColumns(), subCategoryTreeProvider, Integer.MAX_VALUE);
+          subCategoryViewOrEditPanelToolbarPanel =
+              new SubCategoryViewOrEditToolbarPanel((IModel<Category>) SubCategoriesDataViewContainer.this.getDefaultModel(), subCategoryDataview.getTable());
+        }
+
+        @Override
+        protected void onInitialize() {
+          subCategoryDataview.getTable().addBottomToolbar(
+              (AbstractToolbar) subCategoryViewOrEditPanelToolbarPanel.add(subCategoryViewOrEditPanelToolbarPanel.new SubCategoryViewFragment()).setOutputMarkupId(true));
+          add(subCategoryDataview.setOutputMarkupId(true));
+          super.onInitialize();
+        }
+      }
+
+      private static final String SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID = "subCategoriesDataViewContainer";
+
+      private static final long serialVersionUID = 2197029795367976110L;
+
+      private final SubCategoriesDataViewContainer subCategoriesDataViewContainer;
+
+      public SubCategoryViewTable(final String id, final IModel<Category> model) {
+        super(id, model);
+        subCategoriesDataViewContainer = new SubCategoriesDataViewContainer(SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID, (IModel<Category>) SubCategoryViewTable.this.getDefaultModel());
+      }
+
+      @Override
+      protected void onInitialize() {
+        add(subCategoriesDataViewContainer.setOutputMarkupId(true));
+        super.onInitialize();
+      }
+    }
+
+    private static final String SUB_CATEGORY_VIEW_TABLE_ID = "subCategoryViewTable";
+
+    private static final String SUB_CATEGORY_VIEW_FRAGEMENT_MARKUP_ID = "subCategoryViewFragement";
+
+    private static final String SUB_CATEGORY_VIEW_OR_EDIT_FRAGEMENT_ID = "subCategoryViewOrEditFragement";
+
     private static final long serialVersionUID = 3162058383568556008L;
 
+    private final SubCategoryViewTable subCategoryViewTable;
+
     public SubCategoryViewFragement() {
-      super("subCategoryViewOrEditFragement", "subCategoryViewFragement", SubCategoryPanel.this, SubCategoryPanel.this.getDefaultModel());
+      super(SUB_CATEGORY_VIEW_OR_EDIT_FRAGEMENT_ID, SUB_CATEGORY_VIEW_FRAGEMENT_MARKUP_ID, SubCategoryPanel.this, SubCategoryPanel.this.getDefaultModel());
+      subCategoryViewTable = new SubCategoryViewTable(SUB_CATEGORY_VIEW_TABLE_ID, (IModel<Category>) SubCategoryViewFragement.this.getDefaultModel());
     }
 
     @Override
@@ -243,98 +382,40 @@ public class SubCategoryPanel extends Panel {
     }
   }
 
+  private static final String SMALL_CSS_CLASS = "small";
+
+  private static final String DESCRIPTION_PROPERTY_EXPRESSION = "description";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(SubCategoryPanel.class);
 
   private static final long serialVersionUID = 4492979061717676247L;
 
-  private final SubCategoryViewOrEditPanel subCategoryViewOrEditPanel;
-
-  private final WebMarkupContainer subCategoriesDataViewContainer;
-
   private final SubCategoryTreeProvider subCategoryTreeProvider;
-
-  private final SubCategoryDataview subCategoryDataView;
-
-  private final WebMarkupContainer subCategoryEditTable;
-
-  private final WebMarkupContainer subCategoryViewTable;
 
   public SubCategoryPanel(final String id, final IModel<Category> model) {
     super(id, model);
-
     subCategoryTreeProvider = new SubCategoryTreeProvider();
-    subCategoryDataView = new SubCategoryDataview(createColumns());
-    subCategoriesDataViewContainer = new WebMarkupContainer("subCategoriesDataViewContainer", getDefaultModel()) {
-
-      private static final long serialVersionUID = 586368973894377938L;
-
-      @Override
-      protected void onInitialize() {
-        add(subCategoryDataView.setOutputMarkupId(true));
-        super.onInitialize();
-      }
-    };
-    subCategoryEditTable = new WebMarkupContainer("subCategoryEditTable", getDefaultModel()) {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected void onInitialize() {
-        subCategoryDataView.setRemoveAjaxLinkVisable(true);
-        subCategoryDataView.getTable()
-            .addBottomToolbar((AbstractToolbar) subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryEditFragement()).setOutputMarkupId(true));
-        add(subCategoriesDataViewContainer.setOutputMarkupId(true));
-        super.onInitialize();
-      }
-    };
-    subCategoryViewTable = new WebMarkupContainer("subCategoryViewTable", getDefaultModel()) {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected void onInitialize() {
-        subCategoryDataView.setRemoveAjaxLinkVisable(false);
-        subCategoryDataView.getTable()
-            .addBottomToolbar((AbstractToolbar) subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryViewFragement()).setOutputMarkupId(true));
-        add(subCategoriesDataViewContainer.setOutputMarkupId(true));
-        super.onInitialize();
-      }
-    };
-    subCategoryViewOrEditPanel = new SubCategoryViewOrEditPanel(Model.of(new SubCategory()), subCategoryDataView.getTable(), subCategoryEditTable);
   }
 
   private List<IColumn<SubCategory, String>> createColumns() {
     final List<IColumn<SubCategory, String>> columns = new ArrayList<IColumn<SubCategory, String>>();
 
-    columns.add(new TreeColumn<SubCategory, String>(Model.of(getString("nameMessage"))) {
+    columns.add(new TreeColumn<SubCategory, String>(Model.of(SubCategoryPanel.this.getString(NetbrasoftApplicationConstants.NAME_MESSAGE_KEY))) {
       private static final long serialVersionUID = -8544017108974205690L;
 
       @Override
       public String getCssClass() {
-        return "small";
+        return SMALL_CSS_CLASS;
       }
     });
 
-    columns.add(new PropertyColumn<SubCategory, String>(Model.of(getString("descriptionMessage")), "description") {
+    columns.add(new PropertyColumn<SubCategory, String>(Model.of(SubCategoryPanel.this.getString(NetbrasoftApplicationConstants.DESCRIPTION_MESSAGE_KEY)),
+        DESCRIPTION_PROPERTY_EXPRESSION) {
       private static final long serialVersionUID = -1013188144051609487L;
 
       @Override
       public String getCssClass() {
-        return "small";
-      }
-    });
-
-    columns.add(new AbstractColumn<SubCategory, String>(Model.of(getString("operationMessage"))) {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public String getCssClass() {
-        return "small";
-      }
-
-      @Override
-      public void populateItem(Item<ICellPopulator<SubCategory>> cellItem, String componentId, IModel<SubCategory> rowModel) {
-        cellItem.add(new RemoveSubCategoryPanel(componentId, rowModel).setVisibilityAllowed(subCategoryDataView.isRemoveAjaxLinkVisable()).setOutputMarkupId(true));
+        return SMALL_CSS_CLASS;
       }
     });
 

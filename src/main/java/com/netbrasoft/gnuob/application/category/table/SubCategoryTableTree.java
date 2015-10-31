@@ -19,7 +19,6 @@ import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
 import org.apache.wicket.extensions.markup.html.repeater.tree.TableTree;
 import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
@@ -194,14 +193,6 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
   @Override
   protected Component newContentComponent(final String id, final IModel<SubCategory> model) {
     return new Label(id, model.getObject().getName());
-  }
-
-  public abstract Item<SubCategory> newItem(Item<SubCategory> item, IModel<SubCategory> model);
-
-  @Override
-  protected Item<SubCategory> newRowItem(final String id, final int index, final IModel<SubCategory> model) {
-    final Item<SubCategory> item = super.newRowItem(id, index, model);
-    return newItem(item, model);
   }
 
   @Override

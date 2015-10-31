@@ -4,12 +4,12 @@ import static de.agilecoders.wicket.jquery.JQuery.$;
 
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -17,270 +17,419 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.util.time.Duration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Category;
 import com.netbrasoft.gnuob.api.Content;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
-import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
-import de.agilecoders.wicket.core.markup.html.bootstrap.common.NotificationPanel;
 import de.agilecoders.wicket.core.markup.html.bootstrap.image.GlyphIconType;
 import de.agilecoders.wicket.core.markup.html.bootstrap.navigation.BootstrapPagingNavigator;
 import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
-import de.agilecoders.wicket.core.util.Attributes;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationConfig;
 
+@SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class CategoryContentPanel extends Panel {
 
   @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class AddAjaxLink extends BootstrapAjaxLink<String> {
+  class CategoryContentEditFragment extends Fragment {
 
-    private static final long serialVersionUID = 9191172039973638020L;
+    @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+    class ContentEditTable extends WebMarkupContainer {
 
-    public AddAjaxLink() {
-      super("add", Model.of(CategoryContentPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)), Buttons.Type.Primary,
-          Model.of(CategoryContentPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-      setIconType(GlyphIconType.plus);
-      setSize(Buttons.Size.Small);
-    }
+      @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+      class AddAjaxLink extends BootstrapAjaxLink<Category> {
 
-    @Override
-    public void onClick(AjaxRequestTarget target) {
-      categoryContentViewOrEditPanel.setDefaultModelObject(new Content());
-      target.add(categoryContentViewOrEditPanel.setOutputMarkupId(true));
-    }
-  }
+        private static final long serialVersionUID = 9191172039973638020L;
 
-  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class CategoryContentEditFragement extends Fragment {
+        public AddAjaxLink(final String id, final IModel<Category> model, final Buttons.Type type, final IModel<String> labelModel) {
+          super(id, model, type, labelModel);
+          setIconType(GlyphIconType.plus);
+          setSize(Buttons.Size.Small);
+        }
 
-    private static final long serialVersionUID = 8640403483040526601L;
+        @Override
+        public void onClick(final AjaxRequestTarget target) {
+          final Content content = new Content();
+          content.setActive(true);
+          ((Category) AddAjaxLink.this.getDefaultModelObject()).getContents().add(content);
+          contentDataviewContainer.contentDataview.index = ((Category) AddAjaxLink.this.getDefaultModelObject()).getContents().size() - 1;
+          categoryContentViewOrEditPanel.removeAll();
+          target.add(contentDataviewContainer.setOutputMarkupId(true));
+          target.add(categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentEditFragment()).setOutputMarkupId(true));
+        }
+      }
 
-    public CategoryContentEditFragement() {
-      super("categoryContentViewOrEditFragement", "categoryContentEditFragement", CategoryContentPanel.this, CategoryContentPanel.this.getDefaultModel());
-    }
+      @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+      class ContentDataviewContainer extends WebMarkupContainer {
 
-    @Override
-    protected void onInitialize() {
-      add(contentEditTable.setOutputMarkupId(true));
-      super.onInitialize();
-    }
-  }
+        @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+        class ContentDataview extends DataView<Content> {
 
-  @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
-  class CategoryContentViewFragement extends Fragment {
+          @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+          class RemoveAjaxLink extends BootstrapAjaxLink<Content> {
 
-    private static final long serialVersionUID = 8640403483040526601L;
+            private static final long serialVersionUID = -6950515027229520882L;
 
-    public CategoryContentViewFragement() {
-      super("categoryContentViewOrEditFragement", "categoryContentViewFragement", CategoryContentPanel.this, CategoryContentPanel.this.getDefaultModel());
-    }
+            public RemoveAjaxLink(final String id, final IModel<Content> model, final Buttons.Type type, final IModel<String> labelModel) {
+              super(id, model, type, labelModel);
+              setIconType(GlyphIconType.remove);
+              setSize(Buttons.Size.Mini);
+            }
 
-    @Override
-    protected void onInitialize() {
-      add(contentViewTable.setOutputMarkupId(true));
-      super.onInitialize();
-    }
-  }
+            @Override
+            public void onClick(final AjaxRequestTarget target) {
+              ((Category) ContentDataviewContainer.this.getDefaultModelObject()).getContents().remove(RemoveAjaxLink.this.getDefaultModelObject());
+              contentDataview.index = ((Category) ContentDataviewContainer.this.getDefaultModelObject()).getContents().size() - 1;
+              categoryContentViewOrEditPanel.removeAll();
+              target.add(contentDataviewContainer.setOutputMarkupId(true));
+              target.add(categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentEditFragment()).setOutputMarkupId(true));
+            }
+          }
 
-  @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
-  class ContentDataview extends DataView<Content> {
+          private static final String FORMAT_ID = "format";
 
-    private static final long serialVersionUID = 2246346365193989354L;
+          private static final String NAME_ID = "name";
 
-    private boolean removeAjaxLinkVisable;
+          private static final long serialVersionUID = 2246346365193989354L;
 
-    private long selectedObjectId;
+          private static final String CONFIRMATION_FUNCTION_NAME = "confirmation";
 
-    protected ContentDataview() {
-      super("contentDataview", contentListDataProvider, ITEMS_PER_PAGE);
-    }
+          private static final String REMOVE_ID = "remove";
 
-    public boolean isRemoveAjaxLinkVisable() {
-      return removeAjaxLinkVisable;
-    }
+          private static final String CLICK_EVENT = "click";
 
-    @Override
-    protected Item<Content> newItem(String id, int index, IModel<Content> model) {
-      final Item<Content> item = super.newItem(id, index, model);
-      final long modelObjectId = ((Content) categoryContentViewOrEditPanel.getDefaultModelObject()).getId();
+          private static final String INFO_VALUE = "info";
 
-      if ((model.getObject().getId() == modelObjectId) || modelObjectId == 0) {
-        item.add(new BootstrapBaseBehavior() {
+          private static final String CLASS_ATTRIBUTE = "class";
 
-          private static final long serialVersionUID = -4903722864597601489L;
+          private int index = 0;
+
+          protected ContentDataview(final String id, final IDataProvider<Content> dataProvider, final long itemsPerPage) {
+            super(id, dataProvider, itemsPerPage);
+          }
 
           @Override
-          public void onComponentTag(Component component, ComponentTag tag) {
-            Attributes.addClass(tag, "info");
+          protected Item<Content> newItem(final String id, final int index, final IModel<Content> model) {
+            final Item<Content> item = super.newItem(id, index, model);
+            if (this.index == index) {
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
+            }
+            return item;
           }
-        });
+
+          @Override
+          protected void onConfigure() {
+            final IModel<Category> model = (IModel<Category>) ContentDataviewContainer.this.getDefaultModel();
+            if (!model.getObject().getContents().isEmpty()) {
+              categoryContentViewOrEditPanel.setEnabled(true);
+              categoryContentViewOrEditPanel.removeAll();
+              categoryContentViewOrEditPanel.setSelectedModel(Model.of(model.getObject().getContents().get(index)));
+              categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentEditFragment()).setOutputMarkupId(true);
+            } else {
+              categoryContentViewOrEditPanel.setEnabled(false);
+              categoryContentViewOrEditPanel.removeAll();
+              categoryContentViewOrEditPanel.setSelectedModel(Model.of(new Content()));
+              categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentEditFragment()).setOutputMarkupId(true);
+            }
+            super.onConfigure();
+          }
+
+          @Override
+          protected void populateItem(final Item<Content> item) {
+            final IModel<Content> compound = new CompoundPropertyModel<Content>(item.getModelObject());
+            item.setModel(compound);
+            item.add(new Label(NAME_ID));
+            item.add(new Label(FORMAT_ID));
+            item.add(new AjaxEventBehavior(CLICK_EVENT) {
+
+              private static final long serialVersionUID = 1L;
+
+              @Override
+              public void onEvent(final AjaxRequestTarget target) {
+                index = item.getIndex();
+                categoryContentViewOrEditPanel.setSelectedModel(item.getModel());
+                categoryContentViewOrEditPanel.removeAll();
+                target.add(contentDataviewContainer.setOutputMarkupId(true));
+                target.add(categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentEditFragment()).setOutputMarkupId(true));
+              }
+            });
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default,
+                Model.of(CategoryContentPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY))).add(new ConfirmationBehavior() {
+
+                  private static final long serialVersionUID = 7744720444161839031L;
+
+                  @Override
+                  public void renderHead(final Component component, final IHeaderResponse response) {
+                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
+                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
+                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                        .asDomReadyScript());
+                  }
+                }));
+          }
+        }
+
+        private static final String CONTENT_DATAVIEW_ID = "contentDataview";
+
+        private static final long serialVersionUID = 9165996901588092749L;
+
+        private final ContentDataview contentDataview;
+
+        private final ListDataProvider<Content> contentListDataProvider;
+
+        public ContentDataviewContainer(final String id, final IModel<Category> model) {
+          super(id, model);
+          contentListDataProvider = new ListDataProvider<Content>() {
+
+            private static final long serialVersionUID = -3261859241046697057L;
+
+            @Override
+            protected List<Content> getData() {
+              return ((Category) ContentDataviewContainer.this.getDefaultModelObject()).getContents();
+            }
+          };
+          contentDataview = new ContentDataview(CONTENT_DATAVIEW_ID, contentListDataProvider, ITEMS_PER_PAGE);
+        }
+
+        @Override
+        protected void onInitialize() {
+          add(contentDataview.setOutputMarkupId(true));
+          super.onInitialize();
+        }
       }
-      return item;
+
+      private static final String CATEGORY_CONTENT_VIEW_OR_EDIT_PANEL_ID = "categoryContentViewOrEditPanel";
+
+      private static final String CONTENT_PAGING_NAVIGATOR_MARKUP_ID = "contentPagingNavigator";
+
+      private static final String CONTENT_DATAVIEW_CONTAINER_ID = "contentDataviewContainer";
+
+      private static final long serialVersionUID = -615589482625248433L;
+
+      private static final String ADD_ID = "add";
+
+      private final AddAjaxLink addAjaxLink;
+
+      private final ContentDataviewContainer contentDataviewContainer;
+
+      private final BootstrapPagingNavigator contentPagingNavigator;
+
+      private final CategoryContentViewOrEditPanel categoryContentViewOrEditPanel;
+
+      public ContentEditTable(final String id, final IModel<Category> model) {
+        super(id, model);
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Category>) ContentEditTable.this.getDefaultModel(), Buttons.Type.Primary,
+            Model.of(CategoryContentPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
+        contentDataviewContainer = new ContentDataviewContainer(CONTENT_DATAVIEW_CONTAINER_ID, (IModel<Category>) ContentEditTable.this.getDefaultModel());
+        contentPagingNavigator = new BootstrapPagingNavigator(CONTENT_PAGING_NAVIGATOR_MARKUP_ID, contentDataviewContainer.contentDataview);
+        categoryContentViewOrEditPanel = new CategoryContentViewOrEditPanel(CATEGORY_CONTENT_VIEW_OR_EDIT_PANEL_ID, (IModel<Category>) ContentEditTable.this.getDefaultModel());
+      }
+
+      @Override
+      protected void onInitialize() {
+        add(addAjaxLink.setOutputMarkupId(true));
+        add(contentDataviewContainer.setOutputMarkupId(true));
+        add(contentPagingNavigator.setOutputMarkupId(true));
+        add(categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentEditFragment()).setOutputMarkupId(true));
+        super.onInitialize();
+      }
+    }
+
+    private static final String CONTENT_EDIT_TABLE_ID = "contentEditTable";
+
+    private static final String CATEGORY_CONTENT_EDIT_FRAGMENT_MARKUP_ID = "categoryContentEditFragment";
+
+    private static final String CATEGORY_CONTENT_VIEW_OR_EDIT_FRAGMENT_ID = "categoryContentViewOrEditFragment";
+
+    private static final long serialVersionUID = 8640403483040526601L;
+
+    private final ContentEditTable contentEditTable;
+
+    public CategoryContentEditFragment() {
+      super(CATEGORY_CONTENT_VIEW_OR_EDIT_FRAGMENT_ID, CATEGORY_CONTENT_EDIT_FRAGMENT_MARKUP_ID, CategoryContentPanel.this, CategoryContentPanel.this.getDefaultModel());
+      contentEditTable = new ContentEditTable(CONTENT_EDIT_TABLE_ID, (IModel<Category>) CategoryContentEditFragment.this.getDefaultModel());
     }
 
     @Override
-    protected void onConfigure() {
-      if (selectedObjectId != ((Category) CategoryContentPanel.this.getDefaultModelObject()).getId()) {
-        selectedObjectId = ((Category) CategoryContentPanel.this.getDefaultModelObject()).getId();
-        categoryContentViewOrEditPanel.setDefaultModelObject(new Content());
-      }
-      super.onConfigure();
-    }
-
-    @Override
-    protected void populateItem(Item<Content> item) {
-      final IModel<Content> compound = new CompoundPropertyModel<Content>(item.getModelObject());
-      item.setModel(compound);
-      item.add(new Label("name"));
-      item.add(new Label("format"));
-      item.add(new AjaxEventBehavior("click") {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void onEvent(AjaxRequestTarget target) {
-          categoryContentViewOrEditPanel.setDefaultModelObject(item.getModelObject());
-          target.add(contentDataviewContainer.setOutputMarkupId(true));
-          target.add(categoryContentViewOrEditPanel.setOutputMarkupId(true));
-        }
-      });
-      item.add(new RemoveAjaxLink(item.getModel()).add(new ConfirmationBehavior() {
-
-        private static final long serialVersionUID = 7744720444161839031L;
-
-        @Override
-        public void renderHead(Component component, IHeaderResponse response) {
-          response.render($(component).chain("confirmation",
-              new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                  .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                  .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-              .asDomReadyScript());
-        }
-      }).setVisible(isRemoveAjaxLinkVisable()));
-
-      if (item.getIndex() == 0 && ((Content) categoryContentViewOrEditPanel.getDefaultModelObject()).getId() == 0) {
-        categoryContentViewOrEditPanel.setDefaultModelObject(item.getModelObject());
-      }
-    }
-
-    public void setRemoveAjaxLinkVisable(boolean removeAjaxLinkVisable) {
-      this.removeAjaxLinkVisable = removeAjaxLinkVisable;
+    protected void onInitialize() {
+      add(contentEditTable.add(new TableBehavior().hover()).setOutputMarkupId(true));
+      super.onInitialize();
     }
   }
 
-  class ContentListDataProvider extends ListDataProvider<Content> {
+  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+  class CategoryContentViewFragment extends Fragment {
 
-    private static final long serialVersionUID = 5259243752700177690L;
+    @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+    class ContentViewTable extends WebMarkupContainer {
 
-    @Override
-    protected List<Content> getData() {
-      return ((Category) CategoryContentPanel.this.getDefaultModelObject()).getContents();
-    }
-  }
+      @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+      class ContentDataviewContainer extends WebMarkupContainer {
 
-  @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-  class RemoveAjaxLink extends BootstrapAjaxLink<Content> {
+        @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
+        class ContentDataview extends DataView<Content> {
 
-    private static final long serialVersionUID = -6950515027229520882L;
+          private static final String FORMAT_ID = "format";
 
-    public RemoveAjaxLink(final IModel<Content> model) {
-      super("remove", model, Buttons.Type.Default, Model.of(CategoryContentPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)));
-      setIconType(GlyphIconType.remove);
-      setSize(Buttons.Size.Mini);
-    }
+          private static final String NAME_ID = "name";
 
-    @Override
-    public void onClick(AjaxRequestTarget target) {
-      try {
-        contentListDataProvider.getData().remove(getDefaultModelObject());
-      } catch (final RuntimeException e) {
-        LOGGER.warn(e.getMessage(), e);
-        contentEditTable.warn(e.getLocalizedMessage());
-      } finally {
-        target.add(contentDataviewContainer.setOutputMarkupId(true));
+          private static final long serialVersionUID = 2246346365193989354L;
+
+          private static final String CLICK_EVENT = "click";
+
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
+
+          private int index = 0;
+
+          protected ContentDataview(final String id, final IDataProvider<Content> dataProvider, final long itemsPerPage) {
+            super(id, dataProvider, itemsPerPage);
+          }
+
+          @Override
+          protected Item<Content> newItem(final String id, final int index, final IModel<Content> model) {
+            final Item<Content> item = super.newItem(id, index, model);
+            if (this.index == index) {
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
+            }
+            return item;
+          }
+
+          @Override
+          protected void onConfigure() {
+            final IModel<Category> model = (IModel<Category>) ContentDataviewContainer.this.getDefaultModel();
+            if (!model.getObject().getContents().isEmpty()) {
+              categoryContentViewOrEditPanel.removeAll();
+              categoryContentViewOrEditPanel.setSelectedModel(Model.of(model.getObject().getContents().get(index)));
+              categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentViewFragment()).setOutputMarkupId(true);
+            } else {
+              categoryContentViewOrEditPanel.removeAll();
+              categoryContentViewOrEditPanel.setSelectedModel(Model.of(new Content()));
+              categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentViewFragment()).setOutputMarkupId(true);
+            }
+            super.onConfigure();
+          }
+
+          @Override
+          protected void populateItem(final Item<Content> item) {
+            final IModel<Content> compound = new CompoundPropertyModel<Content>(item.getModelObject());
+            item.setModel(compound);
+            item.add(new Label(NAME_ID));
+            item.add(new Label(FORMAT_ID));
+            item.add(new AjaxEventBehavior(CLICK_EVENT) {
+
+              private static final long serialVersionUID = 1L;
+
+              @Override
+              public void onEvent(final AjaxRequestTarget target) {
+                index = item.getIndex();
+                categoryContentViewOrEditPanel.setSelectedModel(item.getModel());
+                categoryContentViewOrEditPanel.removeAll();
+                target.add(contentDataviewContainer.setOutputMarkupId(true));
+                target.add(categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentViewFragment()).setOutputMarkupId(true));
+              }
+            });
+          }
+        }
+
+        private static final String CONTENT_DATAVIEW_ID = "contentDataview";
+
+        private static final long serialVersionUID = 9165996901588092749L;
+
+        private final ContentDataview contentDataview;
+
+        private final ListDataProvider<Content> contentListDataProvider;
+
+        public ContentDataviewContainer(final String id, final IModel<Category> model) {
+          super(id, model);
+          contentListDataProvider = new ListDataProvider<Content>() {
+
+            private static final long serialVersionUID = -3261859241046697057L;
+
+            @Override
+            protected List<Content> getData() {
+              return ((Category) ContentDataviewContainer.this.getDefaultModelObject()).getContents();
+            }
+          };
+          contentDataview = new ContentDataview(CONTENT_DATAVIEW_ID, contentListDataProvider, ITEMS_PER_PAGE);
+        }
+
+        @Override
+        protected void onInitialize() {
+          add(contentDataview.setOutputMarkupId(true));
+          super.onInitialize();
+        }
       }
+
+      private static final String CATEGORY_CONTENT_VIEW_OR_EDIT_PANEL_ID = "categoryContentViewOrEditPanel";
+
+      private static final String CONTENT_PAGING_NAVIGATOR_MARKUP_ID = "contentPagingNavigator";
+
+      private static final String CONTENT_DATAVIEW_CONTAINER_ID = "contentDataviewContainer";
+
+      private static final long serialVersionUID = -615589482625248433L;
+
+      private final ContentDataviewContainer contentDataviewContainer;
+
+      private final BootstrapPagingNavigator contentPagingNavigator;
+
+      private final CategoryContentViewOrEditPanel categoryContentViewOrEditPanel;
+
+      public ContentViewTable(final String id, final IModel<Category> model) {
+        super(id, model);
+        contentDataviewContainer = new ContentDataviewContainer(CONTENT_DATAVIEW_CONTAINER_ID, (IModel<Category>) ContentViewTable.this.getDefaultModel());
+        contentPagingNavigator = new BootstrapPagingNavigator(CONTENT_PAGING_NAVIGATOR_MARKUP_ID, contentDataviewContainer.contentDataview);
+        categoryContentViewOrEditPanel = new CategoryContentViewOrEditPanel(CATEGORY_CONTENT_VIEW_OR_EDIT_PANEL_ID, (IModel<Category>) ContentViewTable.this.getDefaultModel());
+      }
+
+      @Override
+      protected void onInitialize() {
+        add(contentDataviewContainer.setOutputMarkupId(true));
+        add(contentPagingNavigator.setOutputMarkupId(true));
+        add(categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentViewFragment()).setOutputMarkupId(true));
+        super.onInitialize();
+      }
+    }
+
+    private static final String CONTENT_VIEW_TABLE_ID = "contentViewTable";
+
+    private static final String CATEGORY_CONTENT_VIEW_FRAGMENT_MARKUP_ID = "categoryContentViewFragment";
+
+    private static final String CATEGORY_CONTENT_VIEW_OR_EDIT_FRAGMENT_ID = "categoryContentViewOrEditFragment";
+
+    private static final long serialVersionUID = 8640403483040526601L;
+
+    private final ContentViewTable contentEditTable;
+
+    public CategoryContentViewFragment() {
+      super(CATEGORY_CONTENT_VIEW_OR_EDIT_FRAGMENT_ID, CATEGORY_CONTENT_VIEW_FRAGMENT_MARKUP_ID, CategoryContentPanel.this, CategoryContentPanel.this.getDefaultModel());
+      contentEditTable = new ContentViewTable(CONTENT_VIEW_TABLE_ID, (IModel<Category>) CategoryContentViewFragment.this.getDefaultModel());
+    }
+
+    @Override
+    protected void onInitialize() {
+      add(contentEditTable.add(new TableBehavior().hover()).setOutputMarkupId(true));
+      super.onInitialize();
     }
   }
 
   private static final long serialVersionUID = 180343040391839545L;
 
-  private static final long ITEMS_PER_PAGE = 10;
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(CategoryContentPanel.class);
-
-  private final WebMarkupContainer contentDataviewContainer;
-
-  private final ContentDataview contentDataview;
-
-  private final BootstrapPagingNavigator contentPagingNavigator;
-
-  private final ContentListDataProvider contentListDataProvider;
-
-  private final WebMarkupContainer contentEditTable;
-
-  private final WebMarkupContainer contentViewTable;
-
-  private final CategoryContentViewOrEditPanel categoryContentViewOrEditPanel;
+  private static final int ITEMS_PER_PAGE = 10;
 
   public CategoryContentPanel(final String id, final IModel<Category> model) {
     super(id, model);
-    contentListDataProvider = new ContentListDataProvider();
-    contentDataview = new ContentDataview();
-    contentPagingNavigator = new BootstrapPagingNavigator("contentPagingNavigator", contentDataview);
-    contentDataviewContainer = new WebMarkupContainer("contentDataviewContainer", getDefaultModel()) {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected void onInitialize() {
-        add(contentDataview);
-        super.onInitialize();
-      }
-    };
-    contentEditTable = new WebMarkupContainer("contentEditTable", getDefaultModel()) {
-
-      private static final long serialVersionUID = 4858719401860781077L;
-
-      @Override
-      protected void onInitialize() {
-        contentDataview.setRemoveAjaxLinkVisable(true);
-        add(new AddAjaxLink().setOutputMarkupId(true));
-        add(contentPagingNavigator.setOutputMarkupId(true));
-        add(contentDataviewContainer.setOutputMarkupId(true));
-        add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-        add(categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentEditFragement()).setOutputMarkupId(true));
-        add(new TableBehavior());
-        super.onInitialize();
-      }
-    };
-    contentViewTable = new WebMarkupContainer("contentViewTable", getDefaultModel()) {
-
-      private static final long serialVersionUID = 4858719401860781077L;
-
-      @Override
-      protected void onInitialize() {
-        contentDataview.setRemoveAjaxLinkVisable(false);
-        add(contentPagingNavigator.setOutputMarkupId(true));
-        add(contentDataviewContainer.setOutputMarkupId(true));
-        add(new NotificationPanel("feedback").hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
-        add(categoryContentViewOrEditPanel.add(categoryContentViewOrEditPanel.new CategoryContentViewFragement()).setOutputMarkupId(true));
-        add(new TableBehavior());
-        super.onInitialize();
-      }
-    };
-    categoryContentViewOrEditPanel = new CategoryContentViewOrEditPanel("contentViewOrEditPanel", Model.of(new Content()), contentEditTable);
   }
 }

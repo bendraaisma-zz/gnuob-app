@@ -316,7 +316,8 @@ public class ProductSubCategoryPanel extends Panel {
     private final CategoryViewTable categoryViewTable;
 
     public ProductSubCategoryViewFragment() {
-      super(PRODUCT_SUB_CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, PRODUCT_SUB_CATEGORY_VIEW_FRAGMENT_MARKUP_ID, ProductSubCategoryPanel.this, ProductSubCategoryPanel.this.getDefaultModel());
+      super(PRODUCT_SUB_CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, PRODUCT_SUB_CATEGORY_VIEW_FRAGMENT_MARKUP_ID, ProductSubCategoryPanel.this,
+          ProductSubCategoryPanel.this.getDefaultModel());
       categoryViewTable = new CategoryViewTable(CATEGORY_VIEW_TABLE_ID, (IModel<Product>) ProductSubCategoryViewFragment.this.getDefaultModel());
     }
 

@@ -122,6 +122,7 @@ public class ProductOptionPanel extends Panel {
           protected Item<Option> newItem(final String id, final int index, final IModel<Option> model) {
             final Item<Option> item = super.newItem(id, index, model);
             if (this.index == index) {
+              // FIXME; Use BootstrapBaseBehavior for this attribute.
               item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
             }
             return item;

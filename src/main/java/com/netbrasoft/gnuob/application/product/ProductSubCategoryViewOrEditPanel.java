@@ -63,7 +63,8 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
           }
 
           @Override
-          public Item<SubCategory> newItem(final Item<SubCategory> item, final IModel<SubCategory> model) {
+          protected Item<SubCategory> newRowItem(final String id, final int index, final IModel<SubCategory> model) {
+            final Item<SubCategory> item = super.newRowItem(id, index, model);
             for (final SubCategory subCategory : ((IModel<Product>) ProductSubCategoriesDataViewContainer.this.getDefaultModel()).getObject().getSubCategories()) {
               if (subCategory.getId() == model.getObject().getId()) {
                 item.add(new BootstrapBaseBehavior() {
@@ -222,7 +223,8 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
           }
 
           @Override
-          public Item<SubCategory> newItem(final Item<SubCategory> item, final IModel<SubCategory> model) {
+          protected Item<SubCategory> newRowItem(final String id, final int index, final IModel<SubCategory> model) {
+            final Item<SubCategory> item = super.newRowItem(id, index, model);
             for (final SubCategory subCategory : ((IModel<Product>) ProductSubCategoriesDataViewContainer.this.getDefaultModel()).getObject().getSubCategories()) {
               if (subCategory.getId() == model.getObject().getId()) {
                 item.add(new BootstrapBaseBehavior() {

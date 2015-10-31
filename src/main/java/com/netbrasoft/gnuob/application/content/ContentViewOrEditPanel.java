@@ -232,7 +232,8 @@ public class ContentViewOrEditPanel extends Panel {
       public ContentViewTable(final String id, final IModel<Content> model) {
         super(id, model);
         contentViewForm = new BootstrapForm<Content>(CONTENT_VIEW_FORM_COMPONENT_ID, new CompoundPropertyModel<Content>((IModel<Content>) ContentViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink(EDIT_ID, model, Buttons.Type.Primary, Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        editAjaxLink = new EditAjaxLink(EDIT_ID, (IModel<Content>) ContentViewTable.this.getDefaultModel(), Buttons.Type.Primary,
+            Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
       }
 
       @Override
