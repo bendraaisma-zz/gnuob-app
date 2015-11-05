@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Site;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.api.security.GroupDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -253,7 +254,7 @@ public class SiteViewOrEditPanel extends Panel {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SiteViewOrEditPanel.class);
 
-  @SpringBean(name = "SiteDataProvider", required = true)
+  @SpringBean(name = GroupDataProvider.GROUP_DATA_PROVIDER_NAME, required = true)
   private GenericTypeDataProvider<Site> siteDataProvider;
 
   public SiteViewOrEditPanel(final String id, final IModel<Site> model) {

@@ -35,9 +35,9 @@ public class AdministrationTab extends AbstractTab {
       }
     };
 
-    administrationTabbedPanel.getTabs().add(new GroupTab(Model.of("Group")));
     administrationTabbedPanel.getTabs().add(new SettingTab(Model.of("Setting")));
     administrationTabbedPanel.getTabs().add(new SiteTab(Model.of("Site")));
+    administrationTabbedPanel.getTabs().add(new GroupTab(Model.of("Group")));
     administrationTabbedPanel.getTabs().add(new UserTab(Model.of("User")));
 
     return administrationTabbedPanel;

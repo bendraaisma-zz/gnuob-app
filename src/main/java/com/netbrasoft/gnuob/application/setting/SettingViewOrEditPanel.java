@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Setting;
 import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.api.setting.SettingDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -260,7 +261,7 @@ public class SettingViewOrEditPanel extends Panel {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SettingViewOrEditPanel.class);
 
-  @SpringBean(name = "SettingDataProvider", required = true)
+  @SpringBean(name = SettingDataProvider.SETTING_DATA_PROVIDER_NAME, required = true)
   private GenericTypeDataProvider<Setting> settingDataProvider;
 
   public SettingViewOrEditPanel(final String id, final IModel<Setting> model) {
