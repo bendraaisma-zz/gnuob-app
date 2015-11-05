@@ -327,7 +327,7 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
   private List<IColumn<SubCategory, String>> createColumns() {
     final List<IColumn<SubCategory, String>> columns = new ArrayList<IColumn<SubCategory, String>>();
 
-    columns.add(new TreeColumn<SubCategory, String>(Model.of(ProductSubCategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.NAME_MESSAGE_KEY))) {
+    columns.add(new TreeColumn<SubCategory, String>(Model.of(ProductSubCategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.VALUE_MESSAGE_KEY))) {
       private static final long serialVersionUID = -8544017108974205690L;
 
       @Override

@@ -4,7 +4,7 @@ public final class NetbrasoftApplicationConstants {
 
   public static final String SAVE_MESSAGE_KEY = "saveMessage";
 
-  public static final String NAME_MESSAGE_KEY = "nameMessage";
+  public static final String VALUE_MESSAGE_KEY = "nameMessage";
 
   public static final String DESCRIPTION_MESSAGE_KEY = "descriptionMessage";
 
@@ -47,6 +47,8 @@ public final class NetbrasoftApplicationConstants {
   public static final String POSTAL_CODE_MESSAGE_KEY = "postalCodeMessage";
 
   public static final String BUYER_EMAIL_MESSAGE_KEY = "buyerEmailMessage";
+
+  public static final String PROPERTY_MESSAGE_KEY = "propertyMessage";
 
   private NetbrasoftApplicationConstants() {
 

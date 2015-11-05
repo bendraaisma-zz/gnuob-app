@@ -138,7 +138,7 @@ public class SiteViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-        siteEditForm.add(new RequiredTextField<String>(NAME_ID).setLabel(Model.of(SiteEditTable.this.getString(NetbrasoftApplicationConstants.NAME_MESSAGE_KEY)))
+        siteEditForm.add(new RequiredTextField<String>(NAME_ID).setLabel(Model.of(SiteEditTable.this.getString(NetbrasoftApplicationConstants.VALUE_MESSAGE_KEY)))
             .add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
         siteEditForm.add(new TextArea<String>(DESCRIPTION_ID).setLabel(Model.of(SiteEditTable.this.getString(NetbrasoftApplicationConstants.DESCRIPTION_MESSAGE_KEY)))
             .setRequired(true).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));

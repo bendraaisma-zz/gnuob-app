@@ -138,7 +138,7 @@ public class GroupViewOrEditPanel extends Panel {
 
       @Override
       protected void onInitialize() {
-        groupEditForm.add(new RequiredTextField<String>(NAME_ID).setLabel(Model.of(GroupEditTable.this.getString(NetbrasoftApplicationConstants.NAME_MESSAGE_KEY)))
+        groupEditForm.add(new RequiredTextField<String>(NAME_ID).setLabel(Model.of(GroupEditTable.this.getString(NetbrasoftApplicationConstants.VALUE_MESSAGE_KEY)))
             .add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
         groupEditForm.add(new TextArea<String>(DESCRIPTION_ID).setLabel(Model.of(GroupEditTable.this.getString(NetbrasoftApplicationConstants.DESCRIPTION_MESSAGE_KEY)))
             .setRequired(true).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
