@@ -262,26 +262,26 @@ public class ProductViewOrEditPanel extends Panel {
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
   class ProductViewFragment extends Fragment {
 
-    @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
-    class EditAjaxLink extends BootstrapAjaxLink<Product> {
-
-      private static final long serialVersionUID = 4267535261864907719L;
-
-      public EditAjaxLink(final String id, final IModel<Product> model, final Buttons.Type type, final IModel<String> labelModel) {
-        super(id, model, type, labelModel);
-        setIconType(GlyphIconType.edit);
-        setSize(Buttons.Size.Small);
-      }
-
-      @Override
-      public void onClick(final AjaxRequestTarget target) {
-        ProductViewOrEditPanel.this.removeAll();
-        target.add(ProductViewOrEditPanel.this.add(ProductViewOrEditPanel.this.new ProductEditFragment().setOutputMarkupId(true)));
-      }
-    }
-
     @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
     class ProductViewTable extends WebMarkupContainer {
+
+      @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
+      class EditAjaxLink extends BootstrapAjaxLink<Product> {
+
+        private static final long serialVersionUID = 4267535261864907719L;
+
+        public EditAjaxLink(final String id, final IModel<Product> model, final Buttons.Type type, final IModel<String> labelModel) {
+          super(id, model, type, labelModel);
+          setIconType(GlyphIconType.edit);
+          setSize(Buttons.Size.Small);
+        }
+
+        @Override
+        public void onClick(final AjaxRequestTarget target) {
+          ProductViewOrEditPanel.this.removeAll();
+          target.add(ProductViewOrEditPanel.this.add(ProductViewOrEditPanel.this.new ProductEditFragment().setOutputMarkupId(true)));
+        }
+      }
 
       private static final String STOCK_QUANTITY_ID = "stock.quantity";
 
@@ -354,7 +354,8 @@ public class ProductViewOrEditPanel extends Panel {
       public ProductViewTable(final String id, final IModel<Product> model) {
         super(id, model);
         productViewForm = new BootstrapForm<Product>(PRODUCT_VIEW_FORM_COMPONENT_ID, new CompoundPropertyModel<Product>((IModel<Product>) ProductViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink(EDIT_ID, model, Buttons.Type.Primary, Model.of(ProductViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        editAjaxLink = new EditAjaxLink(EDIT_ID, (IModel<Product>) ProductViewTable.this.getDefaultModel(), Buttons.Type.Primary,
+            Model.of(ProductViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
         productOptionPanel = new ProductOptionPanel(OPTION_VIEW_OR_EDIT_PANEL_ID, (IModel<Product>) ProductViewTable.this.getDefaultModel());
         contentViewOrEditPanel = new ProductContentPanel(CONTENT_VIEW_OR_EDIT_PANEL_ID, (IModel<Product>) ProductViewTable.this.getDefaultModel());
         subCategoryViewOrEditPanel = new ProductSubCategoryPanel(SUB_CATEGORY_VIEW_OR_EDIT_PANEL_ID, (IModel<Product>) ProductViewTable.this.getDefaultModel());

@@ -17,8 +17,8 @@ public class SiteTab extends AbstractTab {
 
   @Override
   public WebMarkupContainer getPanel(final String panelId) {
-    Site site = new Site();
+    final Site site = new Site();
     site.setActive(true);
-	return new SitePanel(panelId, Model.of(site));
+    return new SitePanel(panelId, Model.of(site));
   }
 }
