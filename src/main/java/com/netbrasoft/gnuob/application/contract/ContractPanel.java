@@ -54,8 +54,6 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class ContractPanel extends Panel {
 
-  private static final String CONTRACT_PANEL_CONTAINER_ID = "contractPanelContainer";
-
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
   class ContractPanelContainer extends WebMarkupContainer {
 
@@ -118,9 +116,9 @@ public class ContractPanel extends Panel {
 
           private static final String CLICK_EVENT = "click";
 
-          private static final String CUSTOMER_LAST_NAME_ID = "customer.lastName";
+          private static final String CUSTOMER_LAST_NAME_ID = LAST_NAME_PROPERTY;
 
-          private static final String CUSTOMER_FIRST_NAME_ID = "customer.firstName";
+          private static final String CUSTOMER_FIRST_NAME_ID = FIRST_NAME_PROPERTY;
 
           private static final String CONTRACT_ID_ID = CONTRACT_ID_PROPERTY;
 
@@ -207,11 +205,11 @@ public class ContractPanel extends Panel {
 
       private static final String ORDER_BY_CONTRACT_ID_ID = "orderByContractId";
 
-      private static final String LAST_NAME_PROPERTY = "lastName";
+      private static final String LAST_NAME_PROPERTY = "customer.lastName";
 
       private static final String ORDER_BY_LAST_NAME_ID = "orderByLastName";
 
-      private static final String FIRST_NAME_PROPERTY = "firstName";
+      private static final String FIRST_NAME_PROPERTY = "customer.firstName";
 
       private static final String ORDER_BY_FIRST_NAME_ID = "orderByFirstName";
 
@@ -283,6 +281,8 @@ public class ContractPanel extends Panel {
       super.onInitialize();
     }
   }
+
+  private static final String CONTRACT_PANEL_CONTAINER_ID = "contractPanelContainer";
 
   private static final long serialVersionUID = 3703226064705246155L;
 

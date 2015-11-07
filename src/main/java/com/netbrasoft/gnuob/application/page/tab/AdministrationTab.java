@@ -8,6 +8,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.security.group.GroupTab;
 import com.netbrasoft.gnuob.application.security.site.SiteTab;
 import com.netbrasoft.gnuob.application.security.user.UserTab;
@@ -16,6 +17,8 @@ import com.netbrasoft.gnuob.application.setting.SettingTab;
 import de.agilecoders.wicket.core.markup.html.bootstrap.tabs.BootstrapTabbedPanel;
 
 public class AdministrationTab extends AbstractTab {
+
+  private static final String NAV_NAV_PILLS_NAV_STACKED_COL_MD_2_CSS_CLASS = "nav nav-pills nav-stacked col-md-2";
 
   private static final long serialVersionUID = 4835579949680085443L;
 
@@ -31,15 +34,18 @@ public class AdministrationTab extends AbstractTab {
 
       @Override
       public String getTabContainerCssClass() {
-        return "nav nav-pills nav-stacked col-md-2";
+        return NAV_NAV_PILLS_NAV_STACKED_COL_MD_2_CSS_CLASS;
       }
     };
+    final SettingTab settingTab = new SettingTab(Model.of(administrationTabbedPanel.getString(NetbrasoftApplicationConstants.SETTING_MESSAGE_KEY)));
+    final SiteTab siteTab = new SiteTab(Model.of(administrationTabbedPanel.getString(NetbrasoftApplicationConstants.SITE_MESSAGE_KEY)));
+    final GroupTab groupTab = new GroupTab(Model.of(administrationTabbedPanel.getString(NetbrasoftApplicationConstants.GROUP_MESSAGE_KEY)));
+    final UserTab userTab = new UserTab(Model.of(administrationTabbedPanel.getString(NetbrasoftApplicationConstants.USER_MESSAGE_KEY)));
 
-    administrationTabbedPanel.getTabs().add(new SettingTab(Model.of("Setting")));
-    administrationTabbedPanel.getTabs().add(new SiteTab(Model.of("Site")));
-    administrationTabbedPanel.getTabs().add(new GroupTab(Model.of("Group")));
-    administrationTabbedPanel.getTabs().add(new UserTab(Model.of("User")));
-
+    administrationTabbedPanel.getTabs().add(settingTab);
+    administrationTabbedPanel.getTabs().add(siteTab);
+    administrationTabbedPanel.getTabs().add(groupTab);
+    administrationTabbedPanel.getTabs().add(userTab);
     return administrationTabbedPanel;
   }
 }

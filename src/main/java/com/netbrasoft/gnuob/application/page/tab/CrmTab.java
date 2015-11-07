@@ -8,6 +8,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.contract.ContractTab;
 import com.netbrasoft.gnuob.application.customer.CustomerTab;
 import com.netbrasoft.gnuob.application.offer.OfferTab;
@@ -16,6 +17,8 @@ import com.netbrasoft.gnuob.application.order.OrderTab;
 import de.agilecoders.wicket.core.markup.html.bootstrap.tabs.BootstrapTabbedPanel;
 
 public class CrmTab extends AbstractTab {
+
+  private static final String NAV_NAV_PILLS_NAV_STACKED_COL_MD_2_CSS_CLASS = "nav nav-pills nav-stacked col-md-2";
 
   private static final long serialVersionUID = 4835579949680085443L;
 
@@ -31,15 +34,18 @@ public class CrmTab extends AbstractTab {
 
       @Override
       public String getTabContainerCssClass() {
-        return "nav nav-pills nav-stacked col-md-2";
+        return NAV_NAV_PILLS_NAV_STACKED_COL_MD_2_CSS_CLASS;
       }
     };
+    final CustomerTab customerTab = new CustomerTab(Model.of(crmTabbedPanel.getString(NetbrasoftApplicationConstants.CUSTOMER_MESSAGE_KEY)));
+    final ContractTab contractTab = new ContractTab(Model.of(crmTabbedPanel.getString(NetbrasoftApplicationConstants.CONTRACT_MESSAGE_KEY)));
+    final OrderTab orderTab = new OrderTab(Model.of(crmTabbedPanel.getString(NetbrasoftApplicationConstants.ORDER_MESSAGE_KEY)));
+    final OfferTab offerTab = new OfferTab(Model.of(crmTabbedPanel.getString(NetbrasoftApplicationConstants.OFFER_MESSAGE_KEY)));
 
-    crmTabbedPanel.getTabs().add(new CustomerTab(Model.of("Customer")));
-    crmTabbedPanel.getTabs().add(new ContractTab(Model.of("Contract")));
-    crmTabbedPanel.getTabs().add(new OrderTab(Model.of("Order")));
-    crmTabbedPanel.getTabs().add(new OfferTab(Model.of("Offer")));
-
+    crmTabbedPanel.getTabs().add(customerTab);
+    crmTabbedPanel.getTabs().add(contractTab);
+    crmTabbedPanel.getTabs().add(orderTab);
+    crmTabbedPanel.getTabs().add(offerTab);
     return crmTabbedPanel;
   }
 }

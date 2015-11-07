@@ -288,7 +288,7 @@ public class OfferPanel extends Panel {
     @Override
     protected void onInitialize() {
       add(offerTableContainer.add(new TableBehavior().hover()).setOutputMarkupId(true));
-      add(offerViewOrEditPanel.add(offerViewOrEditPanel.new OfferViewFragement()).setOutputMarkupId(true));
+      add(offerViewOrEditPanel.add(offerViewOrEditPanel.new OfferViewFragment()).setOutputMarkupId(true));
       super.onInitialize();
     }
   }

@@ -96,8 +96,6 @@ public class CategoryContentPanel extends Panel {
             }
           }
 
-          private static final String FORMAT_ID = "format";
-
           private static final String NAME_ID = "name";
 
           private static final long serialVersionUID = 2246346365193989354L;
@@ -149,7 +147,6 @@ public class CategoryContentPanel extends Panel {
             final IModel<Content> compound = new CompoundPropertyModel<Content>(item.getModelObject());
             item.setModel(compound);
             item.add(new Label(NAME_ID));
-            item.add(new Label(FORMAT_ID));
             item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
@@ -280,8 +277,6 @@ public class CategoryContentPanel extends Panel {
         @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
         class ContentDataview extends DataView<Content> {
 
-          private static final String FORMAT_ID = "format";
-
           private static final String NAME_ID = "name";
 
           private static final long serialVersionUID = 2246346365193989354L;
@@ -327,7 +322,6 @@ public class CategoryContentPanel extends Panel {
             final IModel<Content> compound = new CompoundPropertyModel<Content>(item.getModelObject());
             item.setModel(compound);
             item.add(new Label(NAME_ID));
-            item.add(new Label(FORMAT_ID));
             item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;

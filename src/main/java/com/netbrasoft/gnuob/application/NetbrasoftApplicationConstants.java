@@ -50,6 +50,40 @@ public final class NetbrasoftApplicationConstants {
 
   public static final String PROPERTY_MESSAGE_KEY = "propertyMessage";
 
+  public static final String ALL_MESSAGE_KEY = "allMessage";
+
+  public static final String ADMINISTRATION_MESSAGE_KEY = "administrationMessage";
+
+  public static final String REPORTS_MESSAGE_KEY = "reportsMessage";
+
+  public static final String ALERTS_MESSAGE_KEY = "alertsMessage";
+
+  public static final String PM_MESSAGE_KEY = "pmMessage";
+
+  public static final String CRM_MESSAGE_KEY = "crmMessage";
+
+  public static final String CUSTOMER_MESSAGE_KEY = "customerMessage";
+
+  public static final String CONTRACT_MESSAGE_KEY = "contractMessage";
+
+  public static final String OFFER_MESSAGE_KEY = "offerMessage";
+
+  public static final String ORDER_MESSAGE_KEY = "orderMessage";
+
+  public static final String GROUP_MESSAGE_KEY = "groupMessage";
+
+  public static final String SETTING_MESSAGE_KEY = "settingMessage";
+
+  public static final String SITE_MESSAGE_KEY = "siteMessage";
+
+  public static final String USER_MESSAGE_KEY = "userMessage";
+
+  public static final String CATEGORY_MESSAGE_KEY = "categoryMessage";
+
+  public static final String CONTENT_MESSAGE_KEY = "contentMessage";
+
+  public static final String PRODUCT_MESSAGE_KEY = "productMessage";
+
   private NetbrasoftApplicationConstants() {
 
   }

@@ -8,6 +8,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.category.CategoryTab;
 import com.netbrasoft.gnuob.application.content.ContentTab;
 import com.netbrasoft.gnuob.application.product.ProductTab;
@@ -15,6 +16,8 @@ import com.netbrasoft.gnuob.application.product.ProductTab;
 import de.agilecoders.wicket.core.markup.html.bootstrap.tabs.BootstrapTabbedPanel;
 
 public class PmTab extends AbstractTab {
+
+  private static final String NAV_NAV_PILLS_NAV_STACKED_COL_MD_2_CSS_CLASS = "nav nav-pills nav-stacked col-md-2";
 
   private static final long serialVersionUID = 4835579949680085443L;
 
@@ -30,14 +33,16 @@ public class PmTab extends AbstractTab {
 
       @Override
       public String getTabContainerCssClass() {
-        return "nav nav-pills nav-stacked col-md-2";
+        return NAV_NAV_PILLS_NAV_STACKED_COL_MD_2_CSS_CLASS;
       }
     };
+    final CategoryTab categoryTab = new CategoryTab(Model.of(productTabbedPanel.getString(NetbrasoftApplicationConstants.CATEGORY_MESSAGE_KEY)));
+    final ContentTab contentTab = new ContentTab(Model.of(productTabbedPanel.getString(NetbrasoftApplicationConstants.CONTENT_MESSAGE_KEY)));
+    final ProductTab productTab = new ProductTab(Model.of(productTabbedPanel.getString(NetbrasoftApplicationConstants.PRODUCT_MESSAGE_KEY)));
 
-    productTabbedPanel.getTabs().add(new CategoryTab(Model.of("Category")));
-    productTabbedPanel.getTabs().add(new ContentTab(Model.of("Content")));
-    productTabbedPanel.getTabs().add(new ProductTab(Model.of("Product")));
-
+    productTabbedPanel.getTabs().add(categoryTab);
+    productTabbedPanel.getTabs().add(contentTab);
+    productTabbedPanel.getTabs().add(productTab);
     return productTabbedPanel;
   }
 }

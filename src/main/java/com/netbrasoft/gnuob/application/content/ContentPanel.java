@@ -54,8 +54,6 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class ContentPanel extends Panel {
 
-  private static final String CONTENT_PANEL_CONTAINER_ID = "contentPanelContainer";
-
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
   class ContentPanelContainer extends WebMarkupContainer {
 
@@ -118,8 +116,6 @@ public class ContentPanel extends Panel {
 
           private static final String CLICK_EVENT = "click";
 
-          private static final String FORMAT_ID = FORMAT_PROPERTY;
-
           private static final String NAME_ID = NAME_PROPERTY;
 
           private static final String INFO_VALUE = "info";
@@ -147,7 +143,6 @@ public class ContentPanel extends Panel {
           protected void populateItem(final Item<Content> item) {
             item.setModel(new CompoundPropertyModel<Content>(item.getModelObject()));
             item.add(new Label(NAME_ID));
-            item.add(new Label(FORMAT_ID));
             item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
@@ -206,8 +201,6 @@ public class ContentPanel extends Panel {
 
       private static final String FORMAT_PROPERTY = "format";
 
-      private static final String ORDER_BY_FORMAT_ID = "orderByFormat";
-
       private static final String ADD_ID = "add";
 
       private static final String FEEDBACK_ID = "feedback";
@@ -217,8 +210,6 @@ public class ContentPanel extends Panel {
       private final NotificationPanel feedbackPanel;
 
       private final AddAjaxLink addAjaxLink;
-
-      private final OrderByBorder<String> orderByFormat;
 
       private final OrderByBorder<String> orderByName;
 
@@ -231,7 +222,6 @@ public class ContentPanel extends Panel {
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
         addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Content>) ContentTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
             Model.of(ContentPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        orderByFormat = new OrderByBorder<String>(ORDER_BY_FORMAT_ID, FORMAT_PROPERTY, contentDataProvider);
         orderByName = new OrderByBorder<String>(ORDER_BY_NAME_ID, NAME_PROPERTY, contentDataProvider);
         contentDataviewContainer = new ContentDataviewContainer(CONTENT_DATAVIEW_CONTAINER_ID, (IModel<Content>) ContentTableContainer.this.getDefaultModel());
         contentPagingNavigator = new BootstrapPagingNavigator(CONTENT_PAGING_NAVIGATOR_MARKUP_ID, contentDataviewContainer.contentDataview);
@@ -242,7 +232,6 @@ public class ContentPanel extends Panel {
         add(feedbackPanel.hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
         add(addAjaxLink.setOutputMarkupId(true));
         add(orderByName.setOutputMarkupId(true));
-        add(orderByFormat.setOutputMarkupId(true));
         add(contentDataviewContainer.setOutputMarkupId(true));
         add(contentPagingNavigator.setOutputMarkupId(true));
         super.onInitialize();
@@ -272,6 +261,8 @@ public class ContentPanel extends Panel {
       super.onInitialize();
     }
   }
+
+  private static final String CONTENT_PANEL_CONTAINER_ID = "contentPanelContainer";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ContentPanel.class);
 

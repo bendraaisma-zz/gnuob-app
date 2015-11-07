@@ -11,17 +11,25 @@ import com.netbrasoft.gnuob.application.security.AppRoles;
 @AuthorizeInstantiation({AppRoles.MANAGER, AppRoles.EMPLOYEE, AppRoles.ADMINISTRATOR})
 public class MainPage extends BasePage {
 
+  private static final String MAIN_MENU_PANEL_ID = "mainMenuPanel";
+
+  private static final String CONTENT_BORDER_ID = "contentBorder";
+
   private static final long serialVersionUID = 2104311609974795936L;
 
-  private MainMenuPanel mainMenuPanel = new MainMenuPanel("mainMenuPanel");
+  private final MainMenuPanel mainMenuPanel;
 
-  private final ContentBorder contentBorder = new ContentBorder("contentBorder");
+  private final ContentBorder contentBorder;
+
+  public MainPage() {
+    mainMenuPanel = new MainMenuPanel(MAIN_MENU_PANEL_ID);
+    contentBorder = new ContentBorder(CONTENT_BORDER_ID);
+  }
 
   @Override
   protected void onInitialize() {
-
-    contentBorder.add(mainMenuPanel);
-    add(contentBorder);
+    contentBorder.add(mainMenuPanel.setOutputMarkupId(true));
+    add(contentBorder.setOutputMarkupId(true));
 
     super.onInitialize();
   }

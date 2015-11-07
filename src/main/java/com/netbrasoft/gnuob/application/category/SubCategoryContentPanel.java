@@ -103,8 +103,6 @@ public class SubCategoryContentPanel extends Panel {
 
           private static final String CLICK_EVENT = "click";
 
-          private static final String FORMAT_ID = "format";
-
           private static final String NAME_ID = "name";
 
           private static final String INFO_VALUE = "info";
@@ -149,7 +147,6 @@ public class SubCategoryContentPanel extends Panel {
           protected void populateItem(final Item<Content> item) {
             item.setModel(new CompoundPropertyModel<Content>(item.getModelObject()));
             item.add(new Label(NAME_ID).setOutputMarkupId(true));
-            item.add(new Label(FORMAT_ID).setOutputMarkupId(true));
             item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
@@ -284,8 +281,6 @@ public class SubCategoryContentPanel extends Panel {
 
           private static final String CLICK_EVENT = "click";
 
-          private static final String FORMAT_ID = "format";
-
           private static final String NAME_ID = "name";
 
           private static final String INFO_VALUE = "info";
@@ -328,7 +323,6 @@ public class SubCategoryContentPanel extends Panel {
           protected void populateItem(final Item<Content> item) {
             item.setModel(new CompoundPropertyModel<Content>(item.getModelObject()));
             item.add(new Label(NAME_ID).setOutputMarkupId(true));
-            item.add(new Label(FORMAT_ID).setOutputMarkupId(true));
             item.add(new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
