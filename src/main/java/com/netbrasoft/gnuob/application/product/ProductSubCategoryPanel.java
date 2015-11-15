@@ -331,7 +331,7 @@ public class ProductSubCategoryPanel extends Panel {
   private static final long serialVersionUID = 3703226064705246155L;
 
   @SpringBean(name = CategoryDataProvider.CATEGORY_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Category> categoryDataProvider;
+  private transient GenericTypeDataProvider<Category> categoryDataProvider;
 
   public ProductSubCategoryPanel(final String id, final IModel<Product> model) {
     super(id, model);

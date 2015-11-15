@@ -308,7 +308,7 @@ public class ContractViewOrEditPanel extends Panel {
   private static final Logger LOGGER = LoggerFactory.getLogger(ContentViewOrEditPanel.class);
 
   @SpringBean(name = ContractDataProvider.CONTRACT_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Contract> contractDataProvider;
+  private transient GenericTypeDataProvider<Contract> contractDataProvider;
 
   public ContractViewOrEditPanel(final String id, final IModel<Contract> model) {
     super(id, model);

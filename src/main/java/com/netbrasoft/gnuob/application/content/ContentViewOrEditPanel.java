@@ -304,7 +304,7 @@ public class ContentViewOrEditPanel extends Panel {
   private static final long serialVersionUID = -3061472875418422947L;
 
   @SpringBean(name = ContentDataProvider.CONTENT_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Content> contentDataProvider;
+  private transient GenericTypeDataProvider<Content> contentDataProvider;
 
   public ContentViewOrEditPanel(final String id, final IModel<Content> model) {
     super(id, model);

@@ -485,13 +485,13 @@ public class UserViewOrEditPanel extends Panel {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserViewOrEditPanel.class);
 
   @SpringBean(name = UserDataProvider.USER_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<User> userDataProvider;
+  private transient GenericTypeDataProvider<User> userDataProvider;
 
   @SpringBean(name = GroupDataProvider.GROUP_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Group> groupDataProvider;
+  private transient GenericTypeDataProvider<Group> groupDataProvider;
 
   @SpringBean(name = SiteDataProvider.SITE_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Site> siteDataProvider;
+  private transient GenericTypeDataProvider<Site> siteDataProvider;
 
   public UserViewOrEditPanel(final String id, final IModel<User> model) {
     super(id, model);

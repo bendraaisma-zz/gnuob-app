@@ -27,8 +27,10 @@ import de.agilecoders.wicket.webjars.WicketWebjars;
 import de.agilecoders.wicket.webjars.settings.WebjarsSettings;
 import net.ftlines.wicketsource.WicketSource;
 
-@Service("wicketApplication")
+@Service(NetbrasoftApplication.WICKET_APPLICATION_NAME)
 public class NetbrasoftApplication extends ServletContainerAuthenticatedWebApplication {
+
+  protected static final String WICKET_APPLICATION_NAME = "wicketApplication";
 
   private static final String INSPECTOR_PAGE_HTML = "InspectorPage.html";
 

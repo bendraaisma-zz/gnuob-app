@@ -199,8 +199,6 @@ public class ContentPanel extends Panel {
 
       private static final String ORDER_BY_NAME_ID = "orderByName";
 
-      private static final String FORMAT_PROPERTY = "format";
-
       private static final String ADD_ID = "add";
 
       private static final String FEEDBACK_ID = "feedback";
@@ -269,7 +267,7 @@ public class ContentPanel extends Panel {
   private static final long serialVersionUID = 3703226064705246155L;
 
   @SpringBean(name = ContentDataProvider.CONTENT_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Content> contentDataProvider;
+  private transient GenericTypeDataProvider<Content> contentDataProvider;
 
   private final ContentPanelContainer contentPanelContainer;
 

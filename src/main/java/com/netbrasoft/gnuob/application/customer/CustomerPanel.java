@@ -54,8 +54,6 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class CustomerPanel extends Panel {
 
-  private static final String CUSTOMER_PANEL_CONTAINER_ID = "customerPanelContainer";
-
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
   class CustomerPanelContainer extends WebMarkupContainer {
 
@@ -273,12 +271,14 @@ public class CustomerPanel extends Panel {
     }
   }
 
+  private static final String CUSTOMER_PANEL_CONTAINER_ID = "customerPanelContainer";
+
   private static final long serialVersionUID = 3703226064705246155L;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CustomerPanel.class);
 
   @SpringBean(name = CustomerDataProvider.CUSTOMER_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Customer> customerDataProvider;
+  private transient GenericTypeDataProvider<Customer> customerDataProvider;
 
   private final CustomerPanelContainer customerPanelContainer;
 

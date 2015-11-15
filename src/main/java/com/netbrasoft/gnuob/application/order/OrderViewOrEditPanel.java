@@ -655,7 +655,7 @@ public class OrderViewOrEditPanel extends Panel {
   private static final Logger LOGGER = LoggerFactory.getLogger(OrderViewOrEditPanel.class);
 
   @SpringBean(name = OrderDataProvider.ORDER_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Order> orderDataProvider;
+  private transient GenericTypeDataProvider<Order> orderDataProvider;
 
   public OrderViewOrEditPanel(final String id, final IModel<Order> model) {
     super(id, model);

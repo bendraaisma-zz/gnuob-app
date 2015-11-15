@@ -255,7 +255,7 @@ public class SiteViewOrEditPanel extends Panel {
   private static final Logger LOGGER = LoggerFactory.getLogger(SiteViewOrEditPanel.class);
 
   @SpringBean(name = GroupDataProvider.GROUP_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Site> siteDataProvider;
+  private transient GenericTypeDataProvider<Site> siteDataProvider;
 
   public SiteViewOrEditPanel(final String id, final IModel<Site> model) {
     super(id, model);

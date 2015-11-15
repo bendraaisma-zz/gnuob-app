@@ -36,6 +36,12 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.ConfirmationConfig;
 
+/**
+ * Panel for viewing, selecting and editing {@link OfferRecord} entities.
+ *
+ * @author Bernard Arjan Draaisma
+ *
+ */
 @SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class OfferRecordPanel extends Panel {
@@ -87,12 +93,39 @@ public class OfferRecordPanel extends Panel {
             @Override
             public void onClick(final AjaxRequestTarget target) {
               ((Offer) OfferRecordDataviewContainer.this.getDefaultModelObject()).getRecords().remove(RemoveAjaxLink.this.getDefaultModelObject());
-              offerRecordDataview.index = ((Offer) OfferRecordDataviewContainer.this.getDefaultModelObject()).getRecords().size() - 1;
+              index -= 1;
               offerRecordViewOrEditPanel.removeAll();
               target.add(offerRecordDataviewContainer.setOutputMarkupId(true));
               target.add(offerRecordViewOrEditPanel.add(offerRecordViewOrEditPanel.new OfferRecordEditFragment()).setOutputMarkupId(true));
             }
+
+            @Override
+            protected void onInitialize() {
+              final ConfirmationBehavior confirmationBehavior = new ConfirmationBehavior() {
+
+                private static final long serialVersionUID = 7744720444161839031L;
+
+                @Override
+                public void renderHead(final Component component, final IHeaderResponse response) {
+                  response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
+                      new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
+                          .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                          .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                      .asDomReadyScript());
+                }
+              };
+              add(confirmationBehavior);
+              super.onInitialize();
+            }
           }
+
+          private static final String CLICK_EVENT = "click";
+
+          private static final String DESCRIPTION_ID = "description";
+
+          private static final String NAME_ID = "name";
+
+          private static final String REMOVE_ID = "remove";
 
           private static final String CONFIRMATION_FUNCTION_NAME = "confirmation";
 
@@ -136,10 +169,9 @@ public class OfferRecordPanel extends Panel {
 
           @Override
           protected void populateItem(final Item<OfferRecord> item) {
-            item.setModel(new CompoundPropertyModel<OfferRecord>(item.getModelObject()));
-            item.add(new Label("name"));
-            item.add(new Label("description"));
-            item.add(new AjaxEventBehavior("click") {
+            final Label nameLabel = new Label(NAME_ID);
+            final Label descriptionLabel = new Label(DESCRIPTION_ID);
+            final AjaxEventBehavior ajaxEventBehavior = new AjaxEventBehavior(CLICK_EVENT) {
 
               private static final long serialVersionUID = 1L;
 
@@ -148,25 +180,18 @@ public class OfferRecordPanel extends Panel {
                 index = item.getIndex();
                 offerRecordViewOrEditPanel.setSelectedModel(item.getModel());
                 offerRecordViewOrEditPanel.removeAll();
-                target.add(offerRecordDataview.setOutputMarkupId(true));
+                target.add(offerRecordDataviewContainer.setOutputMarkupId(true));
                 target.add(offerRecordViewOrEditPanel.add(offerRecordViewOrEditPanel.new OfferRecordEditFragment()).setOutputMarkupId(true));
               }
-            });
-            item.add(
-                new RemoveAjaxLink("remove", item.getModel(), Buttons.Type.Default, Model.of(OfferRecordPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                    .add(new ConfirmationBehavior() {
+            };
+            final RemoveAjaxLink removeAjaxLink =
+                new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(OfferRecordPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)));
 
-                      private static final long serialVersionUID = 7744720444161839031L;
-
-                      @Override
-                      public void renderHead(final Component component, final IHeaderResponse response) {
-                        response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                            new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                                .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                                .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                            .asDomReadyScript());
-                      }
-                    }));
+            item.setModel(new CompoundPropertyModel<OfferRecord>(item.getModelObject()));
+            item.add(nameLabel);
+            item.add(descriptionLabel);
+            item.add(ajaxEventBehavior);
+            item.add(removeAjaxLink);
           }
         }
 
@@ -253,7 +278,8 @@ public class OfferRecordPanel extends Panel {
 
     @Override
     protected void onInitialize() {
-      add(offerRecordEditTable.add(new TableBehavior().hover()).setOutputMarkupId(true));
+      offerRecordEditTable.add(new TableBehavior().hover());
+      add(offerRecordEditTable.setOutputMarkupId(true));
       super.onInitialize();
     }
   }
@@ -325,8 +351,6 @@ public class OfferRecordPanel extends Panel {
               public void onEvent(final AjaxRequestTarget target) {
                 index = item.getIndex();
                 offerRecordViewOrEditPanel.setSelectedModel(item.getModel());
-                offerRecordViewOrEditPanel.removeAll();
-                target.add(offerRecordDataview.setOutputMarkupId(true));
                 target.add(offerRecordViewOrEditPanel.add(offerRecordViewOrEditPanel.new OfferRecordViewFragment()).setOutputMarkupId(true));
               }
             });

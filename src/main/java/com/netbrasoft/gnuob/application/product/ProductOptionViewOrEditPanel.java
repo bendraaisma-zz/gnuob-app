@@ -173,7 +173,8 @@ public class ProductOptionViewOrEditPanel extends Panel {
         optionViewForm.add(new TextArea<String>(DESCRIPTION_ID).setOutputMarkupId(true));
         optionViewForm.add(new TextField<String>(DISABLED_ID).setOutputMarkupId(true));
         optionViewForm.add(productSubOptionPanel.add(productSubOptionPanel.new ProductSubOptionViewFragment()).setOutputMarkupId(true));
-        add(optionViewForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
+        optionViewForm.add(new FormBehavior(FormType.Horizontal));
+        add(optionViewForm.setOutputMarkupId(true));
         super.onInitialize();
       }
     }

@@ -58,10 +58,6 @@ public class CustomerViewOrEditPanel extends Panel {
     @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
     class CustomerEditTable extends WebMarkupContainer {
 
-      private static final String _0_9_5_0_9_3_PATTERN = "([0-9]){5}([-])([0-9]){3}";
-
-      private static final String DD_MM_YYYY_FORMAT = "dd-MM-YYYY";
-
       @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
       class CancelAjaxLink extends BootstrapAjaxLink<Customer> {
 
@@ -118,6 +114,10 @@ public class CustomerViewOrEditPanel extends Panel {
           }
         }
       }
+
+      private static final String _0_9_5_0_9_3_PATTERN = "([0-9]){5}([-])([0-9]){3}";
+
+      private static final String DD_MM_YYYY_FORMAT = "dd-MM-YYYY";
 
       private static final String ADDRESS_PHONE_ID = "address.phone";
 
@@ -416,7 +416,7 @@ public class CustomerViewOrEditPanel extends Panel {
   private static final long serialVersionUID = 5273022766621299743L;
 
   @SpringBean(name = CustomerDataProvider.CUSTOMER_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Customer> customerDataProvider;
+  private transient GenericTypeDataProvider<Customer> customerDataProvider;
 
   public CustomerViewOrEditPanel(final String id, final IModel<Customer> model) {
     super(id, model);

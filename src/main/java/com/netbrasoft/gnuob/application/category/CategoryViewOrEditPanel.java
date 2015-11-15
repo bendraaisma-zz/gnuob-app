@@ -285,7 +285,7 @@ public class CategoryViewOrEditPanel extends Panel {
   private static final long serialVersionUID = 3968615764565588442L;
 
   @SpringBean(name = CategoryDataProvider.CATEGORY_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Category> categoryDataProvider;
+  private transient GenericTypeDataProvider<Category> categoryDataProvider;
 
   public CategoryViewOrEditPanel(final String id, final IModel<Category> model) {
     super(id, model);

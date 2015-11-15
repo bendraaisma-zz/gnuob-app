@@ -326,7 +326,7 @@ public class OfferViewOrEditPanel extends Panel {
   private static final long serialVersionUID = 4702200954395165271L;
 
   @SpringBean(name = OfferDataProvider.OFFER_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Offer> offerDataProvider;
+  private transient GenericTypeDataProvider<Offer> offerDataProvider;
 
   public OfferViewOrEditPanel(final String id, final IModel<Offer> model) {
     super(id, model);

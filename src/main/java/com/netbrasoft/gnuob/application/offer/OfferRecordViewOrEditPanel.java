@@ -36,6 +36,12 @@ import de.agilecoders.wicket.core.markup.html.bootstrap.form.FormType;
 import de.agilecoders.wicket.core.markup.html.bootstrap.table.TableBehavior;
 import de.agilecoders.wicket.extensions.markup.html.bootstrap.form.validation.TooltipValidation;
 
+/**
+ * Panel for viewing, selecting and editing {@link OfferRecord} entities.
+ *
+ * @author Bernard Arjan Draaisma
+ *
+ */
 @SuppressWarnings("unchecked")
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class OfferRecordViewOrEditPanel extends Panel {

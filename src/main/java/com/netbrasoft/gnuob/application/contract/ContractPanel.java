@@ -289,7 +289,7 @@ public class ContractPanel extends Panel {
   private static final Logger LOGGER = LoggerFactory.getLogger(ContractPanel.class);
 
   @SpringBean(name = ContractDataProvider.CONTRACT_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Contract> contractDataProvider;
+  private transient GenericTypeDataProvider<Contract> contractDataProvider;
 
   private final ContractPanelContainer contractPanelContainer;
 

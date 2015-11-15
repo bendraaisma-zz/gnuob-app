@@ -80,7 +80,7 @@ public class ProductViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<Product> form, final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
           add(new LoadingBehavior(Model.of(ProductViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
@@ -422,7 +422,7 @@ public class ProductViewOrEditPanel extends Panel {
   private static final long serialVersionUID = -4234081101243453856L;
 
   @SpringBean(name = ProductDataProvider.PRODUCT_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Product> productDataProvider;
+  private transient GenericTypeDataProvider<Product> productDataProvider;
 
   public ProductViewOrEditPanel(final String id, final IModel<Product> model) {
     super(id, model);

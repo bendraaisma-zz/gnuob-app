@@ -262,7 +262,7 @@ public class SettingViewOrEditPanel extends Panel {
   private static final Logger LOGGER = LoggerFactory.getLogger(SettingViewOrEditPanel.class);
 
   @SpringBean(name = SettingDataProvider.SETTING_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Setting> settingDataProvider;
+  private transient GenericTypeDataProvider<Setting> settingDataProvider;
 
   public SettingViewOrEditPanel(final String id, final IModel<Setting> model) {
     super(id, model);

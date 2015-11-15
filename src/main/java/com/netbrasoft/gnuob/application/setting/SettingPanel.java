@@ -287,7 +287,7 @@ public class SettingPanel extends Panel {
   private static final long serialVersionUID = 3703226064705246155L;
 
   @SpringBean(name = SettingDataProvider.SETTING_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Setting> settingDataProvider;
+  private transient GenericTypeDataProvider<Setting> settingDataProvider;
 
   private final SettingPanelContainer settingPanelContainer;
 

@@ -276,7 +276,7 @@ public class SitePanel extends Panel {
   private static final long serialVersionUID = 3703226064705246155L;
 
   @SpringBean(name = SiteDataProvider.SITE_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Site> siteDataProvider;
+  private transient GenericTypeDataProvider<Site> siteDataProvider;
 
   private final SitePanelContainer sitePanelContainer;
 

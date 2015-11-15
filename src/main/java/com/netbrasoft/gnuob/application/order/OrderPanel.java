@@ -55,8 +55,6 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class OrderPanel extends Panel {
 
-  private static final String ORDER_PANEL_CONTAINER_ID = "orderPanelContainer";
-
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
   class OrderPanelContainer extends WebMarkupContainer {
 
@@ -297,12 +295,14 @@ public class OrderPanel extends Panel {
     }
   }
 
+  private static final String ORDER_PANEL_CONTAINER_ID = "orderPanelContainer";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(OrderPanel.class);
 
   private static final long serialVersionUID = 3703226064705246155L;
 
   @SpringBean(name = OrderDataProvider.ORDER_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Order> orderDataProvider;
+  private transient GenericTypeDataProvider<Order> orderDataProvider;
 
   private final OrderPanelContainer orderPanelContainer;
 

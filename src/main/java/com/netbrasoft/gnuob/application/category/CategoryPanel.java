@@ -130,7 +130,7 @@ public class CategoryPanel extends Panel {
 
           private static final long serialVersionUID = -5039874949058607907L;
 
-          private Item<Category> item;
+          private IModel<Category> model;
 
           protected CategoryDataview(final String id, final IDataProvider<Category> dataProvider, final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
@@ -139,8 +139,11 @@ public class CategoryPanel extends Panel {
           @Override
           protected Item<Category> newItem(final String id, final int index, final IModel<Category> model) {
             final Item<Category> item = super.newItem(id, index, model);
-            if (CategoryDataview.this.item == null || CategoryDataview.this.item.getIndex() == index) {
-              CategoryDataview.this.item = (Item<Category>) item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
+            if (this.model == null || this.model.getObject().getId() == model.getObject().getId()) {
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
+              this.model = model;
+            } else {
+              item.add(new AttributeModifier(CLASS_ATTRIBUTE, EMPTY_VALUE));
             }
             return item;
           }
@@ -156,8 +159,7 @@ public class CategoryPanel extends Panel {
 
               @Override
               public void onEvent(final AjaxRequestTarget target) {
-                CategoryDataview.this.item.add(new AttributeModifier(CLASS_ATTRIBUTE, EMPTY_VALUE));
-                CategoryDataview.this.item = (Item<Category>) item.add(new AttributeModifier(CLASS_ATTRIBUTE, INFO_VALUE));
+                model = item.getModel();
                 target.add(categoryDataviewContainer.setDefaultModelObject(item.getModelObject()).setOutputMarkupId(true));
                 target.add(categoryViewOrEditPanel.setOutputMarkupId(true));
               }
@@ -274,12 +276,12 @@ public class CategoryPanel extends Panel {
 
   private static final long serialVersionUID = 3703226064705246155L;
 
-  private static final int ITEMS_PER_PAGE = 10;
+  private static final int ITEMS_PER_PAGE = 2;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CategoryPanel.class);
 
   @SpringBean(name = CategoryDataProvider.CATEGORY_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Category> categoryDataProvider;
+  private transient GenericTypeDataProvider<Category> categoryDataProvider;
 
   private final CategoryPanelContainer categoryPanelContainer;
 

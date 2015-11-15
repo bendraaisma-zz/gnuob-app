@@ -54,33 +54,11 @@ import de.agilecoders.wicket.extensions.markup.html.bootstrap.confirmation.Confi
 @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
 public class ProductPanel extends Panel {
 
-  private static final String PRODUCT_PANEL_CONTAINER_ID = "productPanelContainer";
-
   @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
   class ProductPanelContainer extends WebMarkupContainer {
 
-    private static final String PRODUCT_VIEW_OR_EDIT_PANEL_ID = "productViewOrEditPanel";
-
-    private static final String PRODUCT_TABLE_CONTAINER_ID = "productTableContainer";
-
     @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
     class ProductTableContainer extends WebMarkupContainer {
-
-      private static final String PRODUCT_PAGING_NAVIGATOR_MARKUP_ID = "productPagingNavigator";
-
-      private static final String PRODUCT_DATAVIEW_CONTAINER_ID = "productDataviewContainer";
-
-      private static final String NAME_PROPERTY = "name";
-
-      private static final String ORDER_BY_NAME_ID = "orderByName";
-
-      private static final String NUMBER_PROPERTY = "number";
-
-      private static final String ORDER_BY_NUMBER_ID = "orderByNumber";
-
-      private static final String ADD_ID = "add";
-
-      private static final String FEEDBACK_ID = "feedback";
 
       @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
       class AddAjaxLink extends BootstrapAjaxLink<Product> {
@@ -105,29 +83,15 @@ public class ProductPanel extends Panel {
       @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
       class ProductDataviewContainer extends WebMarkupContainer {
 
-        private static final String PRODUCT_DATAVIEW_ID = "productDataview";
-
         @AuthorizeAction(action = Action.ENABLE, roles = {AppRoles.MANAGER, AppRoles.EMPLOYEE})
         class ProductDataview extends DataView<Product> {
-
-          private static final String CONFIRMATION_FUNCTION_NAME = "confirmation";
-
-          private static final String REMOVE_ID = "remove";
-
-          private static final String CLICK_EVENT = "click";
-
-          private static final String NAME_ID = NAME_PROPERTY;
-
-          private static final String NUMBER_ID = NUMBER_PROPERTY;
-
-          private static final String INFO_VALUE = "info";
-
-          private static final String CLASS_ATTRIBUTE = "class";
 
           @AuthorizeAction(action = Action.RENDER, roles = {AppRoles.MANAGER})
           class RemoveAjaxLink extends BootstrapAjaxLink<Product> {
 
             private static final long serialVersionUID = -8317730269644885290L;
+
+            private static final String CONFIRMATION_FUNCTION_NAME = "confirmation";
 
             public RemoveAjaxLink(final String id, final IModel<Product> model, final Buttons.Type type, final IModel<String> labelModel) {
               super(id, model, type, labelModel);
@@ -146,7 +110,38 @@ public class ProductPanel extends Panel {
                 target.add(productTableContainer.setOutputMarkupId(true));
               }
             }
+
+            @Override
+            protected void onInitialize() {
+              final ConfirmationBehavior confirmationBehavior = new ConfirmationBehavior() {
+
+                private static final long serialVersionUID = 7744720444161839031L;
+
+                @Override
+                public void renderHead(final Component component, final IHeaderResponse response) {
+                  response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
+                      new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
+                          .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                          .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                      .asDomReadyScript());
+                }
+              };
+              add(confirmationBehavior);
+              super.onInitialize();
+            }
           }
+
+          private static final String REMOVE_ID = "remove";
+
+          private static final String CLICK_EVENT = "click";
+
+          private static final String NAME_ID = NAME_PROPERTY;
+
+          private static final String NUMBER_ID = NUMBER_PROPERTY;
+
+          private static final String INFO_VALUE = "info";
+
+          private static final String CLASS_ATTRIBUTE = "class";
 
           private static final long serialVersionUID = -5039874949058607907L;
 
@@ -181,22 +176,13 @@ public class ProductPanel extends Panel {
                 target.add(productViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(ProductPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                .add(new ConfirmationBehavior() {
 
-                  private static final long serialVersionUID = 7744720444161839031L;
-
-                  @Override
-                  public void renderHead(final Component component, final IHeaderResponse response) {
-                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                        .asDomReadyScript());
-                  }
-                }));
+            item.add(
+                new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(ProductPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY))));
           }
         }
+
+        private static final String PRODUCT_DATAVIEW_ID = "productDataview";
 
         private static final long serialVersionUID = 7937233338451825416L;
 
@@ -215,6 +201,22 @@ public class ProductPanel extends Panel {
           super.onInitialize();
         }
       }
+
+      private static final String PRODUCT_PAGING_NAVIGATOR_MARKUP_ID = "productPagingNavigator";
+
+      private static final String PRODUCT_DATAVIEW_CONTAINER_ID = "productDataviewContainer";
+
+      private static final String NAME_PROPERTY = "name";
+
+      private static final String ORDER_BY_NAME_ID = "orderByName";
+
+      private static final String NUMBER_PROPERTY = "number";
+
+      private static final String ORDER_BY_NUMBER_ID = "orderByNumber";
+
+      private static final String ADD_ID = "add";
+
+      private static final String FEEDBACK_ID = "feedback";
 
       private static final long serialVersionUID = 3705612551357130293L;
 
@@ -253,6 +255,10 @@ public class ProductPanel extends Panel {
       }
     }
 
+    private static final String PRODUCT_VIEW_OR_EDIT_PANEL_ID = "productViewOrEditPanel";
+
+    private static final String PRODUCT_TABLE_CONTAINER_ID = "productTableContainer";
+
     private static final long serialVersionUID = 2889522881821847572L;
 
     private final ProductViewOrEditPanel productViewOrEditPanel;
@@ -273,12 +279,14 @@ public class ProductPanel extends Panel {
     }
   }
 
+  private static final String PRODUCT_PANEL_CONTAINER_ID = "productPanelContainer";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ProductPanel.class);
 
   private static final long serialVersionUID = 3703226064705246155L;
 
   @SpringBean(name = ProductDataProvider.PRODUCT_DATA_PROVIDER_NAME, required = true)
-  private GenericTypeDataProvider<Product> productDataProvider;
+  private transient GenericTypeDataProvider<Product> productDataProvider;
 
   private final ProductPanelContainer productPanelContainer;
 
