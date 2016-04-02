@@ -1,3 +1,17 @@
+/*
+ * Copyright 2016 Netbrasoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package com.netbrasoft.gnuob.application;
 
 public final class NetbrasoftApplicationConstants {
@@ -26,6 +40,7 @@ public final class NetbrasoftApplicationConstants {
   public static final String FIRST_NAME_MESSAGE_KEY = "firstNameMessage";
   public static final String GNUOB_SITE_CDN_ENABLED = "gnuob.site.cdn.enabled";
   public static final String GNUOB_SITE_CDN_URL = "gnuob.site.cdn.url";
+  public static final String GNUOB_SITE_ENCRYPTION_KEY = "gnuob.site.encryption.key";
   public static final String GROUP_MESSAGE_KEY = "groupMessage";
   public static final String INSPECTOR_PAGE_HTML = "InspectorPage.html";
   public static final String LAST_NAME_MESSAGE_KEY = "lastNameMessage";
@@ -51,7 +66,6 @@ public final class NetbrasoftApplicationConstants {
   public static final String USER_MESSAGE_KEY = "userMessage";
   public static final String VALUE_MESSAGE_KEY = "nameMessage";
   public static final String WICKET_APPLICATION_NAME = "wicketApplication";
-  public static final String GNUOB_SITE_ENCRYPTION_KEY = "gnuob.site.encryption.key";
 
   private NetbrasoftApplicationConstants() {
 
