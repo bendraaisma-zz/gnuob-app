@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.order;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.ORDER_DATA_PROVIDER_NAME;
 import static de.agilecoders.wicket.jquery.JQuery.$;
 
 import org.apache.wicket.AttributeModifier;
@@ -27,8 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Invoice;
 import com.netbrasoft.gnuob.api.Order;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.order.OrderDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -66,7 +66,8 @@ public class OrderPanel extends Panel {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(final String id, final IModel<Order> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Order> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -93,7 +94,8 @@ public class OrderPanel extends Panel {
 
             private static final long serialVersionUID = -8317730269644885290L;
 
-            public RemoveAjaxLink(final String id, final IModel<Order> model, final Buttons.Type type, final IModel<String> labelModel) {
+            public RemoveAjaxLink(final String id, final IModel<Order> model, final Buttons.Type type,
+                final IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
@@ -165,20 +167,29 @@ public class OrderPanel extends Panel {
                 target.add(orderViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(OrderPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                .add(new ConfirmationBehavior() {
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default,
+                Model.of(OrderPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                    .add(new ConfirmationBehavior() {
 
-                  private static final long serialVersionUID = 7744720444161839031L;
+                      private static final long serialVersionUID = 7744720444161839031L;
 
-                  @Override
-                  public void renderHead(final Component component, final IHeaderResponse response) {
-                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                        .asDomReadyScript());
-                  }
-                }));
+                      @Override
+                      public void renderHead(final Component component, final IHeaderResponse response) {
+                        response
+                            .render(
+                                $(component)
+                                    .chain(CONFIRMATION_FUNCTION_NAME,
+                                        new ConfirmationConfig()
+                                            .withTitle(
+                                                getString(NetbrasoftApplicationConstants.CONFIRMATION_MESSAGE_KEY))
+                                            .withSingleton(true).withPopout(true)
+                                            .withBtnOkLabel(
+                                                getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                            .withBtnCancelLabel(
+                                                getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                                    .asDomReadyScript());
+                      }
+                    }));
           }
         }
 
@@ -247,14 +258,19 @@ public class OrderPanel extends Panel {
       public OrderTableContainer(final String id, final IModel<Order> model) {
         super(id, model);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
-        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Order>) OrderTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(OrderPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        orderByFirstName = new OrderByBorder<String>(ORDER_BY_FIRST_NAME_ID, CONTRACT_CUSTOMER_FIRST_NAME_PROPERTY, orderDataProvider);
-        orderByLastName = new OrderByBorder<String>(ORDER_BY_LAST_NAME_ID, CONTRACT_CUSTOMER_LAST_NAME_PROPERTY, orderDataProvider);
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Order>) OrderTableContainer.this.getDefaultModel(),
+            Buttons.Type.Primary, Model.of(OrderPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
+        orderByFirstName =
+            new OrderByBorder<String>(ORDER_BY_FIRST_NAME_ID, CONTRACT_CUSTOMER_FIRST_NAME_PROPERTY, orderDataProvider);
+        orderByLastName =
+            new OrderByBorder<String>(ORDER_BY_LAST_NAME_ID, CONTRACT_CUSTOMER_LAST_NAME_PROPERTY, orderDataProvider);
         orderByOrderId = new OrderByBorder<String>(ORDER_BY_ORDER_ID_ID, ORDER_ID_PROPERTY, orderDataProvider);
-        orderByContractId = new OrderByBorder<String>(ORDER_BY_CONTRACT_ID_ID, CONTRACT_CONTRACT_ID_PROPERTY, orderDataProvider);
-        orderDataviewContainer = new OrderDataviewContainer(ORDER_DATAVIEW_CONTAINER_ID, (IModel<Order>) OrderTableContainer.this.getDefaultModel());
-        orderPagingNavigator = new BootstrapPagingNavigator(ORDER_PAGING_NAVIGATOR_MARKUP_ID, orderDataviewContainer.orderDataview);
+        orderByContractId =
+            new OrderByBorder<String>(ORDER_BY_CONTRACT_ID_ID, CONTRACT_CONTRACT_ID_PROPERTY, orderDataProvider);
+        orderDataviewContainer = new OrderDataviewContainer(ORDER_DATAVIEW_CONTAINER_ID,
+            (IModel<Order>) OrderTableContainer.this.getDefaultModel());
+        orderPagingNavigator =
+            new BootstrapPagingNavigator(ORDER_PAGING_NAVIGATOR_MARKUP_ID, orderDataviewContainer.orderDataview);
       }
 
       @Override
@@ -283,8 +299,10 @@ public class OrderPanel extends Panel {
 
     public OrderPanelContainer(final String id, final IModel<Order> model) {
       super(id, model);
-      orderTableContainer = new OrderTableContainer(ORDER_TABLE_CONTAINER_ID, (IModel<Order>) OrderPanelContainer.this.getDefaultModel());
-      orderViewOrEditPanel = new OrderViewOrEditPanel(ORDER_VIEW_OR_EDIT_PANEL_ID, (IModel<Order>) OrderPanelContainer.this.getDefaultModel());
+      orderTableContainer =
+          new OrderTableContainer(ORDER_TABLE_CONTAINER_ID, (IModel<Order>) OrderPanelContainer.this.getDefaultModel());
+      orderViewOrEditPanel = new OrderViewOrEditPanel(ORDER_VIEW_OR_EDIT_PANEL_ID,
+          (IModel<Order>) OrderPanelContainer.this.getDefaultModel());
     }
 
     @Override
@@ -301,14 +319,15 @@ public class OrderPanel extends Panel {
 
   private static final long serialVersionUID = 3703226064705246155L;
 
-  @SpringBean(name = OrderDataProvider.ORDER_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Order> orderDataProvider;
+  @SpringBean(name = ORDER_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Order> orderDataProvider;
 
   private final OrderPanelContainer orderPanelContainer;
 
   public OrderPanel(final String id, final IModel<Order> model) {
     super(id, model);
-    orderPanelContainer = new OrderPanelContainer(ORDER_PANEL_CONTAINER_ID, (IModel<Order>) OrderPanel.this.getDefaultModel());
+    orderPanelContainer =
+        new OrderPanelContainer(ORDER_PANEL_CONTAINER_ID, (IModel<Order>) OrderPanel.this.getDefaultModel());
   }
 
   @Override

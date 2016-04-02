@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.security.site;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.SITE_DATA_PROVIDER_NAME;
 import static de.agilecoders.wicket.jquery.JQuery.$;
 
 import org.apache.wicket.AttributeModifier;
@@ -26,8 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Site;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.security.SiteDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -65,7 +65,8 @@ public class SitePanel extends Panel {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(final String id, final IModel<Site> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Site> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -88,7 +89,8 @@ public class SitePanel extends Panel {
 
           private static final long serialVersionUID = -8317730269644885290L;
 
-          public RemoveAjaxLink(final String id, final IModel<Site> model, final Buttons.Type type, final IModel<String> labelModel) {
+          public RemoveAjaxLink(final String id, final IModel<Site> model, final Buttons.Type type,
+              final IModel<String> labelModel) {
             super(id, model, type, labelModel);
             setIconType(GlyphIconType.remove);
             setSize(Buttons.Size.Mini);
@@ -147,20 +149,29 @@ public class SitePanel extends Panel {
                 target.add(siteViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(SitePanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                .add(new ConfirmationBehavior() {
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default,
+                Model.of(SitePanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                    .add(new ConfirmationBehavior() {
 
-                  private static final long serialVersionUID = 7744720444161839031L;
+                      private static final long serialVersionUID = 7744720444161839031L;
 
-                  @Override
-                  public void renderHead(final Component component, final IHeaderResponse response) {
-                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                        .asDomReadyScript());
-                  }
-                }));
+                      @Override
+                      public void renderHead(final Component component, final IHeaderResponse response) {
+                        response
+                            .render(
+                                $(component)
+                                    .chain(CONFIRMATION_FUNCTION_NAME,
+                                        new ConfirmationConfig()
+                                            .withTitle(
+                                                getString(NetbrasoftApplicationConstants.CONFIRMATION_MESSAGE_KEY))
+                                            .withSingleton(true).withPopout(true)
+                                            .withBtnOkLabel(
+                                                getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                            .withBtnCancelLabel(
+                                                getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                                    .asDomReadyScript());
+                      }
+                    }));
           }
         }
 
@@ -225,12 +236,14 @@ public class SitePanel extends Panel {
       public SiteTableContainer(final String id, final IModel<Site> model) {
         super(id, model);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
-        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Site>) SiteTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(SitePanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Site>) SiteTableContainer.this.getDefaultModel(),
+            Buttons.Type.Primary, Model.of(SitePanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
         orderByName = new OrderByBorder<String>(ORDER_BY_NAME_ID, NAME_PROPERTY, siteDataProvider);
         orderByDescription = new OrderByBorder<String>(ORDER_BY_DESCRIPTION_ID, DESCRIPTION_PROPERTY, siteDataProvider);
-        siteDataviewContainer = new SiteDataviewContainer(SITE_DATAVIEW_CONTAINER_ID, (IModel<Site>) SiteTableContainer.this.getDefaultModel());
-        sitePagingNavigator = new BootstrapPagingNavigator(SITE_PAGING_NAVIGATOR_MARKUP_ID, siteDataviewContainer.siteDataview);
+        siteDataviewContainer = new SiteDataviewContainer(SITE_DATAVIEW_CONTAINER_ID,
+            (IModel<Site>) SiteTableContainer.this.getDefaultModel());
+        sitePagingNavigator =
+            new BootstrapPagingNavigator(SITE_PAGING_NAVIGATOR_MARKUP_ID, siteDataviewContainer.siteDataview);
       }
 
       @Override
@@ -257,8 +270,10 @@ public class SitePanel extends Panel {
 
     public SitePanelContainer(final String id, final IModel<Site> model) {
       super(id, model);
-      siteTableContainer = new SiteTableContainer(SITE_TABLE_CONTAINER_ID, (IModel<Site>) SitePanelContainer.this.getDefaultModel());
-      siteViewOrEditPanel = new SiteViewOrEditPanel(SITE_VIEW_OR_EDIT_PANEL_ID, (IModel<Site>) SitePanelContainer.this.getDefaultModel());
+      siteTableContainer =
+          new SiteTableContainer(SITE_TABLE_CONTAINER_ID, (IModel<Site>) SitePanelContainer.this.getDefaultModel());
+      siteViewOrEditPanel =
+          new SiteViewOrEditPanel(SITE_VIEW_OR_EDIT_PANEL_ID, (IModel<Site>) SitePanelContainer.this.getDefaultModel());
     }
 
     @Override
@@ -275,14 +290,15 @@ public class SitePanel extends Panel {
 
   private static final long serialVersionUID = 3703226064705246155L;
 
-  @SpringBean(name = SiteDataProvider.SITE_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Site> siteDataProvider;
+  @SpringBean(name = SITE_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Site> siteDataProvider;
 
   private final SitePanelContainer sitePanelContainer;
 
   public SitePanel(final String id, final IModel<Site> model) {
     super(id, model);
-    sitePanelContainer = new SitePanelContainer(SITE_PANEL_CONTAINER_ID, (IModel<Site>) SitePanel.this.getDefaultModel());
+    sitePanelContainer =
+        new SitePanelContainer(SITE_PANEL_CONTAINER_ID, (IModel<Site>) SitePanel.this.getDefaultModel());
   }
 
   @Override

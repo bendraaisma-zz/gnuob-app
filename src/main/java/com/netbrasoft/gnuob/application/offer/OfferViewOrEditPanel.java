@@ -1,5 +1,7 @@
 package com.netbrasoft.gnuob.application.offer;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.OFFER_DATA_PROVIDER_NAME;
+
 import java.math.BigDecimal;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -23,8 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Offer;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.offer.OfferDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -56,7 +57,8 @@ public class OfferViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public CancelAjaxLink(final String id, final IModel<Offer> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public CancelAjaxLink(final String id, final IModel<Offer> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setSize(Buttons.Size.Small);
         }
@@ -65,9 +67,11 @@ public class OfferViewOrEditPanel extends Panel {
         public void onClick(final AjaxRequestTarget target) {
           OfferViewOrEditPanel.this.removeAll();
           if (((Offer) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
-            OfferViewOrEditPanel.this.setDefaultModelObject(offerDataProvider.findById((Offer) CancelAjaxLink.this.getDefaultModelObject()));
+            OfferViewOrEditPanel.this
+                .setDefaultModelObject(offerDataProvider.findById((Offer) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(OfferViewOrEditPanel.this.add(OfferViewOrEditPanel.this.new OfferViewFragment()).setOutputMarkupPlaceholderTag(true));
+          target.add(OfferViewOrEditPanel.this.add(OfferViewOrEditPanel.this.new OfferViewFragment())
+              .setOutputMarkupPlaceholderTag(true));
         }
       }
 
@@ -76,34 +80,41 @@ public class OfferViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form,
+            final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(OfferViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
+          add(new LoadingBehavior(Model
+              .of(OfferViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
         }
 
         @Override
         protected void onError(final AjaxRequestTarget target, final Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(OfferViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+              .of(OfferViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
           try {
             if (((Offer) form.getDefaultModelObject()).getId() == 0) {
-              OfferEditTable.this.setDefaultModelObject(offerDataProvider.findById(offerDataProvider.persist((Offer) form.getDefaultModelObject())));
+              OfferEditTable.this.setDefaultModelObject(
+                  offerDataProvider.findById(offerDataProvider.persist((Offer) form.getDefaultModelObject())));
             } else {
-              OfferEditTable.this.setDefaultModelObject(offerDataProvider.findById(offerDataProvider.merge((Offer) form.getDefaultModelObject())));
+              OfferEditTable.this.setDefaultModelObject(
+                  offerDataProvider.findById(offerDataProvider.merge((Offer) form.getDefaultModelObject())));
             }
           } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             feedbackPanel.warn(e.getLocalizedMessage());
             target.add(feedbackPanel.setOutputMarkupId(true));
-            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(OfferViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+                .of(OfferViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
             OfferViewOrEditPanel.this.removeAll();
-            target.add(OfferViewOrEditPanel.this.add(OfferViewOrEditPanel.this.new OfferViewFragment()).setOutputMarkupId(true));
+            target.add(OfferViewOrEditPanel.this.add(OfferViewOrEditPanel.this.new OfferViewFragment())
+                .setOutputMarkupId(true));
           }
         }
       }
@@ -156,28 +167,44 @@ public class OfferViewOrEditPanel extends Panel {
 
       public OfferEditTable(final String id, final IModel<Offer> model) {
         super(id, model);
-        offerEditForm = new BootstrapForm<Offer>(OFFER_EDIT_FORM_COMPONENT_ID, new CompoundPropertyModel<Offer>((IModel<Offer>) OfferEditTable.this.getDefaultModel()));
-        cancelAjaxLink = new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default, Model.of(OfferEditTable.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
-        saveAjaxButton =
-            new SaveAjaxButton(SAVE_ID, Model.of(OfferEditTable.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)), offerEditForm, Buttons.Type.Primary);
+        offerEditForm = new BootstrapForm<Offer>(OFFER_EDIT_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Offer>((IModel<Offer>) OfferEditTable.this.getDefaultModel()));
+        cancelAjaxLink = new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default,
+            Model.of(OfferEditTable.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
+        saveAjaxButton = new SaveAjaxButton(SAVE_ID,
+            Model.of(OfferEditTable.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)),
+            offerEditForm, Buttons.Type.Primary);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
-        offerRecordPanel = new OfferRecordPanel(OFFER_RECORD_PANEL_ID, (IModel<Offer>) OfferEditTable.this.getDefaultModel());
+        offerRecordPanel =
+            new OfferRecordPanel(OFFER_RECORD_PANEL_ID, (IModel<Offer>) OfferEditTable.this.getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
-        offerEditForm.add(new RequiredTextField<String>(OFFER_ID_ID).add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
-        offerEditForm.add(new RequiredTextField<String>(CONTRACT_CONTRACT_ID_ID).add(StringValidator.maximumLength(127)).setOutputMarkupId(true));
-        offerEditForm.add(new NumberTextField<BigDecimal>(ITEM_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        offerEditForm.add(new TextArea<String>(OFFER_DESCRIPTION_ID).add(StringValidator.maximumLength(127)).setOutputMarkupId(true));
-        offerEditForm.add(new NumberTextField<BigDecimal>(EXTRA_AMOUNT_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        offerEditForm.add(new NumberTextField<BigDecimal>(DISCOUNT_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        offerEditForm.add(new NumberTextField<BigDecimal>(HANDLING_TOTAL_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        offerEditForm.add(new NumberTextField<BigDecimal>(SHIPPING_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        offerEditForm.add(new NumberTextField<BigDecimal>(INSURANCE_TOTAL_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        offerEditForm.add(new NumberTextField<BigDecimal>(SHIPPING_DISCOUNT_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        offerEditForm.add(new NumberTextField<BigDecimal>(TAX_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        offerEditForm.add(new NumberTextField<BigDecimal>(OFFER_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        offerEditForm.add(
+            new RequiredTextField<String>(OFFER_ID_ID).add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
+        offerEditForm.add(new RequiredTextField<String>(CONTRACT_CONTRACT_ID_ID).add(StringValidator.maximumLength(127))
+            .setOutputMarkupId(true));
+        offerEditForm.add(new NumberTextField<BigDecimal>(ITEM_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO))
+            .setOutputMarkupId(true));
+        offerEditForm.add(
+            new TextArea<String>(OFFER_DESCRIPTION_ID).add(StringValidator.maximumLength(127)).setOutputMarkupId(true));
+        offerEditForm.add(new NumberTextField<BigDecimal>(EXTRA_AMOUNT_ID).setRequired(true)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        offerEditForm.add(new NumberTextField<BigDecimal>(DISCOUNT_TOTAL_ID)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        offerEditForm.add(new NumberTextField<BigDecimal>(HANDLING_TOTAL_ID).setRequired(true)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        offerEditForm.add(new NumberTextField<BigDecimal>(SHIPPING_TOTAL_ID)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        offerEditForm.add(new NumberTextField<BigDecimal>(INSURANCE_TOTAL_ID).setRequired(true)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        offerEditForm.add(new NumberTextField<BigDecimal>(SHIPPING_DISCOUNT_ID).setRequired(true)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        offerEditForm.add(new NumberTextField<BigDecimal>(TAX_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO))
+            .setOutputMarkupId(true));
+        offerEditForm.add(new NumberTextField<BigDecimal>(OFFER_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO))
+            .setOutputMarkupId(true));
         offerEditForm.add(offerRecordPanel.add(offerRecordPanel.new OfferRecordEditFragment()).setOutputMarkupId(true));
         add(offerEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(feedbackPanel.hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
@@ -198,8 +225,10 @@ public class OfferViewOrEditPanel extends Panel {
     private final OfferEditTable offerEditTable;
 
     public OfferEditFragment() {
-      super(OFFER_VIEW_OR_EDIT_FRAGMENT_ID, OFFER_EDIT_FRAGMENT_MARKUP_ID, OfferViewOrEditPanel.this, OfferViewOrEditPanel.this.getDefaultModel());
-      offerEditTable = new OfferEditTable(OFFER_EDIT_TABLE_ID, (IModel<Offer>) OfferEditFragment.this.getDefaultModel());
+      super(OFFER_VIEW_OR_EDIT_FRAGMENT_ID, OFFER_EDIT_FRAGMENT_MARKUP_ID, OfferViewOrEditPanel.this,
+          OfferViewOrEditPanel.this.getDefaultModel());
+      offerEditTable =
+          new OfferEditTable(OFFER_EDIT_TABLE_ID, (IModel<Offer>) OfferEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -220,7 +249,8 @@ public class OfferViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public EditAjaxLink(final String id, final IModel<Offer> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public EditAjaxLink(final String id, final IModel<Offer> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.edit);
           setSize(Buttons.Size.Small);
@@ -229,7 +259,8 @@ public class OfferViewOrEditPanel extends Panel {
         @Override
         public void onClick(final AjaxRequestTarget target) {
           OfferViewOrEditPanel.this.removeAll();
-          target.add(OfferViewOrEditPanel.this.add(OfferViewOrEditPanel.this.new OfferEditFragment().setOutputMarkupId(true)));
+          target.add(
+              OfferViewOrEditPanel.this.add(OfferViewOrEditPanel.this.new OfferEditFragment().setOutputMarkupId(true)));
         }
       }
 
@@ -273,9 +304,12 @@ public class OfferViewOrEditPanel extends Panel {
 
       public OfferViewTable(final String id, final IModel<Offer> model) {
         super(id, model);
-        offerViewForm = new BootstrapForm<Offer>(OFFER_VIEW_FORM_ID, new CompoundPropertyModel<Offer>((IModel<Offer>) OfferViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink(EDIT_ID, model, Buttons.Type.Primary, Model.of(OfferViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
-        offerRecordPanel = new OfferRecordPanel(OFFER_RECORD_PANEL_ID, (IModel<Offer>) OfferViewTable.this.getDefaultModel());
+        offerViewForm = new BootstrapForm<Offer>(OFFER_VIEW_FORM_ID,
+            new CompoundPropertyModel<Offer>((IModel<Offer>) OfferViewTable.this.getDefaultModel()));
+        editAjaxLink = new EditAjaxLink(EDIT_ID, model, Buttons.Type.Primary,
+            Model.of(OfferViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        offerRecordPanel =
+            new OfferRecordPanel(OFFER_RECORD_PANEL_ID, (IModel<Offer>) OfferViewTable.this.getDefaultModel());
       }
 
       @Override
@@ -310,8 +344,10 @@ public class OfferViewOrEditPanel extends Panel {
     private final OfferViewTable offerViewTable;
 
     public OfferViewFragment() {
-      super(OFFER_VIEW_OR_EDIT_FRAGMENT_ID, OFFER_VIEW_FRAGMENT_MARKUP_ID, OfferViewOrEditPanel.this, OfferViewOrEditPanel.this.getDefaultModel());
-      offerViewTable = new OfferViewTable(OFFER_VIEW_TABLE_ID, (IModel<Offer>) OfferViewOrEditPanel.this.getDefaultModel());
+      super(OFFER_VIEW_OR_EDIT_FRAGMENT_ID, OFFER_VIEW_FRAGMENT_MARKUP_ID, OfferViewOrEditPanel.this,
+          OfferViewOrEditPanel.this.getDefaultModel());
+      offerViewTable =
+          new OfferViewTable(OFFER_VIEW_TABLE_ID, (IModel<Offer>) OfferViewOrEditPanel.this.getDefaultModel());
     }
 
     @Override
@@ -325,8 +361,8 @@ public class OfferViewOrEditPanel extends Panel {
 
   private static final long serialVersionUID = 4702200954395165271L;
 
-  @SpringBean(name = OfferDataProvider.OFFER_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Offer> offerDataProvider;
+  @SpringBean(name = OFFER_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Offer> offerDataProvider;
 
   public OfferViewOrEditPanel(final String id, final IModel<Offer> model) {
     super(id, model);

@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.customer;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.CUSTOMER_DATA_PROVIDER_NAME;
 import static de.agilecoders.wicket.jquery.JQuery.$;
 
 import org.apache.wicket.AttributeModifier;
@@ -26,8 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Customer;
-import com.netbrasoft.gnuob.api.customer.CustomerDataProvider;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -65,7 +65,8 @@ public class CustomerPanel extends Panel {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(final String id, final IModel<Customer> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Customer> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -91,7 +92,8 @@ public class CustomerPanel extends Panel {
 
             private static final long serialVersionUID = -8317730269644885290L;
 
-            public RemoveAjaxLink(final String id, final IModel<Customer> model, final Buttons.Type type, final IModel<String> labelModel) {
+            public RemoveAjaxLink(final String id, final IModel<Customer> model, final Buttons.Type type,
+                final IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
@@ -128,7 +130,8 @@ public class CustomerPanel extends Panel {
 
           private int index;
 
-          protected CustomerDataview(final String id, final IDataProvider<Customer> dataProvider, final long itemsPerPage) {
+          protected CustomerDataview(final String id, final IDataProvider<Customer> dataProvider,
+              final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -153,24 +156,34 @@ public class CustomerPanel extends Panel {
               @Override
               public void onEvent(final AjaxRequestTarget target) {
                 index = item.getIndex();
-                target.add(customerDataviewContainer.setDefaultModelObject(item.getModelObject()).setOutputMarkupId(true));
+                target.add(
+                    customerDataviewContainer.setDefaultModelObject(item.getModelObject()).setOutputMarkupId(true));
                 target.add(customerViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(CustomerPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                .add(new ConfirmationBehavior() {
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default,
+                Model.of(CustomerPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                    .add(new ConfirmationBehavior() {
 
-                  private static final long serialVersionUID = 7744720444161839031L;
+                      private static final long serialVersionUID = 7744720444161839031L;
 
-                  @Override
-                  public void renderHead(final Component component, final IHeaderResponse response) {
-                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                        .asDomReadyScript());
-                  }
-                }));
+                      @Override
+                      public void renderHead(final Component component, final IHeaderResponse response) {
+                        response
+                            .render(
+                                $(component)
+                                    .chain(CONFIRMATION_FUNCTION_NAME,
+                                        new ConfirmationConfig()
+                                            .withTitle(
+                                                getString(NetbrasoftApplicationConstants.CONFIRMATION_MESSAGE_KEY))
+                                            .withSingleton(true).withPopout(true)
+                                            .withBtnOkLabel(
+                                                getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                            .withBtnCancelLabel(
+                                                getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                                    .asDomReadyScript());
+                      }
+                    }));
           }
         }
 
@@ -227,12 +240,15 @@ public class CustomerPanel extends Panel {
       public CustomerTableContainer(final String id, final IModel<Customer> model) {
         super(id, model);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
-        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Customer>) CustomerTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Customer>) CustomerTableContainer.this.getDefaultModel(),
+            Buttons.Type.Primary,
             Model.of(CustomerPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
         orderByFirstName = new OrderByBorder<String>(ORDER_BY_FIRST_NAME_ID, FIRST_NAME_PROPERTY, customerDataProvider);
         orderByLastName = new OrderByBorder<String>(ORDER_BY_LAST_NAME_ID, LAST_NAME_PROPERTY, customerDataProvider);
-        customerDataviewContainer = new CustomerDataviewContainer(CUSTOMER_DATAVIEW_CONTAINER_ID, (IModel<Customer>) CustomerTableContainer.this.getDefaultModel());
-        customerPagingNavigator = new BootstrapPagingNavigator(CUSTOMER_PAGING_NAVIGATOR_MARKUP_ID, customerDataviewContainer.customerDataview);
+        customerDataviewContainer = new CustomerDataviewContainer(CUSTOMER_DATAVIEW_CONTAINER_ID,
+            (IModel<Customer>) CustomerTableContainer.this.getDefaultModel());
+        customerPagingNavigator = new BootstrapPagingNavigator(CUSTOMER_PAGING_NAVIGATOR_MARKUP_ID,
+            customerDataviewContainer.customerDataview);
       }
 
       @Override
@@ -259,8 +275,10 @@ public class CustomerPanel extends Panel {
 
     public CustomerPanelContainer(final String id, final IModel<Customer> model) {
       super(id, model);
-      customerTableContainer = new CustomerTableContainer(CUSTOMER_TABLE_CONTAINER_ID, (IModel<Customer>) CustomerPanelContainer.this.getDefaultModel());
-      customerViewOrEditPanel = new CustomerViewOrEditPanel(CUSTOMER_VIEW_OR_EDIT_PANEL_ID, (IModel<Customer>) CustomerPanelContainer.this.getDefaultModel());
+      customerTableContainer = new CustomerTableContainer(CUSTOMER_TABLE_CONTAINER_ID,
+          (IModel<Customer>) CustomerPanelContainer.this.getDefaultModel());
+      customerViewOrEditPanel = new CustomerViewOrEditPanel(CUSTOMER_VIEW_OR_EDIT_PANEL_ID,
+          (IModel<Customer>) CustomerPanelContainer.this.getDefaultModel());
     }
 
     @Override
@@ -277,14 +295,15 @@ public class CustomerPanel extends Panel {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CustomerPanel.class);
 
-  @SpringBean(name = CustomerDataProvider.CUSTOMER_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Customer> customerDataProvider;
+  @SpringBean(name = CUSTOMER_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Customer> customerDataProvider;
 
   private final CustomerPanelContainer customerPanelContainer;
 
   public CustomerPanel(final String id, final IModel<Customer> model) {
     super(id, model);
-    customerPanelContainer = new CustomerPanelContainer(CUSTOMER_PANEL_CONTAINER_ID, (IModel<Customer>) CustomerPanel.this.getDefaultModel());
+    customerPanelContainer = new CustomerPanelContainer(CUSTOMER_PANEL_CONTAINER_ID,
+        (IModel<Customer>) CustomerPanel.this.getDefaultModel());
   }
 
   @Override

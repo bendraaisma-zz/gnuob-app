@@ -1,5 +1,7 @@
 package com.netbrasoft.gnuob.application.product;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.CATEGORY_DATA_PROVIDER_NAME;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -20,8 +22,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.netbrasoft.gnuob.api.Category;
 import com.netbrasoft.gnuob.api.OrderBy;
 import com.netbrasoft.gnuob.api.Product;
-import com.netbrasoft.gnuob.api.category.CategoryDataProvider;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
 
@@ -58,7 +59,8 @@ public class ProductSubCategoryPanel extends Panel {
 
           private int index = 0;
 
-          protected CategoryDataview(final String id, final IDataProvider<Category> dataProvider, final long itemsPerPage) {
+          protected CategoryDataview(final String id, final IDataProvider<Category> dataProvider,
+              final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -76,13 +78,16 @@ public class ProductSubCategoryPanel extends Panel {
             if (categoryDataProvider.size() > 0) {
               productSubCategoryViewOrEditPanel.setEnabled(true);
               productSubCategoryViewOrEditPanel.removeAll();
-              productSubCategoryViewOrEditPanel.setSelectedModel(Model.of(categoryDataProvider.iterator(index, index + (long) 1).next()));
-              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragment()).setOutputMarkupId(true);
+              productSubCategoryViewOrEditPanel
+                  .setSelectedModel(Model.of(categoryDataProvider.iterator(index, index + (long) 1).next()));
+              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragment())
+                  .setOutputMarkupId(true);
             } else {
               productSubCategoryViewOrEditPanel.setEnabled(false);
               productSubCategoryViewOrEditPanel.removeAll();
               productSubCategoryViewOrEditPanel.setSelectedModel(Model.of(new Category()));
-              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragment()).setOutputMarkupId(true);
+              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragment())
+                  .setOutputMarkupId(true);
             }
             super.onConfigure();
           }
@@ -102,7 +107,8 @@ public class ProductSubCategoryPanel extends Panel {
                 productSubCategoryViewOrEditPanel.removeAll();
                 productSubCategoryViewOrEditPanel.setSelectedModel(item.getModel());
                 target.add(categoryDataviewContainer.setOutputMarkupId(true));
-                target.add(productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragment()).setOutputMarkupId(true));
+                target.add(productSubCategoryViewOrEditPanel
+                    .add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragment()).setOutputMarkupId(true));
               }
             });
           }
@@ -144,16 +150,20 @@ public class ProductSubCategoryPanel extends Panel {
 
       public CategoryEditTable(final String id, final IModel<Product> model) {
         super(id, model);
-        categoryDataviewContainer = new CategoryDataviewContainer(CATEGORY_DATAVIEW_CONTAINER_ID, (IModel<Product>) CategoryEditTable.this.getDefaultModel());
-        categoryPagingNavigator = new BootstrapPagingNavigator(CATEGORY_PAGING_NAVIGATOR_ID, categoryDataviewContainer.categoryDataview);
-        productSubCategoryViewOrEditPanel = new ProductSubCategoryViewOrEditPanel(SUB_CATEGORY_VIEW_OR_EDIT_PANEL_ID, (IModel<Product>) CategoryEditTable.this.getDefaultModel());
+        categoryDataviewContainer = new CategoryDataviewContainer(CATEGORY_DATAVIEW_CONTAINER_ID,
+            (IModel<Product>) CategoryEditTable.this.getDefaultModel());
+        categoryPagingNavigator =
+            new BootstrapPagingNavigator(CATEGORY_PAGING_NAVIGATOR_ID, categoryDataviewContainer.categoryDataview);
+        productSubCategoryViewOrEditPanel = new ProductSubCategoryViewOrEditPanel(SUB_CATEGORY_VIEW_OR_EDIT_PANEL_ID,
+            (IModel<Product>) CategoryEditTable.this.getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
         add(categoryDataviewContainer.setOutputMarkupId(true));
         add(categoryPagingNavigator.setOutputMarkupId(true));
-        add(productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragment()).setOutputMarkupId(true));
+        add(productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryEditFragment())
+            .setOutputMarkupId(true));
         super.onInitialize();
       }
     }
@@ -169,9 +179,10 @@ public class ProductSubCategoryPanel extends Panel {
     private final CategoryEditTable categoryEditTable;
 
     public ProductSubCategoryEditFragment() {
-      super(PRODUCT_SUB_CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, PRODUCT_SUB_CATEGORY_EDIT_FRAGMENT_MARKUP_ID, ProductSubCategoryPanel.this,
-          ProductSubCategoryPanel.this.getDefaultModel());
-      categoryEditTable = new CategoryEditTable(CATEGORY_EDIT_TABLE_ID, (IModel<Product>) ProductSubCategoryEditFragment.this.getDefaultModel());
+      super(PRODUCT_SUB_CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, PRODUCT_SUB_CATEGORY_EDIT_FRAGMENT_MARKUP_ID,
+          ProductSubCategoryPanel.this, ProductSubCategoryPanel.this.getDefaultModel());
+      categoryEditTable = new CategoryEditTable(CATEGORY_EDIT_TABLE_ID,
+          (IModel<Product>) ProductSubCategoryEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -207,7 +218,8 @@ public class ProductSubCategoryPanel extends Panel {
 
           private int index = 0;
 
-          protected CategoryDataview(final String id, final IDataProvider<Category> dataProvider, final long itemsPerPage) {
+          protected CategoryDataview(final String id, final IDataProvider<Category> dataProvider,
+              final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -224,12 +236,15 @@ public class ProductSubCategoryPanel extends Panel {
           protected void onConfigure() {
             if (categoryDataProvider.size() > 0) {
               productSubCategoryViewOrEditPanel.removeAll();
-              productSubCategoryViewOrEditPanel.setSelectedModel(Model.of(categoryDataProvider.iterator(index, index + (long) 1).next()));
-              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragment()).setOutputMarkupId(true);
+              productSubCategoryViewOrEditPanel
+                  .setSelectedModel(Model.of(categoryDataProvider.iterator(index, index + (long) 1).next()));
+              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragment())
+                  .setOutputMarkupId(true);
             } else {
               productSubCategoryViewOrEditPanel.removeAll();
               productSubCategoryViewOrEditPanel.setSelectedModel(Model.of(new Category()));
-              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragment()).setOutputMarkupId(true);
+              productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragment())
+                  .setOutputMarkupId(true);
             }
             super.onConfigure();
           }
@@ -249,7 +264,8 @@ public class ProductSubCategoryPanel extends Panel {
                 productSubCategoryViewOrEditPanel.removeAll();
                 productSubCategoryViewOrEditPanel.setSelectedModel(item.getModel());
                 target.add(categoryDataviewContainer.setOutputMarkupId(true));
-                target.add(productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragment()).setOutputMarkupId(true));
+                target.add(productSubCategoryViewOrEditPanel
+                    .add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragment()).setOutputMarkupId(true));
               }
             });
           }
@@ -291,16 +307,20 @@ public class ProductSubCategoryPanel extends Panel {
 
       public CategoryViewTable(final String id, final IModel<Product> model) {
         super(id, model);
-        categoryDataviewContainer = new CategoryDataviewContainer(CATEGORY_DATAVIEW_CONTAINER_ID, (IModel<Product>) CategoryViewTable.this.getDefaultModel());
-        categoryPagingNavigator = new BootstrapPagingNavigator(CATEGORY_PAGING_NAVIGATOR_ID, categoryDataviewContainer.categoryDataview);
-        productSubCategoryViewOrEditPanel = new ProductSubCategoryViewOrEditPanel(SUB_CATEGORY_VIEW_OR_EDIT_PANEL_ID, (IModel<Product>) CategoryViewTable.this.getDefaultModel());
+        categoryDataviewContainer = new CategoryDataviewContainer(CATEGORY_DATAVIEW_CONTAINER_ID,
+            (IModel<Product>) CategoryViewTable.this.getDefaultModel());
+        categoryPagingNavigator =
+            new BootstrapPagingNavigator(CATEGORY_PAGING_NAVIGATOR_ID, categoryDataviewContainer.categoryDataview);
+        productSubCategoryViewOrEditPanel = new ProductSubCategoryViewOrEditPanel(SUB_CATEGORY_VIEW_OR_EDIT_PANEL_ID,
+            (IModel<Product>) CategoryViewTable.this.getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
         add(categoryDataviewContainer.setOutputMarkupId(true));
         add(categoryPagingNavigator.setOutputMarkupId(true));
-        add(productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragment()).setOutputMarkupId(true));
+        add(productSubCategoryViewOrEditPanel.add(productSubCategoryViewOrEditPanel.new SubCategoryViewFragment())
+            .setOutputMarkupId(true));
         super.onInitialize();
       }
     }
@@ -316,9 +336,10 @@ public class ProductSubCategoryPanel extends Panel {
     private final CategoryViewTable categoryViewTable;
 
     public ProductSubCategoryViewFragment() {
-      super(PRODUCT_SUB_CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, PRODUCT_SUB_CATEGORY_VIEW_FRAGMENT_MARKUP_ID, ProductSubCategoryPanel.this,
-          ProductSubCategoryPanel.this.getDefaultModel());
-      categoryViewTable = new CategoryViewTable(CATEGORY_VIEW_TABLE_ID, (IModel<Product>) ProductSubCategoryViewFragment.this.getDefaultModel());
+      super(PRODUCT_SUB_CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, PRODUCT_SUB_CATEGORY_VIEW_FRAGMENT_MARKUP_ID,
+          ProductSubCategoryPanel.this, ProductSubCategoryPanel.this.getDefaultModel());
+      categoryViewTable = new CategoryViewTable(CATEGORY_VIEW_TABLE_ID,
+          (IModel<Product>) ProductSubCategoryViewFragment.this.getDefaultModel());
     }
 
     @Override
@@ -330,8 +351,8 @@ public class ProductSubCategoryPanel extends Panel {
 
   private static final long serialVersionUID = 3703226064705246155L;
 
-  @SpringBean(name = CategoryDataProvider.CATEGORY_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Category> categoryDataProvider;
+  @SpringBean(name = CATEGORY_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Category> categoryDataProvider;
 
   public ProductSubCategoryPanel(final String id, final IModel<Product> model) {
     super(id, model);

@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.offer;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.OFFER_DATA_PROVIDER_NAME;
 import static de.agilecoders.wicket.jquery.JQuery.$;
 
 import org.apache.wicket.AttributeModifier;
@@ -26,8 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Offer;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.offer.OfferDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -65,7 +65,8 @@ public class OfferPanel extends Panel {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(final String id, final IModel<Offer> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Offer> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -91,7 +92,8 @@ public class OfferPanel extends Panel {
 
             private static final long serialVersionUID = -8317730269644885290L;
 
-            public RemoveAjaxLink(final String id, final IModel<Offer> model, final Buttons.Type type, final IModel<String> labelModel) {
+            public RemoveAjaxLink(final String id, final IModel<Offer> model, final Buttons.Type type,
+                final IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
@@ -163,20 +165,29 @@ public class OfferPanel extends Panel {
                 target.add(offerViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(OfferPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                .add(new ConfirmationBehavior() {
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default,
+                Model.of(OfferPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                    .add(new ConfirmationBehavior() {
 
-                  private static final long serialVersionUID = 7744720444161839031L;
+                      private static final long serialVersionUID = 7744720444161839031L;
 
-                  @Override
-                  public void renderHead(final Component component, final IHeaderResponse response) {
-                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                        .asDomReadyScript());
-                  }
-                }));
+                      @Override
+                      public void renderHead(final Component component, final IHeaderResponse response) {
+                        response
+                            .render(
+                                $(component)
+                                    .chain(CONFIRMATION_FUNCTION_NAME,
+                                        new ConfirmationConfig()
+                                            .withTitle(
+                                                getString(NetbrasoftApplicationConstants.CONFIRMATION_MESSAGE_KEY))
+                                            .withSingleton(true).withPopout(true)
+                                            .withBtnOkLabel(
+                                                getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                            .withBtnCancelLabel(
+                                                getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                                    .asDomReadyScript());
+                      }
+                    }));
           }
         }
 
@@ -245,14 +256,19 @@ public class OfferPanel extends Panel {
       public OfferTableContainer(final String id, final IModel<Offer> model) {
         super(id, model);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
-        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Offer>) OfferTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(OfferPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
-        orderByFirstName = new OrderByBorder<String>(OFFER_BY_FIRST_NAME_ID, CONTRACT_CUSTOMER_FIRST_NAME_PROPERTY, offerDataProvider);
-        orderByLastName = new OrderByBorder<String>(ORDER_BY_LAST_NAME_ID, CONTRACT_CUSTOMER_LAST_NAME_PROPERTY, offerDataProvider);
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Offer>) OfferTableContainer.this.getDefaultModel(),
+            Buttons.Type.Primary, Model.of(OfferPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
+        orderByFirstName =
+            new OrderByBorder<String>(OFFER_BY_FIRST_NAME_ID, CONTRACT_CUSTOMER_FIRST_NAME_PROPERTY, offerDataProvider);
+        orderByLastName =
+            new OrderByBorder<String>(ORDER_BY_LAST_NAME_ID, CONTRACT_CUSTOMER_LAST_NAME_PROPERTY, offerDataProvider);
         orderByOfferId = new OrderByBorder<String>(ORDER_BY_OFFER_ID_ID, OFFER_ID_PROPERTY, offerDataProvider);
-        orderByContractId = new OrderByBorder<String>(ORDER_BY_CONTRACT_ID_ID, CONTRACT_CONTRACT_ID_PROPERTY, offerDataProvider);
-        offerDataviewContainer = new OfferDataviewContainer(OFFER_DATAVIEW_CONTAINER_ID, (IModel<Offer>) OfferTableContainer.this.getDefaultModel());
-        offerPagingNavigator = new BootstrapPagingNavigator(OFFER_PAGING_NAVIGATOR_MARKUP_ID, offerDataviewContainer.offerDataview);
+        orderByContractId =
+            new OrderByBorder<String>(ORDER_BY_CONTRACT_ID_ID, CONTRACT_CONTRACT_ID_PROPERTY, offerDataProvider);
+        offerDataviewContainer = new OfferDataviewContainer(OFFER_DATAVIEW_CONTAINER_ID,
+            (IModel<Offer>) OfferTableContainer.this.getDefaultModel());
+        offerPagingNavigator =
+            new BootstrapPagingNavigator(OFFER_PAGING_NAVIGATOR_MARKUP_ID, offerDataviewContainer.offerDataview);
       }
 
       @Override
@@ -281,8 +297,10 @@ public class OfferPanel extends Panel {
 
     public OfferPanelContainer(final String id, final IModel<Offer> model) {
       super(id, model);
-      offerTableContainer = new OfferTableContainer(OFFER_TABLE_CONTAINER_ID, (IModel<Offer>) OfferPanelContainer.this.getDefaultModel());
-      offerViewOrEditPanel = new OfferViewOrEditPanel(OFFER_VIEW_OR_EDIT_PANEL_ID, (IModel<Offer>) OfferPanelContainer.this.getDefaultModel());
+      offerTableContainer =
+          new OfferTableContainer(OFFER_TABLE_CONTAINER_ID, (IModel<Offer>) OfferPanelContainer.this.getDefaultModel());
+      offerViewOrEditPanel = new OfferViewOrEditPanel(OFFER_VIEW_OR_EDIT_PANEL_ID,
+          (IModel<Offer>) OfferPanelContainer.this.getDefaultModel());
     }
 
     @Override
@@ -299,14 +317,15 @@ public class OfferPanel extends Panel {
 
   private static final long serialVersionUID = 3703226064705246155L;
 
-  @SpringBean(name = OfferDataProvider.OFFER_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Offer> offerDataProvider;
+  @SpringBean(name = OFFER_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Offer> offerDataProvider;
 
   private final OfferPanelContainer offerPanelContainer;
 
   public OfferPanel(final String id, final IModel<Offer> model) {
     super(id, model);
-    offerPanelContainer = new OfferPanelContainer(OFFER_PANEL_CONTAINER_ID, (IModel<Offer>) OfferPanel.this.getDefaultModel());
+    offerPanelContainer =
+        new OfferPanelContainer(OFFER_PANEL_CONTAINER_ID, (IModel<Offer>) OfferPanel.this.getDefaultModel());
   }
 
   @Override

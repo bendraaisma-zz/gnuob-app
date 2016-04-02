@@ -173,7 +173,7 @@ public class ProductOptionPanel extends Panel {
                       @Override
                       public void renderHead(final Component component, final IHeaderResponse response) {
                         response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                            new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
+                            new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_MESSAGE_KEY)).withSingleton(true).withPopout(true)
                                 .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
                                 .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
                             .asDomReadyScript());

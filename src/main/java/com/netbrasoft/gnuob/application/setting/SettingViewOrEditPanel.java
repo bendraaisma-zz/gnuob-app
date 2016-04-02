@@ -1,5 +1,7 @@
 package com.netbrasoft.gnuob.application.setting;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.SETTING_DATA_PROVIDER_NAME;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
@@ -19,8 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Setting;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.setting.SettingDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -52,7 +53,8 @@ public class SettingViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public CancelAjaxLink(final String id, final IModel<Setting> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public CancelAjaxLink(final String id, final IModel<Setting> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setSize(Buttons.Size.Small);
         }
@@ -61,9 +63,11 @@ public class SettingViewOrEditPanel extends Panel {
         public void onClick(final AjaxRequestTarget target) {
           SettingViewOrEditPanel.this.removeAll();
           if (((Setting) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
-            CancelAjaxLink.this.setDefaultModelObject(settingDataProvider.findById((Setting) CancelAjaxLink.this.getDefaultModelObject()));
+            CancelAjaxLink.this.setDefaultModelObject(
+                settingDataProvider.findById((Setting) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(SettingViewOrEditPanel.this.add(SettingViewOrEditPanel.this.new SettingViewFragment()).setOutputMarkupId(true));
+          target.add(SettingViewOrEditPanel.this.add(SettingViewOrEditPanel.this.new SettingViewFragment())
+              .setOutputMarkupId(true));
         }
       }
 
@@ -72,35 +76,42 @@ public class SettingViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form,
+            final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
+          add(new LoadingBehavior(Model
+              .of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
         }
 
         @Override
         protected void onError(final AjaxRequestTarget target, final Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+              .of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
           try {
             if (((Setting) form.getDefaultModelObject()).getId() == 0) {
-              SettingEditTable.this.setDefaultModelObject(settingDataProvider.findById(settingDataProvider.persist((Setting) form.getDefaultModelObject())));
+              SettingEditTable.this.setDefaultModelObject(
+                  settingDataProvider.findById(settingDataProvider.persist((Setting) form.getDefaultModelObject())));
             } else {
-              SettingEditTable.this.setDefaultModelObject(settingDataProvider.findById(settingDataProvider.merge((Setting) form.getDefaultModelObject())));
+              SettingEditTable.this.setDefaultModelObject(
+                  settingDataProvider.findById(settingDataProvider.merge((Setting) form.getDefaultModelObject())));
             }
             SettingViewOrEditPanel.this.removeAll();
             target.add(SettingViewOrEditPanel.this.getParent().setOutputMarkupId(true));
-            target.add(SettingViewOrEditPanel.this.add(SettingViewOrEditPanel.this.new SettingViewFragment()).setOutputMarkupId(true));
+            target.add(SettingViewOrEditPanel.this.add(SettingViewOrEditPanel.this.new SettingViewFragment())
+                .setOutputMarkupId(true));
           } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             feedbackPanel.warn(e.getLocalizedMessage());
             target.add(feedbackPanel.setOutputMarkupId(true));
-            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(
+                SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
           }
         }
       }
@@ -131,22 +142,32 @@ public class SettingViewOrEditPanel extends Panel {
 
       public SettingEditTable(final String id, final IModel<Setting> model) {
         super(id, model);
-        settingEditForm = new BootstrapForm<Setting>(SETTING_EDIT_FORM_COMPONENT_ID, new CompoundPropertyModel<Setting>((IModel<Setting>) SettingEditTable.this.getDefaultModel()));
-        cancelAjaxLink =
-            new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default, Model.of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
-        saveAjaxButton = new SaveAjaxButton(SAVE_ID, Model.of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)), settingEditForm,
-            Buttons.Type.Primary);
+        settingEditForm = new BootstrapForm<Setting>(SETTING_EDIT_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Setting>((IModel<Setting>) SettingEditTable.this.getDefaultModel()));
+        cancelAjaxLink = new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default,
+            Model.of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
+        saveAjaxButton = new SaveAjaxButton(SAVE_ID,
+            Model.of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)),
+            settingEditForm, Buttons.Type.Primary);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
       }
 
       @Override
       protected void onInitialize() {
-        settingEditForm.add(new RequiredTextField<String>(PROPERTY_ID).setLabel(Model.of(SettingEditTable.this.getString(NetbrasoftApplicationConstants.PROPERTY_MESSAGE_KEY)))
+        settingEditForm
+            .add(new RequiredTextField<String>(PROPERTY_ID)
+                .setLabel(
+                    Model.of(SettingEditTable.this.getString(NetbrasoftApplicationConstants.PROPERTY_MESSAGE_KEY)))
+                .add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        settingEditForm.add(new RequiredTextField<String>(VALUE_ID)
+            .setLabel(Model.of(SettingEditTable.this.getString(NetbrasoftApplicationConstants.VALUE_MESSAGE_KEY)))
             .add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        settingEditForm.add(new RequiredTextField<String>(VALUE_ID).setLabel(Model.of(SettingEditTable.this.getString(NetbrasoftApplicationConstants.VALUE_MESSAGE_KEY)))
-            .add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        settingEditForm.add(new TextArea<String>(DESCRIPTION_ID).setLabel(Model.of(SettingEditTable.this.getString(NetbrasoftApplicationConstants.DESCRIPTION_MESSAGE_KEY)))
-            .setRequired(true).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        settingEditForm
+            .add(
+                new TextArea<String>(DESCRIPTION_ID)
+                    .setLabel(Model
+                        .of(SettingEditTable.this.getString(NetbrasoftApplicationConstants.DESCRIPTION_MESSAGE_KEY)))
+                    .setRequired(true).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
         add(settingEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(saveAjaxButton.setOutputMarkupId(true));
         add(cancelAjaxLink.setOutputMarkupId(true));
@@ -166,8 +187,10 @@ public class SettingViewOrEditPanel extends Panel {
     private final SettingEditTable settingEditTable;
 
     public SettingEditFragment() {
-      super(SETTING_VIEW_OR_EDIT_FRAGMENT_ID, SETTING_EDIT_FRAGMENT_MARKUP_ID, SettingViewOrEditPanel.this, SettingViewOrEditPanel.this.getDefaultModel());
-      settingEditTable = new SettingEditTable(SETTING_EDIT_TABLE_ID, (IModel<Setting>) SettingEditFragment.this.getDefaultModel());
+      super(SETTING_VIEW_OR_EDIT_FRAGMENT_ID, SETTING_EDIT_FRAGMENT_MARKUP_ID, SettingViewOrEditPanel.this,
+          SettingViewOrEditPanel.this.getDefaultModel());
+      settingEditTable =
+          new SettingEditTable(SETTING_EDIT_TABLE_ID, (IModel<Setting>) SettingEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -188,7 +211,8 @@ public class SettingViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public EditAjaxLink(final String id, final IModel<Setting> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public EditAjaxLink(final String id, final IModel<Setting> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.edit);
           setSize(Buttons.Size.Small);
@@ -219,9 +243,11 @@ public class SettingViewOrEditPanel extends Panel {
 
       public SettingViewTable(final String id, final IModel<Setting> model) {
         super(id, model);
-        settingViewForm = new BootstrapForm<Setting>(SETTING_VIEW_FORM_COMPONENT_ID, new CompoundPropertyModel<Setting>((IModel<Setting>) SettingViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink(EDIT_ID, (IModel<Setting>) SettingViewTable.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        settingViewForm = new BootstrapForm<Setting>(SETTING_VIEW_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Setting>((IModel<Setting>) SettingViewTable.this.getDefaultModel()));
+        editAjaxLink =
+            new EditAjaxLink(EDIT_ID, (IModel<Setting>) SettingViewTable.this.getDefaultModel(), Buttons.Type.Primary,
+                Model.of(SettingViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
       }
 
       @Override
@@ -246,8 +272,10 @@ public class SettingViewOrEditPanel extends Panel {
     private final SettingViewTable settingViewTable;
 
     public SettingViewFragment() {
-      super(SETTING_VIEW_OR_EDIT_FRAGMENT_ID, SETTING_VIEW_FRAGMENT_MARKUP_ID, SettingViewOrEditPanel.this, SettingViewOrEditPanel.this.getDefaultModel());
-      settingViewTable = new SettingViewTable(SETTING_VIEW_TABLE_ID, (IModel<Setting>) SettingViewFragment.this.getDefaultModel());
+      super(SETTING_VIEW_OR_EDIT_FRAGMENT_ID, SETTING_VIEW_FRAGMENT_MARKUP_ID, SettingViewOrEditPanel.this,
+          SettingViewOrEditPanel.this.getDefaultModel());
+      settingViewTable =
+          new SettingViewTable(SETTING_VIEW_TABLE_ID, (IModel<Setting>) SettingViewFragment.this.getDefaultModel());
     }
 
     @Override
@@ -261,8 +289,8 @@ public class SettingViewOrEditPanel extends Panel {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SettingViewOrEditPanel.class);
 
-  @SpringBean(name = SettingDataProvider.SETTING_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Setting> settingDataProvider;
+  @SpringBean(name = SETTING_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Setting> settingDataProvider;
 
   public SettingViewOrEditPanel(final String id, final IModel<Setting> model) {
     super(id, model);

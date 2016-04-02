@@ -1,5 +1,7 @@
 package com.netbrasoft.gnuob.application.security.site;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.GROUP_DATA_PROVIDER_NAME;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
@@ -19,8 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Site;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.security.GroupDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -52,7 +53,8 @@ public class SiteViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public CancelAjaxLink(final String id, final IModel<Site> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public CancelAjaxLink(final String id, final IModel<Site> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setSize(Buttons.Size.Small);
         }
@@ -61,9 +63,11 @@ public class SiteViewOrEditPanel extends Panel {
         public void onClick(final AjaxRequestTarget target) {
           SiteViewOrEditPanel.this.removeAll();
           if (((Site) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
-            CancelAjaxLink.this.setDefaultModelObject(siteDataProvider.findById((Site) CancelAjaxLink.this.getDefaultModelObject()));
+            CancelAjaxLink.this
+                .setDefaultModelObject(siteDataProvider.findById((Site) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(SiteViewOrEditPanel.this.add(SiteViewOrEditPanel.this.new SiteViewFragment()).setOutputMarkupId(true));
+          target.add(
+              SiteViewOrEditPanel.this.add(SiteViewOrEditPanel.this.new SiteViewFragment()).setOutputMarkupId(true));
         }
       }
 
@@ -72,35 +76,42 @@ public class SiteViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form,
+            final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
+          add(new LoadingBehavior(
+              Model.of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
         }
 
         @Override
         protected void onError(final AjaxRequestTarget target, final Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+              .of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
           try {
             if (((Site) form.getDefaultModelObject()).getId() == 0) {
-              SiteEditTable.this.setDefaultModelObject(siteDataProvider.findById(siteDataProvider.persist((Site) form.getDefaultModelObject())));
+              SiteEditTable.this.setDefaultModelObject(
+                  siteDataProvider.findById(siteDataProvider.persist((Site) form.getDefaultModelObject())));
             } else {
-              SiteEditTable.this.setDefaultModelObject(siteDataProvider.findById(siteDataProvider.merge((Site) form.getDefaultModelObject())));
+              SiteEditTable.this.setDefaultModelObject(
+                  siteDataProvider.findById(siteDataProvider.merge((Site) form.getDefaultModelObject())));
             }
             SiteViewOrEditPanel.this.removeAll();
             target.add(SiteViewOrEditPanel.this.getParent().setOutputMarkupId(true));
-            target.add(SiteViewOrEditPanel.this.add(SiteViewOrEditPanel.this.new SiteViewFragment()).setOutputMarkupId(true));
+            target.add(
+                SiteViewOrEditPanel.this.add(SiteViewOrEditPanel.this.new SiteViewFragment()).setOutputMarkupId(true));
           } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             feedbackPanel.warn(e.getLocalizedMessage());
             target.add(feedbackPanel.setOutputMarkupId(true));
-            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+                .of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
           }
         }
       }
@@ -129,20 +140,26 @@ public class SiteViewOrEditPanel extends Panel {
 
       public SiteEditTable(final String id, final IModel<Site> model) {
         super(id, model);
-        siteEditForm = new BootstrapForm<Site>(SITE_EDIT_FORM_COMPONENT_ID, new CompoundPropertyModel<Site>((IModel<Site>) SiteEditTable.this.getDefaultModel()));
-        cancelAjaxLink =
-            new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default, Model.of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
-        saveAjaxButton = new SaveAjaxButton(SAVE_ID, Model.of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)), siteEditForm,
-            Buttons.Type.Primary);
+        siteEditForm = new BootstrapForm<Site>(SITE_EDIT_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Site>((IModel<Site>) SiteEditTable.this.getDefaultModel()));
+        cancelAjaxLink = new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default,
+            Model.of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
+        saveAjaxButton = new SaveAjaxButton(SAVE_ID,
+            Model.of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)),
+            siteEditForm, Buttons.Type.Primary);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
       }
 
       @Override
       protected void onInitialize() {
-        siteEditForm.add(new RequiredTextField<String>(NAME_ID).setLabel(Model.of(SiteEditTable.this.getString(NetbrasoftApplicationConstants.VALUE_MESSAGE_KEY)))
+        siteEditForm.add(new RequiredTextField<String>(NAME_ID)
+            .setLabel(Model.of(SiteEditTable.this.getString(NetbrasoftApplicationConstants.VALUE_MESSAGE_KEY)))
             .add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        siteEditForm.add(new TextArea<String>(DESCRIPTION_ID).setLabel(Model.of(SiteEditTable.this.getString(NetbrasoftApplicationConstants.DESCRIPTION_MESSAGE_KEY)))
-            .setRequired(true).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        siteEditForm
+            .add(new TextArea<String>(DESCRIPTION_ID)
+                .setLabel(
+                    Model.of(SiteEditTable.this.getString(NetbrasoftApplicationConstants.DESCRIPTION_MESSAGE_KEY)))
+                .setRequired(true).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
         add(siteEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(saveAjaxButton.setOutputMarkupId(true));
         add(cancelAjaxLink.setOutputMarkupId(true));
@@ -162,7 +179,8 @@ public class SiteViewOrEditPanel extends Panel {
     private final SiteEditTable siteEditTable;
 
     public SiteEditFragment() {
-      super(SITE_VIEW_OR_EDIT_FRAGMENT_ID, SITE_EDIT_FRAGMENT_MARKUP_ID, SiteViewOrEditPanel.this, SiteViewOrEditPanel.this.getDefaultModel());
+      super(SITE_VIEW_OR_EDIT_FRAGMENT_ID, SITE_EDIT_FRAGMENT_MARKUP_ID, SiteViewOrEditPanel.this,
+          SiteViewOrEditPanel.this.getDefaultModel());
       siteEditTable = new SiteEditTable(SITE_EDIT_TABLE_ID, (IModel<Site>) SiteEditFragment.this.getDefaultModel());
     }
 
@@ -184,7 +202,8 @@ public class SiteViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public EditAjaxLink(final String id, final IModel<Site> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public EditAjaxLink(final String id, final IModel<Site> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.edit);
           setSize(Buttons.Size.Small);
@@ -213,9 +232,11 @@ public class SiteViewOrEditPanel extends Panel {
 
       public SiteViewTable(final String id, final IModel<Site> model) {
         super(id, model);
-        siteViewForm = new BootstrapForm<Site>(SITE_VIEW_FORM_COMPONENT_ID, new CompoundPropertyModel<Site>((IModel<Site>) SiteViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink(EDIT_ID, (IModel<Site>) SiteViewTable.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        siteViewForm = new BootstrapForm<Site>(SITE_VIEW_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Site>((IModel<Site>) SiteViewTable.this.getDefaultModel()));
+        editAjaxLink =
+            new EditAjaxLink(EDIT_ID, (IModel<Site>) SiteViewTable.this.getDefaultModel(), Buttons.Type.Primary,
+                Model.of(SiteViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
       }
 
       @Override
@@ -239,7 +260,8 @@ public class SiteViewOrEditPanel extends Panel {
     private final SiteViewTable siteViewTable;
 
     public SiteViewFragment() {
-      super(SITE_VIEW_OR_EDIT_FRAGMENT_ID, SITE_VIEW_FRAGMENT_MARKUP_ID, SiteViewOrEditPanel.this, SiteViewOrEditPanel.this.getDefaultModel());
+      super(SITE_VIEW_OR_EDIT_FRAGMENT_ID, SITE_VIEW_FRAGMENT_MARKUP_ID, SiteViewOrEditPanel.this,
+          SiteViewOrEditPanel.this.getDefaultModel());
       siteViewTable = new SiteViewTable(SITE_VIEW_TABLE_ID, (IModel<Site>) SiteViewFragment.this.getDefaultModel());
     }
 
@@ -254,8 +276,8 @@ public class SiteViewOrEditPanel extends Panel {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SiteViewOrEditPanel.class);
 
-  @SpringBean(name = GroupDataProvider.GROUP_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Site> siteDataProvider;
+  @SpringBean(name = GROUP_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Site> siteDataProvider;
 
   public SiteViewOrEditPanel(final String id, final IModel<Site> model) {
     super(id, model);

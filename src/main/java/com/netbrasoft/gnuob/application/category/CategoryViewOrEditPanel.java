@@ -1,5 +1,7 @@
 package com.netbrasoft.gnuob.application.category;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.CATEGORY_DATA_PROVIDER_NAME;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
@@ -21,8 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Category;
-import com.netbrasoft.gnuob.api.category.CategoryDataProvider;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -54,7 +55,8 @@ public class CategoryViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public CancelAjaxLink(final String id, final IModel<Category> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public CancelAjaxLink(final String id, final IModel<Category> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setSize(Buttons.Size.Small);
         }
@@ -63,9 +65,11 @@ public class CategoryViewOrEditPanel extends Panel {
         public void onClick(final AjaxRequestTarget target) {
           CategoryViewOrEditPanel.this.removeAll();
           if (((Category) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
-            CancelAjaxLink.this.setDefaultModelObject(categoryDataProvider.findById((Category) CancelAjaxLink.this.getDefaultModelObject()));
+            CancelAjaxLink.this.setDefaultModelObject(
+                categoryDataProvider.findById((Category) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(CategoryViewOrEditPanel.this.add(CategoryViewOrEditPanel.this.new CategoryViewFragment()).setOutputMarkupId(true));
+          target.add(CategoryViewOrEditPanel.this.add(CategoryViewOrEditPanel.this.new CategoryViewFragment())
+              .setOutputMarkupId(true));
         }
       }
 
@@ -74,7 +78,8 @@ public class CategoryViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form,
+            final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
         }
@@ -83,24 +88,29 @@ public class CategoryViewOrEditPanel extends Panel {
         protected void onError(final AjaxRequestTarget target, final Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(CategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+              .of(CategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
           try {
             if (((Category) form.getDefaultModelObject()).getId() == 0) {
-              CategoryViewOrEditPanel.this.setDefaultModel(Model.of(categoryDataProvider.findById(categoryDataProvider.persist((Category) form.getDefaultModelObject()))));;
+              CategoryViewOrEditPanel.this.setDefaultModel(Model.of(categoryDataProvider
+                  .findById(categoryDataProvider.persist((Category) form.getDefaultModelObject()))));;
             } else {
-              CategoryViewOrEditPanel.this.setDefaultModel(Model.of(categoryDataProvider.findById(categoryDataProvider.merge((Category) form.getDefaultModelObject()))));
+              CategoryViewOrEditPanel.this.setDefaultModel(Model.of(
+                  categoryDataProvider.findById(categoryDataProvider.merge((Category) form.getDefaultModelObject()))));
             }
             CategoryViewOrEditPanel.this.removeAll();
-            target.add(CategoryViewOrEditPanel.this.add(CategoryViewOrEditPanel.this.new CategoryViewFragment()).setOutputMarkupId(true));
+            target.add(CategoryViewOrEditPanel.this.add(CategoryViewOrEditPanel.this.new CategoryViewFragment())
+                .setOutputMarkupId(true));
           } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             feedbackPanel.warn(e.getLocalizedMessage());
             target.add(feedbackPanel.setOutputMarkupId(true));
-            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(CategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(
+                CategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
           }
         }
       }
@@ -139,24 +149,32 @@ public class CategoryViewOrEditPanel extends Panel {
 
       public CategoryEditTable(final String id, final IModel<Category> model) {
         super(id, model);
-        categoryEditForm =
-            new BootstrapForm<Category>(CATEGORY_EDIT_FORM_COMPONENT_ID, new CompoundPropertyModel<Category>((IModel<Category>) CategoryEditTable.this.getDefaultModel()));
-        contentViewOrEditPanel = new CategoryContentPanel(CONTENT_VIEW_OR_EDIT_PANEL_ID, (IModel<Category>) CategoryEditTable.this.getDefaultModel());
-        subCategoryViewOrEditPanel = new SubCategoryPanel(SUB_CATEGORY_VIEW_OR_EDIT_PANEL_ID, (IModel<Category>) CategoryEditTable.this.getDefaultModel());
-        cancelAjaxLink =
-            new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default, Model.of(CategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
-        saveAjaxButton = new SaveAjaxButton(SAVE_ID, Model.of(CategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)), categoryEditForm,
-            Buttons.Type.Primary);
+        categoryEditForm = new BootstrapForm<Category>(CATEGORY_EDIT_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Category>((IModel<Category>) CategoryEditTable.this.getDefaultModel()));
+        contentViewOrEditPanel = new CategoryContentPanel(CONTENT_VIEW_OR_EDIT_PANEL_ID,
+            (IModel<Category>) CategoryEditTable.this.getDefaultModel());
+        subCategoryViewOrEditPanel = new SubCategoryPanel(SUB_CATEGORY_VIEW_OR_EDIT_PANEL_ID,
+            (IModel<Category>) CategoryEditTable.this.getDefaultModel());
+        cancelAjaxLink = new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default,
+            Model.of(CategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
+        saveAjaxButton = new SaveAjaxButton(SAVE_ID,
+            Model.of(CategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)),
+            categoryEditForm, Buttons.Type.Primary);
         feedbackPanel = new NotificationPanel(FEEDBACK_MARKUP_ID);
       }
 
       @Override
       protected void onInitialize() {
-        categoryEditForm.add(new NumberTextField<Integer>(POSITION_ID).add(RangeValidator.minimum(0)).setOutputMarkupId(true));
-        categoryEditForm.add(new RequiredTextField<String>(NAME_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        categoryEditForm.add(new TextArea<String>(DESCRIPTION_ID).add(StringValidator.maximumLength(128)).setRequired(true).setOutputMarkupId(true));
-        categoryEditForm.add(contentViewOrEditPanel.add(contentViewOrEditPanel.new CategoryContentEditFragment()).setOutputMarkupId(true));
-        categoryEditForm.add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryEditFragement()).setOutputMarkupId(true));
+        categoryEditForm
+            .add(new NumberTextField<Integer>(POSITION_ID).add(RangeValidator.minimum(0)).setOutputMarkupId(true));
+        categoryEditForm.add(
+            new RequiredTextField<String>(NAME_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        categoryEditForm.add(new TextArea<String>(DESCRIPTION_ID).add(StringValidator.maximumLength(128))
+            .setRequired(true).setOutputMarkupId(true));
+        categoryEditForm.add(contentViewOrEditPanel.add(contentViewOrEditPanel.new CategoryContentEditFragment())
+            .setOutputMarkupId(true));
+        categoryEditForm.add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryEditFragement())
+            .setOutputMarkupId(true));
         add(categoryEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(feedbackPanel.hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
         add(saveAjaxButton.setOutputMarkupId(true));
@@ -176,8 +194,10 @@ public class CategoryViewOrEditPanel extends Panel {
     private final CategoryEditTable categoryEditTable;
 
     public CategoryEditFragment() {
-      super(CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, CATEGORY_EDIT_FRAGMENT_MARKUP_ID, CategoryViewOrEditPanel.this, CategoryViewOrEditPanel.this.getDefaultModel());
-      categoryEditTable = new CategoryEditTable(CATEGORY_EDIT_TABLE_ID, (IModel<Category>) CategoryEditFragment.this.getDefaultModel());
+      super(CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, CATEGORY_EDIT_FRAGMENT_MARKUP_ID, CategoryViewOrEditPanel.this,
+          CategoryViewOrEditPanel.this.getDefaultModel());
+      categoryEditTable =
+          new CategoryEditTable(CATEGORY_EDIT_TABLE_ID, (IModel<Category>) CategoryEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -198,7 +218,8 @@ public class CategoryViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public EditAjaxLink(final String id, final IModel<Category> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public EditAjaxLink(final String id, final IModel<Category> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.edit);
           setSize(Buttons.Size.Small);
@@ -207,7 +228,8 @@ public class CategoryViewOrEditPanel extends Panel {
         @Override
         public void onClick(final AjaxRequestTarget target) {
           CategoryViewOrEditPanel.this.removeAll();
-          target.add(CategoryViewOrEditPanel.this.add(CategoryViewOrEditPanel.this.new CategoryEditFragment().setOutputMarkupId(true)));
+          target.add(CategoryViewOrEditPanel.this
+              .add(CategoryViewOrEditPanel.this.new CategoryEditFragment().setOutputMarkupId(true)));
         }
       }
 
@@ -237,12 +259,15 @@ public class CategoryViewOrEditPanel extends Panel {
 
       public CategoryViewTable(final String id, final IModel<Category> model) {
         super(id, model);
-        categoryViewForm =
-            new BootstrapForm<Category>(CATEGORY_VIEW_FORM_COMPONENT_ID, new CompoundPropertyModel<Category>((IModel<Category>) CategoryViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink(EDIT_ID, (IModel<Category>) CategoryViewTable.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(CategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
-        contentViewOrEditPanel = new CategoryContentPanel(CONTENT_VIEW_OR_EDIT_PANEL_ID, (IModel<Category>) CategoryViewTable.this.getDefaultModel());
-        subCategoryViewOrEditPanel = new SubCategoryPanel(SUB_CATEGORY_VIEW_OR_EDIT_PANEL_ID, (IModel<Category>) CategoryViewTable.this.getDefaultModel());
+        categoryViewForm = new BootstrapForm<Category>(CATEGORY_VIEW_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Category>((IModel<Category>) CategoryViewTable.this.getDefaultModel()));
+        editAjaxLink =
+            new EditAjaxLink(EDIT_ID, (IModel<Category>) CategoryViewTable.this.getDefaultModel(), Buttons.Type.Primary,
+                Model.of(CategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        contentViewOrEditPanel = new CategoryContentPanel(CONTENT_VIEW_OR_EDIT_PANEL_ID,
+            (IModel<Category>) CategoryViewTable.this.getDefaultModel());
+        subCategoryViewOrEditPanel = new SubCategoryPanel(SUB_CATEGORY_VIEW_OR_EDIT_PANEL_ID,
+            (IModel<Category>) CategoryViewTable.this.getDefaultModel());
       }
 
       @Override
@@ -250,8 +275,10 @@ public class CategoryViewOrEditPanel extends Panel {
         categoryViewForm.add(new NumberTextField<Integer>(POSITION_ID).setOutputMarkupId(true));
         categoryViewForm.add(new RequiredTextField<String>(NAME_ID).setOutputMarkupId(true));
         categoryViewForm.add(new TextArea<String>(DESCRIPTION_ID).setOutputMarkupId(true));
-        categoryViewForm.add(contentViewOrEditPanel.add(contentViewOrEditPanel.new CategoryContentViewFragment()).setOutputMarkupId(true));
-        categoryViewForm.add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryViewFragement()).setOutputMarkupId(true));
+        categoryViewForm.add(contentViewOrEditPanel.add(contentViewOrEditPanel.new CategoryContentViewFragment())
+            .setOutputMarkupId(true));
+        categoryViewForm.add(subCategoryViewOrEditPanel.add(subCategoryViewOrEditPanel.new SubCategoryViewFragement())
+            .setOutputMarkupId(true));
         add(categoryViewForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(editAjaxLink.setOutputMarkupId(true));
         super.onInitialize();
@@ -269,8 +296,10 @@ public class CategoryViewOrEditPanel extends Panel {
     private final CategoryViewTable categoryViewTable;
 
     public CategoryViewFragment() {
-      super(CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, CATEGORY_VIEW_FRAGMENT_MARKUP_ID, CategoryViewOrEditPanel.this, CategoryViewOrEditPanel.this.getDefaultModel());
-      categoryViewTable = new CategoryViewTable(CATEGORY_VIEW_TABLE_ID, (IModel<Category>) CategoryViewFragment.this.getDefaultModel());
+      super(CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, CATEGORY_VIEW_FRAGMENT_MARKUP_ID, CategoryViewOrEditPanel.this,
+          CategoryViewOrEditPanel.this.getDefaultModel());
+      categoryViewTable =
+          new CategoryViewTable(CATEGORY_VIEW_TABLE_ID, (IModel<Category>) CategoryViewFragment.this.getDefaultModel());
     }
 
     @Override
@@ -284,8 +313,8 @@ public class CategoryViewOrEditPanel extends Panel {
 
   private static final long serialVersionUID = 3968615764565588442L;
 
-  @SpringBean(name = CategoryDataProvider.CATEGORY_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Category> categoryDataProvider;
+  @SpringBean(name = CATEGORY_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Category> categoryDataProvider;
 
   public CategoryViewOrEditPanel(final String id, final IModel<Category> model) {
     super(id, model);

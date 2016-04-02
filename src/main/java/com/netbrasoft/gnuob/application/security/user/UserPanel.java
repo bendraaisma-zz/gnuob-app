@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.security.user;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.USER_DATA_PROVIDER_NAME;
 import static de.agilecoders.wicket.jquery.JQuery.$;
 
 import org.apache.wicket.AttributeModifier;
@@ -26,8 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.User;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.security.UserDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -65,7 +65,8 @@ public class UserPanel extends Panel {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(final String id, final IModel<User> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<User> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -88,7 +89,8 @@ public class UserPanel extends Panel {
 
           private static final long serialVersionUID = -8317730269644885290L;
 
-          public RemoveAjaxLink(final String id, final IModel<User> model, final Buttons.Type type, final IModel<String> labelModel) {
+          public RemoveAjaxLink(final String id, final IModel<User> model, final Buttons.Type type,
+              final IModel<String> labelModel) {
             super(id, model, type, labelModel);
             setIconType(GlyphIconType.remove);
             setSize(Buttons.Size.Mini);
@@ -147,20 +149,29 @@ public class UserPanel extends Panel {
                 target.add(userViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(UserPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                .add(new ConfirmationBehavior() {
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default,
+                Model.of(UserPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                    .add(new ConfirmationBehavior() {
 
-                  private static final long serialVersionUID = 7744720444161839031L;
+                      private static final long serialVersionUID = 7744720444161839031L;
 
-                  @Override
-                  public void renderHead(final Component component, final IHeaderResponse response) {
-                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                        .asDomReadyScript());
-                  }
-                }));
+                      @Override
+                      public void renderHead(final Component component, final IHeaderResponse response) {
+                        response
+                            .render(
+                                $(component)
+                                    .chain(CONFIRMATION_FUNCTION_NAME,
+                                        new ConfirmationConfig()
+                                            .withTitle(
+                                                getString(NetbrasoftApplicationConstants.CONFIRMATION_MESSAGE_KEY))
+                                            .withSingleton(true).withPopout(true)
+                                            .withBtnOkLabel(
+                                                getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                            .withBtnCancelLabel(
+                                                getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                                    .asDomReadyScript());
+                      }
+                    }));
           }
         }
 
@@ -225,12 +236,14 @@ public class UserPanel extends Panel {
       public UserTableContainer(final String id, final IModel<User> model) {
         super(id, model);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
-        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<User>) UserTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(UserPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<User>) UserTableContainer.this.getDefaultModel(),
+            Buttons.Type.Primary, Model.of(UserPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
         orderByName = new OrderByBorder<String>(ORDER_BY_NAME_ID, NAME_PROPERTY, userDataProvider);
         orderByDescription = new OrderByBorder<String>(ORDER_BY_DESCRIPTION_ID, DESCRIPTION_PROPERTY, userDataProvider);
-        userDataviewContainer = new UserDataviewContainer(USER_DATAVIEW_CONTAINER_ID, (IModel<User>) UserTableContainer.this.getDefaultModel());
-        userPagingNavigator = new BootstrapPagingNavigator(USER_PAGING_NAVIGATOR_MARKUP_ID, userDataviewContainer.userDataview);
+        userDataviewContainer = new UserDataviewContainer(USER_DATAVIEW_CONTAINER_ID,
+            (IModel<User>) UserTableContainer.this.getDefaultModel());
+        userPagingNavigator =
+            new BootstrapPagingNavigator(USER_PAGING_NAVIGATOR_MARKUP_ID, userDataviewContainer.userDataview);
       }
 
       @Override
@@ -257,8 +270,10 @@ public class UserPanel extends Panel {
 
     public UserPanelContainer(final String id, final IModel<User> model) {
       super(id, model);
-      userTableContainer = new UserTableContainer(USER_TABLE_CONTAINER_ID, (IModel<User>) UserPanelContainer.this.getDefaultModel());
-      userViewOrEditPanel = new UserViewOrEditPanel(USER_VIEW_OR_EDIT_PANEL_ID, (IModel<User>) UserPanelContainer.this.getDefaultModel());
+      userTableContainer =
+          new UserTableContainer(USER_TABLE_CONTAINER_ID, (IModel<User>) UserPanelContainer.this.getDefaultModel());
+      userViewOrEditPanel =
+          new UserViewOrEditPanel(USER_VIEW_OR_EDIT_PANEL_ID, (IModel<User>) UserPanelContainer.this.getDefaultModel());
     }
 
     @Override
@@ -275,14 +290,15 @@ public class UserPanel extends Panel {
 
   private static final long serialVersionUID = 3703226064705246155L;
 
-  @SpringBean(name = UserDataProvider.USER_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<User> userDataProvider;
+  @SpringBean(name = USER_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<User> userDataProvider;
 
   private final UserPanelContainer userPanelContainer;
 
   public UserPanel(final String id, final IModel<User> model) {
     super(id, model);
-    userPanelContainer = new UserPanelContainer(USER_PANEL_CONTAINER_ID, (IModel<User>) UserPanel.this.getDefaultModel());
+    userPanelContainer =
+        new UserPanelContainer(USER_PANEL_CONTAINER_ID, (IModel<User>) UserPanel.this.getDefaultModel());
   }
 
   @Override

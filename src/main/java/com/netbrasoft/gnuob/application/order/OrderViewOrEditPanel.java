@@ -1,5 +1,7 @@
 package com.netbrasoft.gnuob.application.order;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.ORDER_DATA_PROVIDER_NAME;
+
 import java.math.BigDecimal;
 import java.util.Locale;
 
@@ -29,9 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Order;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.api.generic.converter.XmlGregorianCalendarConverter;
-import com.netbrasoft.gnuob.api.order.OrderDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -66,7 +67,8 @@ public class OrderViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public CancelAjaxLink(final String id, final IModel<Order> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public CancelAjaxLink(final String id, final IModel<Order> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setSize(Buttons.Size.Small);
         }
@@ -75,9 +77,11 @@ public class OrderViewOrEditPanel extends Panel {
         public void onClick(final AjaxRequestTarget target) {
           OrderViewOrEditPanel.this.removeAll();
           if (((Order) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
-            OrderViewOrEditPanel.this.setDefaultModelObject(orderDataProvider.findById((Order) CancelAjaxLink.this.getDefaultModelObject()));
+            OrderViewOrEditPanel.this
+                .setDefaultModelObject(orderDataProvider.findById((Order) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(OrderViewOrEditPanel.this.add(OrderViewOrEditPanel.this.new OrderViewFragment()).setOutputMarkupPlaceholderTag(true));
+          target.add(OrderViewOrEditPanel.this.add(OrderViewOrEditPanel.this.new OrderViewFragment())
+              .setOutputMarkupPlaceholderTag(true));
         }
       }
 
@@ -86,41 +90,49 @@ public class OrderViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form,
+            final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
+          add(new LoadingBehavior(Model
+              .of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
         }
 
         @Override
         protected void onError(final AjaxRequestTarget target, final Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+              .of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
           try {
             if (((Order) form.getDefaultModelObject()).getId() == 0) {
-              OrderEditTable.this.setDefaultModelObject(orderDataProvider.findById(orderDataProvider.persist((Order) form.getDefaultModelObject())));
+              OrderEditTable.this.setDefaultModelObject(
+                  orderDataProvider.findById(orderDataProvider.persist((Order) form.getDefaultModelObject())));
             } else {
-              OrderEditTable.this.setDefaultModelObject(orderDataProvider.findById(orderDataProvider.merge((Order) form.getDefaultModelObject())));
+              OrderEditTable.this.setDefaultModelObject(
+                  orderDataProvider.findById(orderDataProvider.merge((Order) form.getDefaultModelObject())));
             }
           } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             feedbackPanel.warn(e.getLocalizedMessage());
             target.add(feedbackPanel.setOutputMarkupId(true));
-            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+                .of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
             OrderViewOrEditPanel.this.removeAll();
-            target.add(OrderViewOrEditPanel.this.add(OrderViewOrEditPanel.this.new OrderViewFragment()).setOutputMarkupId(true));
+            target.add(OrderViewOrEditPanel.this.add(OrderViewOrEditPanel.this.new OrderViewFragment())
+                .setOutputMarkupId(true));
           }
         }
       }
 
       private static final String INVOICE_ADDRESS_PHONE_ID = "invoice.address.phone";
 
-      private static final String INVOICE_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID = "invoice.address.internationalStateAndCity";
+      private static final String INVOICE_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID =
+          "invoice.address.internationalStateAndCity";
 
       private static final String INVOICE_ADDRESS_INTERNATIONAL_STREET_ID = "invoice.address.internationalStreet";
 
@@ -148,7 +160,8 @@ public class OrderViewOrEditPanel extends Panel {
 
       private static final String SHIPMENT_ADDRESS_PHONE_ID = "shipment.address.phone";
 
-      private static final String SHIPMENT_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID = "shipment.address.internationalStateAndCity";
+      private static final String SHIPMENT_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID =
+          "shipment.address.internationalStateAndCity";
 
       private static final String SHIPMENT_ADDRESS_INTERNATIONAL_STREET_ID = "shipment.address.internationalStreet";
 
@@ -260,21 +273,28 @@ public class OrderViewOrEditPanel extends Panel {
 
       public OrderEditTable(final String id, final IModel<Order> model) {
         super(id, model);
-        orderEditForm = new BootstrapForm<Order>(ORDER_EDIT_FORM_COMPONENT_ID, new CompoundPropertyModel<Order>((IModel<Order>) OrderEditTable.this.getDefaultModel()));
-        cancelAjaxLink =
-            new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default, Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
-        saveAjaxButton = new SaveAjaxButton(SAVE_ID, Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)), orderEditForm,
-            Buttons.Type.Primary);
+        orderEditForm = new BootstrapForm<Order>(ORDER_EDIT_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Order>((IModel<Order>) OrderEditTable.this.getDefaultModel()));
+        cancelAjaxLink = new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default,
+            Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
+        saveAjaxButton = new SaveAjaxButton(SAVE_ID,
+            Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)),
+            orderEditForm, Buttons.Type.Primary);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
-        orderRecordPanel = new OrderRecordPanel(ORDER_RECORD_PANEL_ID, (IModel<Order>) OrderEditTable.this.getDefaultModel());
-        orderInvoicePaymentPanel = new OrderInvoicePaymentPanel(ORDER_INVOICE_PAYMENT_PANEL_ID, (IModel<Order>) OrderEditTable.this.getDefaultModel());
+        orderRecordPanel =
+            new OrderRecordPanel(ORDER_RECORD_PANEL_ID, (IModel<Order>) OrderEditTable.this.getDefaultModel());
+        orderInvoicePaymentPanel = new OrderInvoicePaymentPanel(ORDER_INVOICE_PAYMENT_PANEL_ID,
+            (IModel<Order>) OrderEditTable.this.getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
-        orderEditForm.add(new RequiredTextField<String>(ORDER_ID_ID).add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
-        orderEditForm.add(new RequiredTextField<String>(CONTRACT_CONTRACT_ID_ID).add(StringValidator.maximumLength(127)).setOutputMarkupId(true));
-        orderEditForm.add(new DatetimePicker(ORDER_DATE_ID, new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat(DD_MM_YYYY_FORMAT)) {
+        orderEditForm.add(
+            new RequiredTextField<String>(ORDER_ID_ID).add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
+        orderEditForm.add(new RequiredTextField<String>(CONTRACT_CONTRACT_ID_ID).add(StringValidator.maximumLength(127))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new DatetimePicker(ORDER_DATE_ID,
+            new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat(DD_MM_YYYY_FORMAT)) {
 
           private static final long serialVersionUID = 1209354725150726556L;
 
@@ -287,78 +307,139 @@ public class OrderViewOrEditPanel extends Panel {
             }
           }
         }.setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(TOKEN_ID).add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(TRANSACTION_ID_ID).add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(BILLING_AGREEMENT_ID_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(CHECKOUT_STATUS_ID).add(StringValidator.maximumLength(255)).setOutputMarkupId(true));
-        orderEditForm.add(new NumberTextField<BigDecimal>(ITEM_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderEditForm.add(new TextArea<String>(ORDER_DESCRIPTION_ID).add(StringValidator.maximumLength(127)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(CUSTOM_ID).add(StringValidator.maximumLength(255)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(NOTE_ID).add(StringValidator.maximumLength(165)).setOutputMarkupId(true));
-        orderEditForm.add(new TextArea<String>(NOTE_TEXT_ID).add(StringValidator.maximumLength(255)).setOutputMarkupId(true));
+        orderEditForm
+            .add(new TextField<String>(TOKEN_ID).add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
+        orderEditForm.add(
+            new TextField<String>(TRANSACTION_ID_ID).add(StringValidator.maximumLength(64)).setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(BILLING_AGREEMENT_ID_ID).add(StringValidator.maximumLength(20))
+            .setOutputMarkupId(true));
+        orderEditForm.add(
+            new TextField<String>(CHECKOUT_STATUS_ID).add(StringValidator.maximumLength(255)).setOutputMarkupId(true));
+        orderEditForm.add(new NumberTextField<BigDecimal>(ITEM_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO))
+            .setOutputMarkupId(true));
+        orderEditForm.add(
+            new TextArea<String>(ORDER_DESCRIPTION_ID).add(StringValidator.maximumLength(127)).setOutputMarkupId(true));
+        orderEditForm
+            .add(new TextField<String>(CUSTOM_ID).add(StringValidator.maximumLength(255)).setOutputMarkupId(true));
+        orderEditForm
+            .add(new TextField<String>(NOTE_ID).add(StringValidator.maximumLength(165)).setOutputMarkupId(true));
+        orderEditForm
+            .add(new TextArea<String>(NOTE_TEXT_ID).add(StringValidator.maximumLength(255)).setOutputMarkupId(true));
         orderEditForm.add(new BootstrapCheckbox(INSURANCE_OPTION_OFFERED_ID).setOutputMarkupId(true));
-        orderEditForm.add(new NumberTextField<BigDecimal>(GIFT_WRAP_AMOUNT_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderEditForm.add(new NumberTextField<BigDecimal>(EXTRA_AMOUNT_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderEditForm.add(new NumberTextField<BigDecimal>(DISCOUNT_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderEditForm.add(new NumberTextField<BigDecimal>(HANDLING_TOTAL_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderEditForm.add(new NumberTextField<BigDecimal>(SHIPPING_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderEditForm.add(new NumberTextField<BigDecimal>(INSURANCE_TOTAL_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderEditForm.add(new NumberTextField<BigDecimal>(SHIPPING_DISCOUNT_ID).setRequired(true).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderEditForm.add(new NumberTextField<BigDecimal>(TAX_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
-        orderEditForm.add(new NumberTextField<BigDecimal>(ORDER_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderEditForm.add(new NumberTextField<BigDecimal>(GIFT_WRAP_AMOUNT_ID)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderEditForm.add(new NumberTextField<BigDecimal>(EXTRA_AMOUNT_ID).setRequired(true)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderEditForm.add(new NumberTextField<BigDecimal>(DISCOUNT_TOTAL_ID)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderEditForm.add(new NumberTextField<BigDecimal>(HANDLING_TOTAL_ID).setRequired(true)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderEditForm.add(new NumberTextField<BigDecimal>(SHIPPING_TOTAL_ID)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderEditForm.add(new NumberTextField<BigDecimal>(INSURANCE_TOTAL_ID).setRequired(true)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderEditForm.add(new NumberTextField<BigDecimal>(SHIPPING_DISCOUNT_ID).setRequired(true)
+            .add(RangeValidator.minimum(BigDecimal.ZERO)).setOutputMarkupId(true));
+        orderEditForm.add(new NumberTextField<BigDecimal>(TAX_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new NumberTextField<BigDecimal>(ORDER_TOTAL_ID).add(RangeValidator.minimum(BigDecimal.ZERO))
+            .setOutputMarkupId(true));
         orderEditForm.add(new BootstrapCheckbox(GIFT_MESSAGE_ENABLE_ID).setOutputMarkupId(true));
         orderEditForm.add(new BootstrapCheckbox(GIFT_RECEIPT_ENABLE_ID).setOutputMarkupId(true));
         orderEditForm.add(new BootstrapCheckbox(GIFT_WRAP_ENABLE_ID).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(GIFT_WRAP_NAME_ID).add(StringValidator.maximumLength(25)).setOutputMarkupId(true));
-        orderEditForm.add(new TextArea<String>(GIFT_MESSAGE_ID).add(StringValidator.maximumLength(150)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(SHIPMENT_SHIPMENT_TYPE_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        orderEditForm.add(new RequiredTextField<String>(SHIPMENT_ADDRESS_POSTAL_CODE_ID)
-            .setLabel(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.POSTAL_CODE_MESSAGE_KEY))).add(new PatternValidator(_0_9_5_0_9_3_PATTERN))
-            .add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_NUMBER_ID).add(StringValidator.maximumLength(10)).setOutputMarkupId(true));
-        orderEditForm.add(new RequiredTextField<String>(SHIPMENT_ADDRESS_COUNTRY_ID, Model.of("Brasil"))
-            .setLabel(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.COUNTRY_NAME_MESSAGE_KEY))).add(StringValidator.maximumLength(40))
-            .setEnabled(false).setOutputMarkupId(true));
         orderEditForm.add(
-            new RequiredTextField<String>(SHIPMENT_ADDRESS_STREET1_ID).setLabel(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.STREET1_MESSAGE_KEY)))
-                .add(StringValidator.maximumLength(100)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_STREET2_ID).add(StringValidator.maximumLength(100)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_COMPLEMENT_ID).add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_DISTRICT_ID).add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
-        orderEditForm.add(new RequiredTextField<String>(SHIPMENT_ADDRESS_CITY_NAME_ID)
-            .setLabel(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CITY_NAME_MESSAGE_KEY))).add(StringValidator.maximumLength(40))
+            new TextField<String>(GIFT_WRAP_NAME_ID).add(StringValidator.maximumLength(25)).setOutputMarkupId(true));
+        orderEditForm
+            .add(new TextArea<String>(GIFT_MESSAGE_ID).add(StringValidator.maximumLength(150)).setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(SHIPMENT_SHIPMENT_TYPE_ID).add(StringValidator.maximumLength(128))
             .setOutputMarkupId(true));
-        orderEditForm.add(new RequiredTextField<String>(SHIPMENT_ADDRESS_STATE_OR_PROVINCE_ID).add(StringValidator.maximumLength(2))
-            .setLabel(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.STATE_OR_PROVINCE_MESSAGE_KEY))).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_COUNTRY_NAME_ID).add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_INTERNATIONAL_STREET_ID).add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID).add(StringValidator.maximumLength(80)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_PHONE_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+        orderEditForm
+            .add(new RequiredTextField<String>(SHIPMENT_ADDRESS_POSTAL_CODE_ID)
+                .setLabel(Model
+                    .of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.POSTAL_CODE_MESSAGE_KEY)))
+                .add(new PatternValidator(_0_9_5_0_9_3_PATTERN)).add(StringValidator.maximumLength(20))
+                .setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_NUMBER_ID).add(StringValidator.maximumLength(10))
+            .setOutputMarkupId(true));
+        orderEditForm
+            .add(new RequiredTextField<String>(SHIPMENT_ADDRESS_COUNTRY_ID, Model.of("Brasil"))
+                .setLabel(Model
+                    .of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.COUNTRY_NAME_MESSAGE_KEY)))
+                .add(StringValidator.maximumLength(40)).setEnabled(false).setOutputMarkupId(true));
+        orderEditForm
+            .add(
+                new RequiredTextField<String>(SHIPMENT_ADDRESS_STREET1_ID)
+                    .setLabel(Model
+                        .of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.STREET1_MESSAGE_KEY)))
+                    .add(StringValidator.maximumLength(100)).setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_STREET2_ID).add(StringValidator.maximumLength(100))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_COMPLEMENT_ID).add(StringValidator.maximumLength(40))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_DISTRICT_ID).add(StringValidator.maximumLength(40))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new RequiredTextField<String>(SHIPMENT_ADDRESS_CITY_NAME_ID)
+            .setLabel(
+                Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CITY_NAME_MESSAGE_KEY)))
+            .add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
+        orderEditForm.add(
+            new RequiredTextField<String>(SHIPMENT_ADDRESS_STATE_OR_PROVINCE_ID).add(StringValidator.maximumLength(2))
+                .setLabel(Model.of(
+                    OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.STATE_OR_PROVINCE_MESSAGE_KEY)))
+                .setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_COUNTRY_NAME_ID).add(StringValidator.maximumLength(40))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_INTERNATIONAL_STREET_ID)
+            .add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID)
+            .add(StringValidator.maximumLength(80)).setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(SHIPMENT_ADDRESS_PHONE_ID).add(StringValidator.maximumLength(20))
+            .setOutputMarkupId(true));
         orderEditForm.add(orderRecordPanel.add(orderRecordPanel.new OrderRecordEditFragment()).setOutputMarkupId(true));
         orderEditForm.add(new TextField<String>(INVOICE_INVOICE_ID_ID));
-        orderEditForm.add(new RequiredTextField<String>(INVOICE_ADDRESS_POSTAL_CODE_ID)
-            .setLabel(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.POSTAL_CODE_MESSAGE_KEY))).add(new PatternValidator(_0_9_5_0_9_3_PATTERN))
-            .add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_NUMBER_ID).add(StringValidator.maximumLength(10)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_COUNTRY_ID, Model.of("Brasil"))
-            .setLabel(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.COUNTRY_NAME_MESSAGE_KEY))).add(StringValidator.maximumLength(40))
-            .setEnabled(false).setOutputMarkupId(true));
-        orderEditForm.add(
-            new RequiredTextField<String>(INVOICE_ADDRESS_STREET1_ID).setLabel(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.STREET1_MESSAGE_KEY)))
-                .add(StringValidator.maximumLength(100)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_STREET2_ID).add(StringValidator.maximumLength(100)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_COMPLEMENT_ID).add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_DISTRICT_ID).add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
-        orderEditForm.add(new RequiredTextField<String>(INVOICE_ADDRESS_CITY_NAME_ID)
-            .setLabel(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CITY_NAME_MESSAGE_KEY))).add(StringValidator.maximumLength(40))
+        orderEditForm
+            .add(new RequiredTextField<String>(INVOICE_ADDRESS_POSTAL_CODE_ID)
+                .setLabel(Model
+                    .of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.POSTAL_CODE_MESSAGE_KEY)))
+                .add(new PatternValidator(_0_9_5_0_9_3_PATTERN)).add(StringValidator.maximumLength(20))
+                .setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_NUMBER_ID).add(StringValidator.maximumLength(10))
             .setOutputMarkupId(true));
+        orderEditForm
+            .add(new TextField<String>(INVOICE_ADDRESS_COUNTRY_ID, Model.of("Brasil"))
+                .setLabel(Model
+                    .of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.COUNTRY_NAME_MESSAGE_KEY)))
+                .add(StringValidator.maximumLength(40)).setEnabled(false).setOutputMarkupId(true));
+        orderEditForm
+            .add(
+                new RequiredTextField<String>(INVOICE_ADDRESS_STREET1_ID)
+                    .setLabel(Model
+                        .of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.STREET1_MESSAGE_KEY)))
+                    .add(StringValidator.maximumLength(100)).setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_STREET2_ID).add(StringValidator.maximumLength(100))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_COMPLEMENT_ID).add(StringValidator.maximumLength(40))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_DISTRICT_ID).add(StringValidator.maximumLength(40))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new RequiredTextField<String>(INVOICE_ADDRESS_CITY_NAME_ID)
+            .setLabel(
+                Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CITY_NAME_MESSAGE_KEY)))
+            .add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
         orderEditForm.add(new RequiredTextField<String>(INVOICE_ADDRESS_STATE_OR_PROVINCE_ID)
-            .setLabel(Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.STATE_OR_PROVINCE_MESSAGE_KEY))).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_COUNTRY_NAME_ID).add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_INTERNATIONAL_STREET_ID).add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID).add(StringValidator.maximumLength(80)).setOutputMarkupId(true));
-        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_PHONE_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        orderEditForm.add(orderInvoicePaymentPanel.add(orderInvoicePaymentPanel.new OrderInvoicePaymentEditFragment()).setOutputMarkupId(true));
+            .setLabel(Model
+                .of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.STATE_OR_PROVINCE_MESSAGE_KEY)))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_COUNTRY_NAME_ID).add(StringValidator.maximumLength(40))
+            .setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_INTERNATIONAL_STREET_ID)
+            .add(StringValidator.maximumLength(40)).setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID)
+            .add(StringValidator.maximumLength(80)).setOutputMarkupId(true));
+        orderEditForm.add(new TextField<String>(INVOICE_ADDRESS_PHONE_ID).add(StringValidator.maximumLength(20))
+            .setOutputMarkupId(true));
+        orderEditForm.add(orderInvoicePaymentPanel.add(orderInvoicePaymentPanel.new OrderInvoicePaymentEditFragment())
+            .setOutputMarkupId(true));
         add(orderEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(feedbackPanel.hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
         add(cancelAjaxLink.setOutputMarkupId(true));
@@ -378,8 +459,10 @@ public class OrderViewOrEditPanel extends Panel {
     private final WebMarkupContainer orderEditTable;
 
     public OrderEditFragment() {
-      super(ORDER_VIEW_OR_EDIT_FRAGMENT_ID, ORDER_EDIT_FRAGMENT_MARKUP_ID, OrderViewOrEditPanel.this, OrderViewOrEditPanel.this.getDefaultModel());
-      orderEditTable = new OrderEditTable(ORDER_EDIT_TABLE_ID, (IModel<Order>) OrderEditFragment.this.getDefaultModel());
+      super(ORDER_VIEW_OR_EDIT_FRAGMENT_ID, ORDER_EDIT_FRAGMENT_MARKUP_ID, OrderViewOrEditPanel.this,
+          OrderViewOrEditPanel.this.getDefaultModel());
+      orderEditTable =
+          new OrderEditTable(ORDER_EDIT_TABLE_ID, (IModel<Order>) OrderEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -400,7 +483,8 @@ public class OrderViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public EditAjaxLink(final String id, final IModel<Order> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public EditAjaxLink(final String id, final IModel<Order> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.edit);
           setSize(Buttons.Size.Small);
@@ -409,13 +493,15 @@ public class OrderViewOrEditPanel extends Panel {
         @Override
         public void onClick(final AjaxRequestTarget target) {
           OrderViewOrEditPanel.this.removeAll();
-          target.add(OrderViewOrEditPanel.this.add(OrderViewOrEditPanel.this.new OrderEditFragment().setOutputMarkupId(true)));
+          target.add(
+              OrderViewOrEditPanel.this.add(OrderViewOrEditPanel.this.new OrderEditFragment().setOutputMarkupId(true)));
         }
       }
 
       private static final String INVOICE_ADDRESS_PHONE_ID = "invoice.address.phone";
 
-      private static final String INVOICE_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID = "invoice.address.internationalStateAndCity";
+      private static final String INVOICE_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID =
+          "invoice.address.internationalStateAndCity";
 
       private static final String INVOICE_ADDRESS_INTERNATIONAL_STREET_ID = "invoice.address.internationalStreet";
 
@@ -443,7 +529,8 @@ public class OrderViewOrEditPanel extends Panel {
 
       private static final String SHIPMENT_ADDRESS_PHONE_ID = "shipment.address.phone";
 
-      private static final String SHIPMENT_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID = "shipment.address.internationalStateAndCity";
+      private static final String SHIPMENT_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID =
+          "shipment.address.internationalStateAndCity";
 
       private static final String SHIPMENT_ADDRESS_INTERNATIONAL_STREET_ID = "shipment.address.internationalStreet";
 
@@ -545,17 +632,22 @@ public class OrderViewOrEditPanel extends Panel {
 
       public OrderViewTable(final String id, final IModel<Order> model) {
         super(id, model);
-        orderViewForm = new BootstrapForm<Order>(ORDER_VIEW_FORM_COMPONENT_ID, new CompoundPropertyModel<Order>((IModel<Order>) OrderViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink(EDIT_ID, model, Buttons.Type.Primary, Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
-        orderRecordPanel = new OrderRecordPanel(ORDER_RECORD_PANEL_ID, (IModel<Order>) OrderViewTable.this.getDefaultModel());
-        orderInvoicePaymentPanel = new OrderInvoicePaymentPanel(ORDER_INVOICE_PAYMENT_PANEL_ID, (IModel<Order>) OrderViewTable.this.getDefaultModel());
+        orderViewForm = new BootstrapForm<Order>(ORDER_VIEW_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Order>((IModel<Order>) OrderViewTable.this.getDefaultModel()));
+        editAjaxLink = new EditAjaxLink(EDIT_ID, model, Buttons.Type.Primary,
+            Model.of(OrderViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        orderRecordPanel =
+            new OrderRecordPanel(ORDER_RECORD_PANEL_ID, (IModel<Order>) OrderViewTable.this.getDefaultModel());
+        orderInvoicePaymentPanel = new OrderInvoicePaymentPanel(ORDER_INVOICE_PAYMENT_PANEL_ID,
+            (IModel<Order>) OrderViewTable.this.getDefaultModel());
       }
 
       @Override
       protected void onInitialize() {
         orderViewForm.add(new RequiredTextField<String>(ORDER_ID_ID).setOutputMarkupId(true));
         orderViewForm.add(new RequiredTextField<String>(CONTRACT_CONTRACT_ID_ID).setOutputMarkupId(true));
-        orderViewForm.add(new DatetimePicker(ORDER_DATE_ID, new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat(DD_MM_YYYY_FORMAT)) {
+        orderViewForm.add(new DatetimePicker(ORDER_DATE_ID,
+            new DatetimePickerConfig().useLocale(Locale.getDefault().toString()).withFormat(DD_MM_YYYY_FORMAT)) {
 
           private static final long serialVersionUID = 1209354725150726556L;
 
@@ -595,7 +687,8 @@ public class OrderViewOrEditPanel extends Panel {
         orderViewForm.add(new TextField<String>(SHIPMENT_SHIPMENT_TYPE_ID).setOutputMarkupId(true));
         orderViewForm.add(new RequiredTextField<String>(SHIPMENT_ADDRESS_POSTAL_CODE_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(SHIPMENT_ADDRESS_NUMBER_ID).setOutputMarkupId(true));
-        orderViewForm.add(new RequiredTextField<String>(SHIPMENT_ADDRESS_COUNTRY_ID, Model.of("Brasil")).setOutputMarkupId(true));
+        orderViewForm.add(
+            new RequiredTextField<String>(SHIPMENT_ADDRESS_COUNTRY_ID, Model.of("Brasil")).setOutputMarkupId(true));
         orderViewForm.add(new RequiredTextField<String>(SHIPMENT_ADDRESS_STREET1_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(SHIPMENT_ADDRESS_STREET2_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(SHIPMENT_ADDRESS_COMPLEMENT_ID).setOutputMarkupId(true));
@@ -604,13 +697,15 @@ public class OrderViewOrEditPanel extends Panel {
         orderViewForm.add(new RequiredTextField<String>(SHIPMENT_ADDRESS_STATE_OR_PROVINCE_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(SHIPMENT_ADDRESS_COUNTRY_NAME_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(SHIPMENT_ADDRESS_INTERNATIONAL_STREET_ID).setOutputMarkupId(true));
-        orderViewForm.add(new TextField<String>(SHIPMENT_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID).setOutputMarkupId(true));
+        orderViewForm
+            .add(new TextField<String>(SHIPMENT_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(SHIPMENT_ADDRESS_PHONE_ID).setOutputMarkupId(true));
         orderViewForm.add(orderRecordPanel.add(orderRecordPanel.new OrderRecordViewFragment()).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(INVOICE_INVOICE_ID_ID));
         orderViewForm.add(new RequiredTextField<String>(INVOICE_ADDRESS_POSTAL_CODE_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(INVOICE_ADDRESS_NUMBER_ID).setOutputMarkupId(true));
-        orderViewForm.add(new TextField<String>(INVOICE_ADDRESS_COUNTRY_ID, Model.of("Brasil")).setOutputMarkupId(true));
+        orderViewForm
+            .add(new TextField<String>(INVOICE_ADDRESS_COUNTRY_ID, Model.of("Brasil")).setOutputMarkupId(true));
         orderViewForm.add(new RequiredTextField<String>(INVOICE_ADDRESS_STREET1_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(INVOICE_ADDRESS_STREET2_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(INVOICE_ADDRESS_COMPLEMENT_ID).setOutputMarkupId(true));
@@ -619,9 +714,11 @@ public class OrderViewOrEditPanel extends Panel {
         orderViewForm.add(new RequiredTextField<String>(INVOICE_ADDRESS_STATE_OR_PROVINCE_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(INVOICE_ADDRESS_COUNTRY_NAME_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(INVOICE_ADDRESS_INTERNATIONAL_STREET_ID).setOutputMarkupId(true));
-        orderViewForm.add(new TextField<String>(INVOICE_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID).setOutputMarkupId(true));
+        orderViewForm
+            .add(new TextField<String>(INVOICE_ADDRESS_INTERNATIONAL_STATE_AND_CITY_ID).setOutputMarkupId(true));
         orderViewForm.add(new TextField<String>(INVOICE_ADDRESS_PHONE_ID).setOutputMarkupId(true));
-        orderViewForm.add(orderInvoicePaymentPanel.add(orderInvoicePaymentPanel.new OrderInvoicePaymentViewFragment()).setOutputMarkupId(true));
+        orderViewForm.add(orderInvoicePaymentPanel.add(orderInvoicePaymentPanel.new OrderInvoicePaymentViewFragment())
+            .setOutputMarkupId(true));
         add(orderViewForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(editAjaxLink.setOutputMarkupId(true));
         super.onInitialize();
@@ -639,8 +736,10 @@ public class OrderViewOrEditPanel extends Panel {
     private final OrderViewTable orderViewTable;
 
     public OrderViewFragment() {
-      super(ORDER_VIEW_OR_EDIT_FRAGMENT_ID, ORDER_VIEW_FRAGMENT_MARKUP_ID, OrderViewOrEditPanel.this, OrderViewOrEditPanel.this.getDefaultModel());
-      orderViewTable = new OrderViewTable(ORDER_VIEW_TABLE_ID, (IModel<Order>) OrderViewFragment.this.getDefaultModel());
+      super(ORDER_VIEW_OR_EDIT_FRAGMENT_ID, ORDER_VIEW_FRAGMENT_MARKUP_ID, OrderViewOrEditPanel.this,
+          OrderViewOrEditPanel.this.getDefaultModel());
+      orderViewTable =
+          new OrderViewTable(ORDER_VIEW_TABLE_ID, (IModel<Order>) OrderViewFragment.this.getDefaultModel());
     }
 
     @Override
@@ -654,8 +753,8 @@ public class OrderViewOrEditPanel extends Panel {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(OrderViewOrEditPanel.class);
 
-  @SpringBean(name = OrderDataProvider.ORDER_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Order> orderDataProvider;
+  @SpringBean(name = ORDER_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Order> orderDataProvider;
 
   public OrderViewOrEditPanel(final String id, final IModel<Order> model) {
     super(id, model);

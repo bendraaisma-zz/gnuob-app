@@ -1,5 +1,7 @@
 package com.netbrasoft.gnuob.application.content;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.CONTENT_DATA_PROVIDER_NAME;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
@@ -21,8 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Content;
-import com.netbrasoft.gnuob.api.content.ContentDataProvider;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.api.generic.converter.ByteArrayConverter;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
@@ -56,7 +57,8 @@ public class ContentViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public CancelAjaxLink(final String id, final IModel<Content> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public CancelAjaxLink(final String id, final IModel<Content> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setSize(Buttons.Size.Small);
         }
@@ -65,9 +67,11 @@ public class ContentViewOrEditPanel extends Panel {
         public void onClick(final AjaxRequestTarget target) {
           ContentViewOrEditPanel.this.removeAll();
           if (((Content) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
-            CancelAjaxLink.this.setDefaultModelObject(contentDataProvider.findById((Content) CancelAjaxLink.this.getDefaultModelObject()));
+            CancelAjaxLink.this.setDefaultModelObject(
+                contentDataProvider.findById((Content) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentViewFragment()).setOutputMarkupId(true));
+          target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentViewFragment())
+              .setOutputMarkupId(true));
         }
       }
 
@@ -76,34 +80,41 @@ public class ContentViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form,
+            final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
+          add(new LoadingBehavior(Model
+              .of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
         }
 
         @Override
         protected void onError(final AjaxRequestTarget target, final Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+              .of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
           try {
             if (((Content) form.getDefaultModelObject()).getId() == 0) {
-              ContentEditTable.this.setDefaultModelObject(contentDataProvider.findById(contentDataProvider.persist((Content) form.getDefaultModelObject())));
+              ContentEditTable.this.setDefaultModelObject(
+                  contentDataProvider.findById(contentDataProvider.persist((Content) form.getDefaultModelObject())));
             } else {
-              ContentEditTable.this.setDefaultModelObject(contentDataProvider.findById(contentDataProvider.merge((Content) form.getDefaultModelObject())));
+              ContentEditTable.this.setDefaultModelObject(
+                  contentDataProvider.findById(contentDataProvider.merge((Content) form.getDefaultModelObject())));
             }
             ContentViewOrEditPanel.this.removeAll();
-            target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentViewFragment()).setOutputMarkupId(true));
+            target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentViewFragment())
+                .setOutputMarkupId(true));
           } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             feedbackPanel.warn(e.getLocalizedMessage());
             target.add(feedbackPanel.setOutputMarkupId(true));
-            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(
+                ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
           }
         }
       }
@@ -134,18 +145,22 @@ public class ContentViewOrEditPanel extends Panel {
 
       public ContentEditTable(final String id, final IModel<Content> model) {
         super(id, model);
-        contentEditForm = new BootstrapForm<Content>(CONTENT_EDIT_FORM_COMPONENT_ID, new CompoundPropertyModel<Content>((IModel<Content>) ContentEditTable.this.getDefaultModel()));
-        cancelAjaxLink =
-            new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default, Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
-        saveAjaxButton = new SaveAjaxButton(SAVE_ID, Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)), contentEditForm,
-            Buttons.Type.Primary);
+        contentEditForm = new BootstrapForm<Content>(CONTENT_EDIT_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Content>((IModel<Content>) ContentEditTable.this.getDefaultModel()));
+        cancelAjaxLink = new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default,
+            Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
+        saveAjaxButton = new SaveAjaxButton(SAVE_ID,
+            Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)),
+            contentEditForm, Buttons.Type.Primary);
         feedbackPanel = new NotificationPanel(FEEDBACK_MARKUP_ID);
       }
 
       @Override
       protected void onInitialize() {
-        contentEditForm.add(new RequiredTextField<String>(NAME_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        contentEditForm.add(new RequiredTextField<String>(FORMAT_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        contentEditForm.add(
+            new RequiredTextField<String>(NAME_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
+        contentEditForm.add(
+            new RequiredTextField<String>(FORMAT_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
         contentEditForm.add(new TextArea<byte[]>(CONTENT_ID) {
 
           private static final long serialVersionUID = -7341359315847579440L;
@@ -178,8 +193,10 @@ public class ContentViewOrEditPanel extends Panel {
     private final ContentEditTable contentEditTable;
 
     public ContentEditFragment() {
-      super(CONTENT_VIEW_OR_EDIT_FRAGMENT_ID, CONTENT_EDIT_FRAGMENT_ID, ContentViewOrEditPanel.this, ContentViewOrEditPanel.this.getDefaultModel());
-      contentEditTable = new ContentEditTable(CONTENT_EDIT_TABLE_ID, (IModel<Content>) ContentEditFragment.this.getDefaultModel());
+      super(CONTENT_VIEW_OR_EDIT_FRAGMENT_ID, CONTENT_EDIT_FRAGMENT_ID, ContentViewOrEditPanel.this,
+          ContentViewOrEditPanel.this.getDefaultModel());
+      contentEditTable =
+          new ContentEditTable(CONTENT_EDIT_TABLE_ID, (IModel<Content>) ContentEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -200,7 +217,8 @@ public class ContentViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public EditAjaxLink(final String id, final IModel<Content> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public EditAjaxLink(final String id, final IModel<Content> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.edit);
           setSize(Buttons.Size.Small);
@@ -209,7 +227,8 @@ public class ContentViewOrEditPanel extends Panel {
         @Override
         public void onClick(final AjaxRequestTarget target) {
           ContentViewOrEditPanel.this.removeAll();
-          target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentEditFragment().setOutputMarkupId(true)));
+          target.add(ContentViewOrEditPanel.this
+              .add(ContentViewOrEditPanel.this.new ContentEditFragment().setOutputMarkupId(true)));
         }
       }
 
@@ -231,9 +250,11 @@ public class ContentViewOrEditPanel extends Panel {
 
       public ContentViewTable(final String id, final IModel<Content> model) {
         super(id, model);
-        contentViewForm = new BootstrapForm<Content>(CONTENT_VIEW_FORM_COMPONENT_ID, new CompoundPropertyModel<Content>((IModel<Content>) ContentViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink(EDIT_ID, (IModel<Content>) ContentViewTable.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        contentViewForm = new BootstrapForm<Content>(CONTENT_VIEW_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Content>((IModel<Content>) ContentViewTable.this.getDefaultModel()));
+        editAjaxLink =
+            new EditAjaxLink(EDIT_ID, (IModel<Content>) ContentViewTable.this.getDefaultModel(), Buttons.Type.Primary,
+                Model.of(ContentViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
       }
 
       @Override
@@ -264,7 +285,8 @@ public class ContentViewOrEditPanel extends Panel {
 
       private static final long serialVersionUID = 4267535261864907719L;
 
-      public EditAjaxLink(final String id, final IModel<Content> model, final Buttons.Type type, final IModel<String> labelModel) {
+      public EditAjaxLink(final String id, final IModel<Content> model, final Buttons.Type type,
+          final IModel<String> labelModel) {
         super(id, model, type, labelModel);
         setIconType(GlyphIconType.edit);
         setSize(Buttons.Size.Small);
@@ -273,7 +295,8 @@ public class ContentViewOrEditPanel extends Panel {
       @Override
       public void onClick(final AjaxRequestTarget target) {
         ContentViewOrEditPanel.this.removeAll();
-        target.add(ContentViewOrEditPanel.this.add(ContentViewOrEditPanel.this.new ContentEditFragment().setOutputMarkupId(true)));
+        target.add(ContentViewOrEditPanel.this
+            .add(ContentViewOrEditPanel.this.new ContentEditFragment().setOutputMarkupId(true)));
       }
     }
 
@@ -288,8 +311,10 @@ public class ContentViewOrEditPanel extends Panel {
     private final ContentViewTable contentViewTable;
 
     public ContentViewFragment() {
-      super(CONTENT_VIEW_OR_EDIT_FRAGMENT_ID, CONTENT_VIEW_FRAGMENT_MARKUP_ID, ContentViewOrEditPanel.this, ContentViewOrEditPanel.this.getDefaultModel());
-      contentViewTable = new ContentViewTable(CONTENT_VIEW_TABLE_ID, (IModel<Content>) ContentViewFragment.this.getDefaultModel());
+      super(CONTENT_VIEW_OR_EDIT_FRAGMENT_ID, CONTENT_VIEW_FRAGMENT_MARKUP_ID, ContentViewOrEditPanel.this,
+          ContentViewOrEditPanel.this.getDefaultModel());
+      contentViewTable =
+          new ContentViewTable(CONTENT_VIEW_TABLE_ID, (IModel<Content>) ContentViewFragment.this.getDefaultModel());
     }
 
     @Override
@@ -303,8 +328,8 @@ public class ContentViewOrEditPanel extends Panel {
 
   private static final long serialVersionUID = -3061472875418422947L;
 
-  @SpringBean(name = ContentDataProvider.CONTENT_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Content> contentDataProvider;
+  @SpringBean(name = CONTENT_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Content> contentDataProvider;
 
   public ContentViewOrEditPanel(final String id, final IModel<Content> model) {
     super(id, model);

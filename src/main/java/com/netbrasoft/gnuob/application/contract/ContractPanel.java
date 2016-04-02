@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.contract;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.CONTRACT_DATA_PROVIDER_NAME;
 import static de.agilecoders.wicket.jquery.JQuery.$;
 
 import org.apache.wicket.AttributeModifier;
@@ -26,8 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Contract;
-import com.netbrasoft.gnuob.api.contract.ContractDataProvider;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -65,7 +65,8 @@ public class ContractPanel extends Panel {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(final String id, final IModel<Contract> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Contract> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -91,7 +92,8 @@ public class ContractPanel extends Panel {
 
             private static final long serialVersionUID = -8317730269644885290L;
 
-            public RemoveAjaxLink(final String id, final IModel<Contract> model, final Buttons.Type type, final IModel<String> labelModel) {
+            public RemoveAjaxLink(final String id, final IModel<Contract> model, final Buttons.Type type,
+                final IModel<String> labelModel) {
               super(id, model, type, labelModel);
               setIconType(GlyphIconType.remove);
               setSize(Buttons.Size.Mini);
@@ -130,7 +132,8 @@ public class ContractPanel extends Panel {
 
           private int index;
 
-          protected ContractDataview(final String id, final IDataProvider<Contract> dataProvider, final long itemsPerPage) {
+          protected ContractDataview(final String id, final IDataProvider<Contract> dataProvider,
+              final long itemsPerPage) {
             super(id, dataProvider, itemsPerPage);
           }
 
@@ -156,24 +159,34 @@ public class ContractPanel extends Panel {
               @Override
               public void onEvent(final AjaxRequestTarget target) {
                 index = item.getIndex();
-                target.add(contractDataviewContainer.setDefaultModelObject(item.getModelObject()).setOutputMarkupId(true));
+                target.add(
+                    contractDataviewContainer.setDefaultModelObject(item.getModelObject()).setOutputMarkupId(true));
                 target.add(contractViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(ContractPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                .add(new ConfirmationBehavior() {
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default,
+                Model.of(ContractPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                    .add(new ConfirmationBehavior() {
 
-                  private static final long serialVersionUID = 7744720444161839031L;
+                      private static final long serialVersionUID = 7744720444161839031L;
 
-                  @Override
-                  public void renderHead(final Component component, final IHeaderResponse response) {
-                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                        .asDomReadyScript());
-                  }
-                }));
+                      @Override
+                      public void renderHead(final Component component, final IHeaderResponse response) {
+                        response
+                            .render(
+                                $(component)
+                                    .chain(CONFIRMATION_FUNCTION_NAME,
+                                        new ConfirmationConfig()
+                                            .withTitle(
+                                                getString(NetbrasoftApplicationConstants.CONFIRMATION_MESSAGE_KEY))
+                                            .withSingleton(true).withPopout(true)
+                                            .withBtnOkLabel(
+                                                getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                            .withBtnCancelLabel(
+                                                getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                                    .asDomReadyScript());
+                      }
+                    }));
           }
         }
 
@@ -236,13 +249,17 @@ public class ContractPanel extends Panel {
       public ContractTableContainer(final String id, final IModel<Contract> model) {
         super(id, model);
         feedbackPanel = new NotificationPanel(FEEDBACK_MARKUP_ID);
-        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Contract>) ContractTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Contract>) ContractTableContainer.this.getDefaultModel(),
+            Buttons.Type.Primary,
             Model.of(ContractPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
         orderByFirstName = new OrderByBorder<String>(ORDER_BY_FIRST_NAME_ID, FIRST_NAME_PROPERTY, contractDataProvider);
         orderByLastName = new OrderByBorder<String>(ORDER_BY_LAST_NAME_ID, LAST_NAME_PROPERTY, contractDataProvider);
-        orderByContractId = new OrderByBorder<String>(ORDER_BY_CONTRACT_ID_ID, CONTRACT_ID_PROPERTY, contractDataProvider);
-        contractDataviewContainer = new CustomerDataviewContainer(CONTRACT_DATAVIEW_CONTAINER_ID, (IModel<Contract>) ContractTableContainer.this.getDefaultModel());
-        contractPagingNavigator = new BootstrapPagingNavigator(CONTRACT_PAGING_NAVIGATOR_MARKUP_ID, contractDataviewContainer.contractDataview);
+        orderByContractId =
+            new OrderByBorder<String>(ORDER_BY_CONTRACT_ID_ID, CONTRACT_ID_PROPERTY, contractDataProvider);
+        contractDataviewContainer = new CustomerDataviewContainer(CONTRACT_DATAVIEW_CONTAINER_ID,
+            (IModel<Contract>) ContractTableContainer.this.getDefaultModel());
+        contractPagingNavigator = new BootstrapPagingNavigator(CONTRACT_PAGING_NAVIGATOR_MARKUP_ID,
+            contractDataviewContainer.contractDataview);
       }
 
       @Override
@@ -270,8 +287,10 @@ public class ContractPanel extends Panel {
 
     public ContractPanelContainer(final String id, final IModel<Contract> model) {
       super(id, model);
-      contractTableContainer = new ContractTableContainer(CONTRACT_TABLE_CONTAINER_ID, (IModel<Contract>) ContractPanelContainer.this.getDefaultModel());
-      contractViewOrEditPanel = new ContractViewOrEditPanel(CONTRACT_VIEW_OR_EDIT_PANEL_ID, (IModel<Contract>) ContractPanelContainer.this.getDefaultModel());
+      contractTableContainer = new ContractTableContainer(CONTRACT_TABLE_CONTAINER_ID,
+          (IModel<Contract>) ContractPanelContainer.this.getDefaultModel());
+      contractViewOrEditPanel = new ContractViewOrEditPanel(CONTRACT_VIEW_OR_EDIT_PANEL_ID,
+          (IModel<Contract>) ContractPanelContainer.this.getDefaultModel());
     }
 
     @Override
@@ -288,14 +307,15 @@ public class ContractPanel extends Panel {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ContractPanel.class);
 
-  @SpringBean(name = ContractDataProvider.CONTRACT_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Contract> contractDataProvider;
+  @SpringBean(name = CONTRACT_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Contract> contractDataProvider;
 
   private final ContractPanelContainer contractPanelContainer;
 
   public ContractPanel(final String id, final IModel<Contract> model) {
     super(id, model);
-    contractPanelContainer = new ContractPanelContainer(CONTRACT_PANEL_CONTAINER_ID, (IModel<Contract>) ContractPanel.this.getDefaultModel());
+    contractPanelContainer = new ContractPanelContainer(CONTRACT_PANEL_CONTAINER_ID,
+        (IModel<Contract>) ContractPanel.this.getDefaultModel());
   }
 
   @Override

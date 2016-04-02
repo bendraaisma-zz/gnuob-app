@@ -1,5 +1,9 @@
 package com.netbrasoft.gnuob.application.security.user;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.GROUP_DATA_PROVIDER_NAME;
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.SITE_DATA_PROVIDER_NAME;
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.USER_DATA_PROVIDER_NAME;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -29,10 +33,7 @@ import com.netbrasoft.gnuob.api.Role;
 import com.netbrasoft.gnuob.api.Rule;
 import com.netbrasoft.gnuob.api.Site;
 import com.netbrasoft.gnuob.api.User;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.security.GroupDataProvider;
-import com.netbrasoft.gnuob.api.security.SiteDataProvider;
-import com.netbrasoft.gnuob.api.security.UserDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -66,7 +67,8 @@ public class UserViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public CancelAjaxLink(final String id, final IModel<User> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public CancelAjaxLink(final String id, final IModel<User> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setSize(Buttons.Size.Small);
         }
@@ -75,9 +77,11 @@ public class UserViewOrEditPanel extends Panel {
         public void onClick(final AjaxRequestTarget target) {
           UserViewOrEditPanel.this.removeAll();
           if (((User) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
-            CancelAjaxLink.this.setDefaultModelObject(userDataProvider.findById((User) CancelAjaxLink.this.getDefaultModelObject()));
+            CancelAjaxLink.this
+                .setDefaultModelObject(userDataProvider.findById((User) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(UserViewOrEditPanel.this.add(UserViewOrEditPanel.this.new UserViewFragment()).setOutputMarkupId(true));
+          target.add(
+              UserViewOrEditPanel.this.add(UserViewOrEditPanel.this.new UserViewFragment()).setOutputMarkupId(true));
         }
       }
 
@@ -86,35 +90,42 @@ public class UserViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form,
+            final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
+          add(new LoadingBehavior(
+              Model.of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))));
         }
 
         @Override
         protected void onError(final AjaxRequestTarget target, final Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+              .of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
           try {
             if (((User) form.getDefaultModelObject()).getId() == 0) {
-              UserEditTable.this.setDefaultModelObject(userDataProvider.findById(userDataProvider.persist((User) form.getDefaultModelObject())));
+              UserEditTable.this.setDefaultModelObject(
+                  userDataProvider.findById(userDataProvider.persist((User) form.getDefaultModelObject())));
             } else {
-              UserEditTable.this.setDefaultModelObject(userDataProvider.findById(userDataProvider.merge((User) form.getDefaultModelObject())));
+              UserEditTable.this.setDefaultModelObject(
+                  userDataProvider.findById(userDataProvider.merge((User) form.getDefaultModelObject())));
             }
             UserViewOrEditPanel.this.removeAll();
             target.add(UserViewOrEditPanel.this.getParent().setOutputMarkupId(true));
-            target.add(UserViewOrEditPanel.this.add(UserViewOrEditPanel.this.new UserViewFragment()).setOutputMarkupId(true));
+            target.add(
+                UserViewOrEditPanel.this.add(UserViewOrEditPanel.this.new UserViewFragment()).setOutputMarkupId(true));
           } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             feedbackPanel.warn(e.getLocalizedMessage());
             target.add(feedbackPanel.setOutputMarkupId(true));
-            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+                .of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
           }
         }
       }
@@ -155,70 +166,75 @@ public class UserViewOrEditPanel extends Panel {
 
       public UserEditTable(final String id, final IModel<User> model) {
         super(id, model);
-        userEditForm = new BootstrapForm<User>(USER_EDIT_FORM_COMPONENT_ID, new CompoundPropertyModel<User>((IModel<User>) UserEditTable.this.getDefaultModel()));
-        cancelAjaxLink =
-            new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default, Model.of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
-        saveAjaxButton = new SaveAjaxButton(SAVE_ID, Model.of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)), userEditForm,
-            Buttons.Type.Primary);
+        userEditForm = new BootstrapForm<User>(USER_EDIT_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<User>((IModel<User>) UserEditTable.this.getDefaultModel()));
+        cancelAjaxLink = new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default,
+            Model.of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
+        saveAjaxButton = new SaveAjaxButton(SAVE_ID,
+            Model.of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)),
+            userEditForm, Buttons.Type.Primary);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
       }
 
       @Override
       protected void onInitialize() {
-        userEditForm.add(new BootstrapSelect<Rule>(ACCESS_ID, Arrays.asList(Rule.values()), new IChoiceRenderer<Rule>() {
+        userEditForm
+            .add(new BootstrapSelect<Rule>(ACCESS_ID, Arrays.asList(Rule.values()), new IChoiceRenderer<Rule>() {
 
-          private static final long serialVersionUID = -1398366720610788897L;
+              private static final long serialVersionUID = -1398366720610788897L;
 
-          @Override
-          public Object getDisplayValue(final Rule object) {
-            return UserEditTable.this.getString(object.name()).toUpperCase();
-          }
-
-          @Override
-          public String getIdValue(final Rule object, final int index) {
-            return object.value();
-          }
-
-          @Override
-          public Rule getObject(final String id, final IModel<? extends List<? extends Rule>> choices) {
-            for (final Rule rule : choices.getObject()) {
-              if (id.equals(rule.value())) {
-                return rule;
+              @Override
+              public Object getDisplayValue(final Rule object) {
+                return UserEditTable.this.getString(object.name()).toUpperCase();
               }
-            }
-            return null;
-          }
 
-        }).setOutputMarkupId(true));
+              @Override
+              public String getIdValue(final Rule object, final int index) {
+                return object.value();
+              }
+
+              @Override
+              public Rule getObject(final String id, final IModel<? extends List<? extends Rule>> choices) {
+                for (final Rule rule : choices.getObject()) {
+                  if (id.equals(rule.value())) {
+                    return rule;
+                  }
+                }
+                return null;
+              }
+
+            }).setOutputMarkupId(true));
         userEditForm.add(new RequiredTextField<String>(NAME_ID));
         userEditForm.add(new PasswordTextField(PASSWORD_ID).setRequired(true));
         userEditForm.add(new PasswordTextField(CPASSWORD_ID, Model.of("")).setRequired(true));
-        userEditForm.add(new BootstrapMultiSelect<Role>(ROLES_ID, Arrays.asList(Role.values()), new IChoiceRenderer<Role>() {
+        userEditForm
+            .add(new BootstrapMultiSelect<Role>(ROLES_ID, Arrays.asList(Role.values()), new IChoiceRenderer<Role>() {
 
-          private static final long serialVersionUID = 1L;
+              private static final long serialVersionUID = 1L;
 
-          @Override
-          public Object getDisplayValue(final Role object) {
-            return UserEditTable.this.getString(object.name()).toUpperCase();
-          }
-
-          @Override
-          public String getIdValue(final Role object, final int index) {
-            return object.value();
-          }
-
-          @Override
-          public Role getObject(final String id, final IModel<? extends List<? extends Role>> choices) {
-            for (final Role role : choices.getObject()) {
-              if (id.equals(role.value())) {
-                return role;
+              @Override
+              public Object getDisplayValue(final Role object) {
+                return UserEditTable.this.getString(object.name()).toUpperCase();
               }
-            }
-            return null;
-          }
-        }));
+
+              @Override
+              public String getIdValue(final Role object, final int index) {
+                return object.value();
+              }
+
+              @Override
+              public Role getObject(final String id, final IModel<? extends List<? extends Role>> choices) {
+                for (final Role role : choices.getObject()) {
+                  if (id.equals(role.value())) {
+                    return role;
+                  }
+                }
+                return null;
+              }
+            }));
         userEditForm.add(new TextArea<String>(DESCRIPTION_ID));
-        userEditForm.add(new BootstrapMultiSelect<Group>(GROUPS_ID, Model.of(((IModel<User>) UserEditTable.this.getDefaultModel()).getObject().getGroups()),
+        userEditForm.add(new BootstrapMultiSelect<Group>(GROUPS_ID,
+            Model.of(((IModel<User>) UserEditTable.this.getDefaultModel()).getObject().getGroups()),
             getAllAvailableGroups(), new IChoiceRenderer<Group>() {
 
               private static final long serialVersionUID = 1L;
@@ -243,8 +259,9 @@ public class UserViewOrEditPanel extends Panel {
                 return null;
               }
             }).setRequired(true));
-        userEditForm.add(new BootstrapMultiSelect<Site>(SITES_ID, Model.of(((IModel<User>) UserEditTable.this.getDefaultModel()).getObject().getSites()), getAllAvailableSites(),
-            new IChoiceRenderer<Site>() {
+        userEditForm.add(new BootstrapMultiSelect<Site>(SITES_ID,
+            Model.of(((IModel<User>) UserEditTable.this.getDefaultModel()).getObject().getSites()),
+            getAllAvailableSites(), new IChoiceRenderer<Site>() {
 
               private static final long serialVersionUID = 1L;
 
@@ -287,7 +304,8 @@ public class UserViewOrEditPanel extends Panel {
     private final UserEditTable userEditTable;
 
     public UserEditFragment() {
-      super(USER_VIEW_OR_EDIT_FRAGMENT_ID, USER_EDIT_FRAGMENT_MARKUP_ID, UserViewOrEditPanel.this, UserViewOrEditPanel.this.getDefaultModel());
+      super(USER_VIEW_OR_EDIT_FRAGMENT_ID, USER_EDIT_FRAGMENT_MARKUP_ID, UserViewOrEditPanel.this,
+          UserViewOrEditPanel.this.getDefaultModel());
       userEditTable = new UserEditTable(USER_EDIT_TABLE_ID, (IModel<User>) UserEditFragment.this.getDefaultModel());
     }
 
@@ -309,7 +327,8 @@ public class UserViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public EditAjaxLink(final String id, final IModel<User> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public EditAjaxLink(final String id, final IModel<User> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.edit);
           setSize(Buttons.Size.Small);
@@ -346,88 +365,93 @@ public class UserViewOrEditPanel extends Panel {
 
       public UserViewTable(final String id, final IModel<User> model) {
         super(id, model);
-        userViewForm = new BootstrapForm<User>(USER_VIEW_FORM_COMPONENT_ID, new CompoundPropertyModel<User>((IModel<User>) UserViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink(EDIT_ID, (IModel<User>) UserViewTable.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        userViewForm = new BootstrapForm<User>(USER_VIEW_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<User>((IModel<User>) UserViewTable.this.getDefaultModel()));
+        editAjaxLink =
+            new EditAjaxLink(EDIT_ID, (IModel<User>) UserViewTable.this.getDefaultModel(), Buttons.Type.Primary,
+                Model.of(UserViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
       }
 
       @Override
       protected void onInitialize() {
-        userViewForm.add(new BootstrapSelect<Rule>(ACCESS_ID, Arrays.asList(Rule.values()), new IChoiceRenderer<Rule>() {
+        userViewForm
+            .add(new BootstrapSelect<Rule>(ACCESS_ID, Arrays.asList(Rule.values()), new IChoiceRenderer<Rule>() {
 
-          private static final long serialVersionUID = -1398366720610788897L;
+              private static final long serialVersionUID = -1398366720610788897L;
 
-          @Override
-          public Object getDisplayValue(final Rule object) {
-            return UserViewTable.this.getString(object.name()).toUpperCase();
-          }
-
-          @Override
-          public String getIdValue(final Rule object, final int index) {
-            return object.value();
-          }
-
-          @Override
-          public Rule getObject(final String id, final IModel<? extends List<? extends Rule>> choices) {
-            for (final Rule rule : choices.getObject()) {
-              if (id.equals(rule.value())) {
-                return rule;
+              @Override
+              public Object getDisplayValue(final Rule object) {
+                return UserViewTable.this.getString(object.name()).toUpperCase();
               }
-            }
-            return null;
-          }
 
-        }).setOutputMarkupId(true));
+              @Override
+              public String getIdValue(final Rule object, final int index) {
+                return object.value();
+              }
+
+              @Override
+              public Rule getObject(final String id, final IModel<? extends List<? extends Rule>> choices) {
+                for (final Rule rule : choices.getObject()) {
+                  if (id.equals(rule.value())) {
+                    return rule;
+                  }
+                }
+                return null;
+              }
+
+            }).setOutputMarkupId(true));
         userViewForm.add(new RequiredTextField<String>(NAME_ID).setOutputMarkupId(true));
-        userViewForm.add(new BootstrapMultiSelect<Role>(ROLES_ID, Arrays.asList(Role.values()), new IChoiceRenderer<Role>() {
+        userViewForm
+            .add(new BootstrapMultiSelect<Role>(ROLES_ID, Arrays.asList(Role.values()), new IChoiceRenderer<Role>() {
 
-          private static final long serialVersionUID = 1L;
+              private static final long serialVersionUID = 1L;
 
-          @Override
-          public Object getDisplayValue(final Role object) {
-            return UserViewTable.this.getString(object.name()).toUpperCase();
-          }
-
-          @Override
-          public String getIdValue(final Role object, final int index) {
-            return object.value();
-          }
-
-          @Override
-          public Role getObject(final String id, final IModel<? extends List<? extends Role>> choices) {
-            for (final Role role : choices.getObject()) {
-              if (id.equals(role.value())) {
-                return role;
+              @Override
+              public Object getDisplayValue(final Role object) {
+                return UserViewTable.this.getString(object.name()).toUpperCase();
               }
-            }
-            return null;
-          }
-        }));
+
+              @Override
+              public String getIdValue(final Role object, final int index) {
+                return object.value();
+              }
+
+              @Override
+              public Role getObject(final String id, final IModel<? extends List<? extends Role>> choices) {
+                for (final Role role : choices.getObject()) {
+                  if (id.equals(role.value())) {
+                    return role;
+                  }
+                }
+                return null;
+              }
+            }));
         userViewForm.add(new TextArea<String>(DESCRIPTION_ID).setOutputMarkupId(true));
-        userViewForm.add(new BootstrapMultiSelect<Group>(GROUPS_ID, getAllAvailableGroups(), new IChoiceRenderer<Group>() {
+        userViewForm
+            .add(new BootstrapMultiSelect<Group>(GROUPS_ID, getAllAvailableGroups(), new IChoiceRenderer<Group>() {
 
-          private static final long serialVersionUID = 1L;
+              private static final long serialVersionUID = 1L;
 
-          @Override
-          public Object getDisplayValue(final Group object) {
-            return object.getName().toUpperCase();
-          }
-
-          @Override
-          public String getIdValue(final Group object, final int index) {
-            return String.valueOf(object.getId());
-          }
-
-          @Override
-          public Group getObject(final String id, final IModel<? extends List<? extends Group>> choices) {
-            for (final Group group : choices.getObject()) {
-              if (id.equals(String.valueOf(group.getId()))) {
-                return group;
+              @Override
+              public Object getDisplayValue(final Group object) {
+                return object.getName().toUpperCase();
               }
-            }
-            return null;
-          }
-        }));
+
+              @Override
+              public String getIdValue(final Group object, final int index) {
+                return String.valueOf(object.getId());
+              }
+
+              @Override
+              public Group getObject(final String id, final IModel<? extends List<? extends Group>> choices) {
+                for (final Group group : choices.getObject()) {
+                  if (id.equals(String.valueOf(group.getId()))) {
+                    return group;
+                  }
+                }
+                return null;
+              }
+            }));
         userViewForm.add(new BootstrapMultiSelect<Site>(SITES_ID, getAllAvailableSites(), new IChoiceRenderer<Site>() {
 
           private static final long serialVersionUID = 1L;
@@ -469,7 +493,8 @@ public class UserViewOrEditPanel extends Panel {
     private final UserViewTable userViewTable;
 
     public UserViewFragment() {
-      super(USER_VIEW_OR_EDIT_FRAGMENT_ID, USER_VIEW_FRAGMENT_MARKUP_ID, UserViewOrEditPanel.this, UserViewOrEditPanel.this.getDefaultModel());
+      super(USER_VIEW_OR_EDIT_FRAGMENT_ID, USER_VIEW_FRAGMENT_MARKUP_ID, UserViewOrEditPanel.this,
+          UserViewOrEditPanel.this.getDefaultModel());
       userViewTable = new UserViewTable(USER_VIEW_TABLE_ID, (IModel<User>) UserViewFragment.this.getDefaultModel());
     }
 
@@ -484,14 +509,14 @@ public class UserViewOrEditPanel extends Panel {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(UserViewOrEditPanel.class);
 
-  @SpringBean(name = UserDataProvider.USER_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<User> userDataProvider;
+  @SpringBean(name = USER_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<User> userDataProvider;
 
-  @SpringBean(name = GroupDataProvider.GROUP_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Group> groupDataProvider;
+  @SpringBean(name = GROUP_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Group> groupDataProvider;
 
-  @SpringBean(name = SiteDataProvider.SITE_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Site> siteDataProvider;
+  @SpringBean(name = SITE_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Site> siteDataProvider;
 
   public UserViewOrEditPanel(final String id, final IModel<User> model) {
     super(id, model);

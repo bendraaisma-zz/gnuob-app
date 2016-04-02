@@ -1,5 +1,7 @@
 package com.netbrasoft.gnuob.application.contract;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.CONTRACT_DATA_PROVIDER_NAME;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeAction;
@@ -20,8 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Contract;
-import com.netbrasoft.gnuob.api.contract.ContractDataProvider;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.content.ContentViewOrEditPanel;
@@ -55,7 +56,8 @@ public class ContractViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public CancelAjaxLink(final String id, final IModel<Contract> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public CancelAjaxLink(final String id, final IModel<Contract> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setSize(Buttons.Size.Small);
         }
@@ -64,9 +66,11 @@ public class ContractViewOrEditPanel extends Panel {
         public void onClick(final AjaxRequestTarget target) {
           ContractViewOrEditPanel.this.removeAll();
           if (((Contract) CancelAjaxLink.this.getDefaultModelObject()).getId() > 0) {
-            CancelAjaxLink.this.setDefaultModelObject(contractDataProvider.findById((Contract) CancelAjaxLink.this.getDefaultModelObject()));
+            CancelAjaxLink.this.setDefaultModelObject(
+                contractDataProvider.findById((Contract) CancelAjaxLink.this.getDefaultModelObject()));
           }
-          target.add(ContractViewOrEditPanel.this.add(ContractViewOrEditPanel.this.new ContractViewFragment()).setOutputMarkupId(true));
+          target.add(ContractViewOrEditPanel.this.add(ContractViewOrEditPanel.this.new ContractViewFragment())
+              .setOutputMarkupId(true));
         }
       }
 
@@ -75,34 +79,42 @@ public class ContractViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 2695394292963384938L;
 
-        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form, final Buttons.Type type) {
+        public SaveAjaxButton(final String id, final IModel<String> model, final Form<?> form,
+            final Buttons.Type type) {
           super(id, model, form, type);
           setSize(Buttons.Size.Small);
-          add(new LoadingBehavior(Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))), new TinyMceAjaxSubmitModifier());
+          add(new LoadingBehavior(Model
+              .of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY))),
+              new TinyMceAjaxSubmitModifier());
         }
 
         @Override
         protected void onError(final AjaxRequestTarget target, final Form<?> form) {
           form.add(new TooltipValidation());
           target.add(form);
-          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+          target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model
+              .of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
         }
 
         @Override
         protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
           try {
             if (((Contract) form.getDefaultModelObject()).getId() == 0) {
-              ContractEditTable.this.setDefaultModelObject(contractDataProvider.findById(contractDataProvider.persist((Contract) form.getDefaultModelObject())));
+              ContractEditTable.this.setDefaultModelObject(
+                  contractDataProvider.findById(contractDataProvider.persist((Contract) form.getDefaultModelObject())));
             } else {
-              ContractEditTable.this.setDefaultModelObject(contractDataProvider.findById(contractDataProvider.merge((Contract) form.getDefaultModelObject())));
+              ContractEditTable.this.setDefaultModelObject(
+                  contractDataProvider.findById(contractDataProvider.merge((Contract) form.getDefaultModelObject())));
             }
             ContractViewOrEditPanel.this.removeAll();
-            target.add(ContractViewOrEditPanel.this.add(ContractViewOrEditPanel.this.new ContractViewFragment()).setOutputMarkupId(true));
+            target.add(ContractViewOrEditPanel.this.add(ContractViewOrEditPanel.this.new ContractViewFragment())
+                .setOutputMarkupId(true));
           } catch (final RuntimeException e) {
             LOGGER.warn(e.getMessage(), e);
             feedbackPanel.warn(e.getLocalizedMessage());
             target.add(feedbackPanel.setOutputMarkupId(true));
-            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
+            target.add(SaveAjaxButton.this.add(new LoadingBehavior(Model.of(
+                ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)))));
           }
         }
       }
@@ -147,32 +159,52 @@ public class ContractViewOrEditPanel extends Panel {
 
       public ContractEditTable(final String id, final IModel<Contract> model) {
         super(id, model);
-        contractEditForm =
-            new BootstrapForm<Contract>(CONTRACT_EDIT_FORM_COMPONENT_ID, new CompoundPropertyModel<Contract>((IModel<Contract>) ContractEditTable.this.getDefaultModel()));
-        cancelAjaxLink =
-            new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default, Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
-        saveAjaxButton = new SaveAjaxButton(SAVE_ID, Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)), contractEditForm,
-            Buttons.Type.Primary);
+        contractEditForm = new BootstrapForm<Contract>(CONTRACT_EDIT_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Contract>((IModel<Contract>) ContractEditTable.this.getDefaultModel()));
+        cancelAjaxLink = new CancelAjaxLink(CANCEL_ID, model, Buttons.Type.Default,
+            Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)));
+        saveAjaxButton = new SaveAjaxButton(SAVE_ID,
+            Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.SAVE_AND_CLOSE_MESSAGE_KEY)),
+            contractEditForm, Buttons.Type.Primary);
         feedbackPanel = new NotificationPanel(FEEDBACK_MARKUP_ID);
       }
 
       @Override
       protected void onInitialize() {
-        contractEditForm.add(new RequiredTextField<String>(CONTRACT_ID_ID).add(StringValidator.maximumLength(127)).setOutputMarkupId(true));
-        contractEditForm.add(new TextField<String>(CUSTOMER_FRIENDLY_NAME_ID).add(StringValidator.maximumLength(128)).setOutputMarkupId(true));
-        contractEditForm.add(new TextField<String>(CUSTOMER_BUYER_MARKETING_EMAIL_ID)
-            .setLabel(Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.BUYER_MARKETING_EMAIL_MESSAGE))).add(EmailAddressValidator.getInstance())
-            .add(StringValidator.maximumLength(127)).setOutputMarkupId(true));
-        contractEditForm.add(new TextField<String>(CUSTOMER_CONTACT_PHONE_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        contractEditForm.add(new TextField<String>(CUSTOMER_PAYER_ID).setLabel(Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.PAYER_MESSAGE_KEY)))
-            .add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)).setOutputMarkupId(true));
+        contractEditForm.add(new RequiredTextField<String>(CONTRACT_ID_ID).add(StringValidator.maximumLength(127))
+            .setOutputMarkupId(true));
+        contractEditForm.add(new TextField<String>(CUSTOMER_FRIENDLY_NAME_ID).add(StringValidator.maximumLength(128))
+            .setOutputMarkupId(true));
+        contractEditForm
+            .add(new TextField<String>(CUSTOMER_BUYER_MARKETING_EMAIL_ID)
+                .setLabel(Model.of(ContractViewOrEditPanel.this
+                    .getString(NetbrasoftApplicationConstants.BUYER_MARKETING_EMAIL_MESSAGE)))
+                .add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127))
+                .setOutputMarkupId(true));
+        contractEditForm.add(new TextField<String>(CUSTOMER_CONTACT_PHONE_ID).add(StringValidator.maximumLength(20))
+            .setOutputMarkupId(true));
+        contractEditForm
+            .add(
+                new TextField<String>(CUSTOMER_PAYER_ID)
+                    .setLabel(Model
+                        .of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.PAYER_MESSAGE_KEY)))
+                    .add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127))
+                    .setOutputMarkupId(true));
+        contractEditForm
+            .add(
+                new TextField<String>(CUSTOMER_PAYER_BUSINESS_ID)
+                    .setLabel(Model.of(ContractViewOrEditPanel.this
+                        .getString(NetbrasoftApplicationConstants.PAYER_BUSINESS_MESSAGE_KEY)))
+                    .add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127))
+                    .setOutputMarkupId(true));
         contractEditForm.add(
-            new TextField<String>(CUSTOMER_PAYER_BUSINESS_ID).setLabel(Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.PAYER_BUSINESS_MESSAGE_KEY)))
-                .add(EmailAddressValidator.getInstance()).add(StringValidator.maximumLength(127)).setOutputMarkupId(true));
-        contractEditForm.add(new TextField<String>(CUSTOMER_PAYER_ID_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        contractEditForm.add(new TextField<String>(CUSTOMER_PAYER_STATUS_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        contractEditForm.add(new TextField<String>(CUSTOMER_TAX_ID_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
-        contractEditForm.add(new TextField<String>(CUSTOMER_TAX_ID_TYPE_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+            new TextField<String>(CUSTOMER_PAYER_ID_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+        contractEditForm.add(new TextField<String>(CUSTOMER_PAYER_STATUS_ID).add(StringValidator.maximumLength(20))
+            .setOutputMarkupId(true));
+        contractEditForm.add(
+            new TextField<String>(CUSTOMER_TAX_ID_ID).add(StringValidator.maximumLength(20)).setOutputMarkupId(true));
+        contractEditForm.add(new TextField<String>(CUSTOMER_TAX_ID_TYPE_ID).add(StringValidator.maximumLength(20))
+            .setOutputMarkupId(true));
         add(contractEditForm.add(new FormBehavior(FormType.Horizontal)).setOutputMarkupId(true));
         add(feedbackPanel.hideAfter(Duration.seconds(5)).setOutputMarkupId(true));
         add(saveAjaxButton.setOutputMarkupId(true));
@@ -192,8 +224,10 @@ public class ContractViewOrEditPanel extends Panel {
     private final WebMarkupContainer contractEditTable;
 
     public ContractEditFragment() {
-      super(CONTRACT_VIEW_OR_EDIT_FRAGMENT_ID, CONTRACT_EDIT_FRAGMENT_MARKUP_ID, ContractViewOrEditPanel.this, ContractViewOrEditPanel.this.getDefaultModel());
-      contractEditTable = new ContractEditTable(CONTRACT_EDIT_TABLE_ID, (IModel<Contract>) ContractEditFragment.this.getDefaultModel());
+      super(CONTRACT_VIEW_OR_EDIT_FRAGMENT_ID, CONTRACT_EDIT_FRAGMENT_MARKUP_ID, ContractViewOrEditPanel.this,
+          ContractViewOrEditPanel.this.getDefaultModel());
+      contractEditTable =
+          new ContractEditTable(CONTRACT_EDIT_TABLE_ID, (IModel<Contract>) ContractEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -214,7 +248,8 @@ public class ContractViewOrEditPanel extends Panel {
 
         private static final long serialVersionUID = 4267535261864907719L;
 
-        public EditAjaxLink(final String id, final IModel<Contract> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public EditAjaxLink(final String id, final IModel<Contract> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.edit);
           setSize(Buttons.Size.Small);
@@ -223,7 +258,8 @@ public class ContractViewOrEditPanel extends Panel {
         @Override
         public void onClick(final AjaxRequestTarget target) {
           ContractViewOrEditPanel.this.removeAll();
-          target.add(ContractViewOrEditPanel.this.add(ContractViewOrEditPanel.this.new ContractEditFragment().setOutputMarkupId(true)));
+          target.add(ContractViewOrEditPanel.this
+              .add(ContractViewOrEditPanel.this.new ContractEditFragment().setOutputMarkupId(true)));
         }
       }
 
@@ -259,8 +295,10 @@ public class ContractViewOrEditPanel extends Panel {
 
       public ContractViewTable(final String id, final IModel<Contract> model) {
         super(id, model);
-        contractViewForm = new Form<Contract>(CONTRACT_VIEW_FORM_COMPONENT_ID, new CompoundPropertyModel<Contract>((IModel<Contract>) ContractViewTable.this.getDefaultModel()));
-        editAjaxLink = new EditAjaxLink(EDIT_ID, model, Buttons.Type.Primary, Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
+        contractViewForm = new Form<Contract>(CONTRACT_VIEW_FORM_COMPONENT_ID,
+            new CompoundPropertyModel<Contract>((IModel<Contract>) ContractViewTable.this.getDefaultModel()));
+        editAjaxLink = new EditAjaxLink(EDIT_ID, model, Buttons.Type.Primary,
+            Model.of(ContractViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.EDIT_MESSAGE_KEY)));
       }
 
       @Override
@@ -292,8 +330,10 @@ public class ContractViewOrEditPanel extends Panel {
     private final ContractViewTable contractViewTable;
 
     public ContractViewFragment() {
-      super(CONTRACT_VIEW_OR_EDIT_FRAGMENT_ID, CONTRACT_VIEW_FRAGMENT_MARKUP_ID, ContractViewOrEditPanel.this, ContractViewOrEditPanel.this.getDefaultModel());
-      contractViewTable = new ContractViewTable(CONTRACT_VIEW_TABLE_ID, (IModel<Contract>) ContractViewFragment.this.getDefaultModel());
+      super(CONTRACT_VIEW_OR_EDIT_FRAGMENT_ID, CONTRACT_VIEW_FRAGMENT_MARKUP_ID, ContractViewOrEditPanel.this,
+          ContractViewOrEditPanel.this.getDefaultModel());
+      contractViewTable =
+          new ContractViewTable(CONTRACT_VIEW_TABLE_ID, (IModel<Contract>) ContractViewFragment.this.getDefaultModel());
     }
 
     @Override
@@ -307,8 +347,8 @@ public class ContractViewOrEditPanel extends Panel {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ContentViewOrEditPanel.class);
 
-  @SpringBean(name = ContractDataProvider.CONTRACT_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Contract> contractDataProvider;
+  @SpringBean(name = CONTRACT_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Contract> contractDataProvider;
 
   public ContractViewOrEditPanel(final String id, final IModel<Contract> model) {
     super(id, model);

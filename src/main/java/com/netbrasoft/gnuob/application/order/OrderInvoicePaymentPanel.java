@@ -177,7 +177,7 @@ public class OrderInvoicePaymentPanel extends Panel {
                   @Override
                   public void renderHead(final Component component, final IHeaderResponse response) {
                     response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                        new ConfirmationConfig().withTitle(OrderInvoicePaymentPanel.this.getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY))
+                        new ConfirmationConfig().withTitle(OrderInvoicePaymentPanel.this.getString(NetbrasoftApplicationConstants.CONFIRMATION_MESSAGE_KEY))
                             .withSingleton(true).withPopout(true).withBtnOkLabel(OrderInvoicePaymentPanel.this.getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
                             .withBtnCancelLabel(OrderInvoicePaymentPanel.this.getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
                         .asDomReadyScript());

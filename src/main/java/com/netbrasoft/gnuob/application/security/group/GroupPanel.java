@@ -1,5 +1,6 @@
 package com.netbrasoft.gnuob.application.security.group;
 
+import static com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.GROUP_DATA_PROVIDER_NAME;
 import static de.agilecoders.wicket.jquery.JQuery.$;
 
 import org.apache.wicket.AttributeModifier;
@@ -26,8 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.netbrasoft.gnuob.api.Group;
-import com.netbrasoft.gnuob.api.generic.GenericTypeDataProvider;
-import com.netbrasoft.gnuob.api.security.GroupDataProvider;
+import com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
 import com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
 import com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
 import com.netbrasoft.gnuob.application.security.AppRoles;
@@ -65,7 +65,8 @@ public class GroupPanel extends Panel {
 
         private static final long serialVersionUID = -8317730269644885290L;
 
-        public AddAjaxLink(final String id, final IModel<Group> model, final Buttons.Type type, final IModel<String> labelModel) {
+        public AddAjaxLink(final String id, final IModel<Group> model, final Buttons.Type type,
+            final IModel<String> labelModel) {
           super(id, model, type, labelModel);
           setIconType(GlyphIconType.plus);
           setSize(Buttons.Size.Small);
@@ -123,20 +124,29 @@ public class GroupPanel extends Panel {
                 target.add(groupViewOrEditPanel.setOutputMarkupId(true));
               }
             });
-            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default, Model.of(GroupPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
-                .add(new ConfirmationBehavior() {
+            item.add(new RemoveAjaxLink(REMOVE_ID, item.getModel(), Buttons.Type.Default,
+                Model.of(GroupPanel.this.getString(NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY)))
+                    .add(new ConfirmationBehavior() {
 
-                  private static final long serialVersionUID = 7744720444161839031L;
+                      private static final long serialVersionUID = 7744720444161839031L;
 
-                  @Override
-                  public void renderHead(final Component component, final IHeaderResponse response) {
-                    response.render($(component).chain(CONFIRMATION_FUNCTION_NAME,
-                        new ConfirmationConfig().withTitle(getString(NetbrasoftApplicationConstants.CONFIRMATION_TITLE_MESSAGE_KEY)).withSingleton(true).withPopout(true)
-                            .withBtnOkLabel(getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
-                            .withBtnCancelLabel(getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
-                        .asDomReadyScript());
-                  }
-                }));
+                      @Override
+                      public void renderHead(final Component component, final IHeaderResponse response) {
+                        response
+                            .render(
+                                $(component)
+                                    .chain(CONFIRMATION_FUNCTION_NAME,
+                                        new ConfirmationConfig()
+                                            .withTitle(
+                                                getString(NetbrasoftApplicationConstants.CONFIRMATION_MESSAGE_KEY))
+                                            .withSingleton(true).withPopout(true)
+                                            .withBtnOkLabel(
+                                                getString(NetbrasoftApplicationConstants.CONFIRM_MESSAGE_KEY))
+                                            .withBtnCancelLabel(
+                                                getString(NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY)))
+                                    .asDomReadyScript());
+                      }
+                    }));
           }
         }
 
@@ -145,7 +155,8 @@ public class GroupPanel extends Panel {
 
           private static final long serialVersionUID = -8317730269644885290L;
 
-          public RemoveAjaxLink(final String id, final IModel<Group> model, final Buttons.Type type, final IModel<String> labelModel) {
+          public RemoveAjaxLink(final String id, final IModel<Group> model, final Buttons.Type type,
+              final IModel<String> labelModel) {
             super(id, model, type, labelModel);
             setIconType(GlyphIconType.remove);
             setSize(Buttons.Size.Mini);
@@ -225,12 +236,15 @@ public class GroupPanel extends Panel {
       public GroupTableContainer(final String id, final IModel<Group> model) {
         super(id, model);
         feedbackPanel = new NotificationPanel(FEEDBACK_ID);
-        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Group>) GroupTableContainer.this.getDefaultModel(), Buttons.Type.Primary,
-            Model.of(GroupPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
+        addAjaxLink = new AddAjaxLink(ADD_ID, (IModel<Group>) GroupTableContainer.this.getDefaultModel(),
+            Buttons.Type.Primary, Model.of(GroupPanel.this.getString(NetbrasoftApplicationConstants.ADD_MESSAGE_KEY)));
         orderByName = new OrderByBorder<String>(ORDER_BY_NAME_ID, NAME_PROPERTY, groupDataProvider);
-        orderByDescription = new OrderByBorder<String>(ORDER_BY_DESCRIPTION_ID, DESCRIPTION_PROPERTY, groupDataProvider);
-        groupDataviewContainer = new GroupDataviewContainer(GROUP_DATAVIEW_CONTAINER_ID, (IModel<Group>) GroupTableContainer.this.getDefaultModel());
-        groupPagingNavigator = new BootstrapPagingNavigator(GROUP_PAGING_NAVIGATOR_MARKUP_ID, groupDataviewContainer.groupDataview);
+        orderByDescription =
+            new OrderByBorder<String>(ORDER_BY_DESCRIPTION_ID, DESCRIPTION_PROPERTY, groupDataProvider);
+        groupDataviewContainer = new GroupDataviewContainer(GROUP_DATAVIEW_CONTAINER_ID,
+            (IModel<Group>) GroupTableContainer.this.getDefaultModel());
+        groupPagingNavigator =
+            new BootstrapPagingNavigator(GROUP_PAGING_NAVIGATOR_MARKUP_ID, groupDataviewContainer.groupDataview);
       }
 
       @Override
@@ -257,8 +271,10 @@ public class GroupPanel extends Panel {
 
     public GroupPanelContainer(final String id, final IModel<Group> model) {
       super(id, model);
-      groupTableContainer = new GroupTableContainer(GROUP_TABLE_CONTAINER_ID, (IModel<Group>) GroupPanelContainer.this.getDefaultModel());
-      groupViewOrEditPanel = new GroupViewOrEditPanel(GROUP_VIEW_OR_EDIT_PANEL_ID, (IModel<Group>) GroupPanelContainer.this.getDefaultModel());
+      groupTableContainer =
+          new GroupTableContainer(GROUP_TABLE_CONTAINER_ID, (IModel<Group>) GroupPanelContainer.this.getDefaultModel());
+      groupViewOrEditPanel = new GroupViewOrEditPanel(GROUP_VIEW_OR_EDIT_PANEL_ID,
+          (IModel<Group>) GroupPanelContainer.this.getDefaultModel());
     }
 
     @Override
@@ -275,14 +291,15 @@ public class GroupPanel extends Panel {
 
   private static final long serialVersionUID = 3703226064705246155L;
 
-  @SpringBean(name = GroupDataProvider.GROUP_DATA_PROVIDER_NAME, required = true)
-  private transient GenericTypeDataProvider<Group> groupDataProvider;
+  @SpringBean(name = GROUP_DATA_PROVIDER_NAME, required = true)
+  private transient IGenericTypeDataProvider<Group> groupDataProvider;
 
   private final GroupPanelContainer groupPanelContainer;
 
   public GroupPanel(final String id, final IModel<Group> model) {
     super(id, model);
-    groupPanelContainer = new GroupPanelContainer(GROUP_PANEL_CONTAINER_ID, (IModel<Group>) GroupPanel.this.getDefaultModel());
+    groupPanelContainer =
+        new GroupPanelContainer(GROUP_PANEL_CONTAINER_ID, (IModel<Group>) GroupPanel.this.getDefaultModel());
   }
 
   @Override
