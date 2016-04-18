@@ -1,6 +1,12 @@
 package com.netbrasoft.gnuob.application.category.table;
 
+import static com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants.DESCRIPTION_MESSAGE_KEY;
+import static com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants.DESCRIPTION_PROPERTY_EXPRESSION;
+import static com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants.SMALL_CSS_CLASS;
+import static com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants.VALUE_MESSAGE_KEY;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,8 +21,10 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractTool
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeadersToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.ITreeProvider;
 import org.apache.wicket.extensions.markup.html.repeater.tree.TableTree;
+import org.apache.wicket.extensions.markup.html.repeater.tree.table.TreeColumn;
 import org.apache.wicket.extensions.markup.html.repeater.tree.theme.HumanTheme;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
@@ -24,7 +32,9 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import com.netbrasoft.gnuob.api.Category;
 import com.netbrasoft.gnuob.api.SubCategory;
+import com.netbrasoft.gnuob.application.NetbrasoftApplication;
 
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
@@ -41,7 +51,7 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
       private static final long serialVersionUID = 689335047835010940L;
     };
 
-    private transient Set<Long> ids = new HashSet<Long>();
+    private transient Set<Long> ids = new HashSet<>();
 
     private boolean inverse;
 
@@ -176,10 +186,48 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
     }
   }
 
+  static class SubCategoryTreeProvider implements ITreeProvider<SubCategory> {
+    private static final long serialVersionUID = -592161727647897932L;
+    private final IModel<Category> model;
+
+    public SubCategoryTreeProvider(final IModel<Category> model) {
+      this.model = model;
+    }
+
+    @Override
+    public void detach() {
+      return;
+    }
+
+    @Override
+    public Iterator<? extends SubCategory> getChildren(final SubCategory node) {
+      return node.getSubCategories().iterator();
+    }
+
+    @Override
+    public Iterator<? extends SubCategory> getRoots() {
+      return model.getObject().getSubCategories().iterator();
+    }
+
+    @Override
+    public boolean hasChildren(final SubCategory node) {
+      return !node.getSubCategories().isEmpty();
+    }
+
+    @Override
+    public IModel<SubCategory> model(final SubCategory object) {
+      return Model.of(object);
+    }
+  }
+
   private static final long serialVersionUID = 7537885853180365347L;
 
-  public SubCategoryTableTree(final String id, final List<? extends IColumn<SubCategory, String>> columns, final ITreeProvider<SubCategory> provider, final long rowsPerPage) {
-    super(id, columns, provider, rowsPerPage, new AbstractReadOnlyModel<Set<SubCategory>>() {
+  public SubCategoryTableTree(final String id, final IModel<Category> model) {
+    super(id, createColumns(), getSubCategoryTreeProvider(model), Long.MAX_VALUE, createState());
+  }
+
+  private static AbstractReadOnlyModel<Set<SubCategory>> createState() {
+    return new AbstractReadOnlyModel<Set<SubCategory>>() {
 
       private static final long serialVersionUID = 950443447495060811L;
 
@@ -187,7 +235,39 @@ public abstract class SubCategoryTableTree extends TableTree<SubCategory, String
       public Set<SubCategory> getObject() {
         return new SubCategoryExpansion().get();
       }
+    };
+  }
+
+  private static SubCategoryTreeProvider getSubCategoryTreeProvider(final IModel<Category> model) {
+    return new SubCategoryTreeProvider(model);
+  }
+
+  private static List<IColumn<SubCategory, String>> createColumns() {
+    final List<IColumn<SubCategory, String>> columns = new ArrayList<>();
+
+    columns.add(new TreeColumn<SubCategory, String>(
+        Model.of(NetbrasoftApplication.get().getResourceSettings().getLocalizer().getString(VALUE_MESSAGE_KEY, null))) {
+      private static final long serialVersionUID = -8544017108974205690L;
+
+      @Override
+      public String getCssClass() {
+        return SMALL_CSS_CLASS;
+      }
     });
+
+    columns.add(new PropertyColumn<SubCategory, String>(
+        Model.of(
+            NetbrasoftApplication.get().getResourceSettings().getLocalizer().getString(DESCRIPTION_MESSAGE_KEY, null)),
+        DESCRIPTION_PROPERTY_EXPRESSION) {
+      private static final long serialVersionUID = -1013188144051609487L;
+
+      @Override
+      public String getCssClass() {
+        return SMALL_CSS_CLASS;
+      }
+    });
+
+    return columns;
   }
 
   @Override

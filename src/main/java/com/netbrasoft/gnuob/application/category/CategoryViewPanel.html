@@ -1,0 +1,74 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+   <div wicket:id="categoryViewContainer">
+      <table wicket:id="categoryViewTableContainer">
+         <thead>
+            <tr>
+               <td
+                  colspan="1"
+                  align="left"></td>
+            </tr>
+         </thead>
+         <tbody>
+            <tr>
+               <td style="border-top: none;">
+                  <form
+                     wicket:id="categoryViewForm"
+                     action="">
+                     <div class="panel panel-default">
+                        <div class="panel-heading">
+                           <h3 class="panel-title">
+                              <wicket:message key="categoryMessage" />
+                           </h3>
+                        </div>
+                        <div class="panel-body">
+                           <div class="form-group">
+                              <small><label
+                                 class="col-sm-2 control-label"><wicket:message
+                                       key="positionMessage" /></label></small>
+                              <div class="col-sm-10">
+                                 <small><input
+                                    wicket:id="position"
+                                    class="form-control input-sm"
+                                    style="background-color: white;"
+                                    type="number"
+                                    readonly="readonly" /></small>
+                              </div>
+                           </div>
+                           <div class="form-group">
+                              <small><label
+                                 class="col-sm-2 control-label"><wicket:message
+                                       key="nameMessage" /></label></small>
+                              <div class="col-sm-10">
+                                 <small><input
+                                    wicket:id="name"
+                                    class="form-control input-sm"
+                                    style="background-color: white;"
+                                    type="text"
+                                    readonly="readonly" /></small>
+                              </div>
+                           </div>
+                           <div class="form-group">
+                              <small><label
+                                 class="col-sm-2 control-label"><wicket:message
+                                       key="descriptionMessage" /></label></small>
+                              <div class="col-sm-10">
+                                 <small><textarea
+                                       wicket:id="description"
+                                       class="form-control input-sm"
+                                       style="resize: vertical; background-color: white;"
+                                       rows="10"
+                                       readonly="readonly"
+                                       cols=""></textarea></small>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div wicket:id="categoryContentPanel"></div>
+                     <div wicket:id="categorySubCategoryPanel"></div>
+                  </form>
+               </td>
+            </tr>
+         </tbody>
+      </table>
+   </div>
+</wicket:panel>

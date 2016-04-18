@@ -1,10 +1,10 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
-   <style type="text/css">
+   <div wicket:id="categoryPanelContainer">
+      <style type="text/css">
 .categoryDataviewContainer tr {
-   cursor: pointer;
+	cursor: pointer;
 }
 </style>
-   <div wicket:id="categoryPanelContainer">
       <div class="panel panel-primary">
          <div class="panel-heading">
             <h3 class="panel-title">
@@ -15,26 +15,46 @@
             <table wicket:id="categoryTableContainer">
                <thead>
                   <tr>
-                     <td style="border-top: none;" colspan="3"><span wicket:id="feedback"></span></td>
+                     <td
+                        style="border-top: none;"
+                        colspan="3"><span wicket:id="feedback"></span></td>
                   </tr>
                   <tr>
-                     <td style="border-top: none;" colspan="3" align="left"><a href="#" wicket:id="add"></a></td>
+                     <td
+                        style="border-top: none;"
+                        colspan="3"
+                        align="left"><a
+                        href="#"
+                        wicket:id="add"></a></td>
                   </tr>
                   <tr>
-                     <th style="border-top: none;" wicket:id="orderByName"><small><wicket:message key="nameMessage" /></small></th>
-                     <th colspan="2" style="border-top: none;" wicket:id="orderByPosition"><small><wicket:message key="positionMessage" /></small></th>
+                     <th
+                        style="border-top: none;"
+                        wicket:id="orderByName"><small><wicket:message
+                              key="nameMessage" /></small></th>
+                     <th
+                        colspan="2"
+                        style="border-top: none;"
+                        wicket:id="orderByPosition"><small><wicket:message
+                              key="positionMessage" /></small></th>
                   </tr>
                </thead>
-               <tbody wicket:id="categoryDataviewContainer" class="categoryDataviewContainer">
+               <tbody
+                  wicket:id="categoryDataviewContainer"
+                  class="categoryDataviewContainer">
                   <tr wicket:id="categoryDataview">
                      <td><small><span wicket:id="name"></span></small></td>
                      <td><small><span wicket:id="position"></span></small></td>
-                     <td align="right"><button wicket:id="remove"></button></td>
+                     <td align="right"><button wicket:id="edit"></button>&nbsp;
+                        <button wicket:id="remove"></button></td>
                   </tr>
                </tbody>
                <tfoot>
                   <tr>
-                     <td colspan="3" align="right"><ul wicket:id="categoryPagingNavigator"></ul></td>
+                     <td
+                        colspan="3"
+                        align="right"><ul
+                           wicket:id="categoryPagingNavigator"></ul></td>
                   </tr>
                </tfoot>
             </table>
@@ -48,14 +68,23 @@
          </div>
          <div class="panel-body">
             <div align="right">
-               <a href="#needHelp" data-toggle="collapse" aria-expanded="false" aria-controls="needHelp"><small><wicket:message key="needHelpMessage" /></small></a>
-               <div class="collapse panel panel-default" id="needHelp">
+               <a
+                  href="#needHelp"
+                  data-toggle="collapse"
+                  aria-expanded="false"
+                  aria-controls="needHelp"><small><wicket:message
+                        key="needHelpMessage" /></small></a>
+               <div
+                  class="collapse panel panel-default"
+                  id="needHelp">
                   <div class="panel-body">
-                     <small><wicket:message key="needHelpTextMessage" /></small>
+                     <small><wicket:message
+                           key="needHelpTextMessage" /></small>
                   </div>
                </div>
             </div>
-            <div wicket:id="categoryViewOrEditPanel"></div>
+            <div wicket:id="categoryEditModal"></div>
+            <div wicket:id="categoryViewPanel"></div>
          </div>
       </div>
    </div>

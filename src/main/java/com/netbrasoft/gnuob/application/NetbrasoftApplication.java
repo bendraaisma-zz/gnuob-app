@@ -1,3 +1,17 @@
+/*
+ * Copyright 2016 Netbrasoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
 package com.netbrasoft.gnuob.application;
 
 import static com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants.CDNJS_CLOUDFLARE_COM_80;
@@ -21,7 +35,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.settings.SecuritySettings;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.crypt.CachingSunJceCryptFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.wicketstuff.wicket.servlet3.auth.ServletContainerAuthenticatedWebApplication;
 import org.wicketstuff.wicket.servlet3.auth.ServletContainerAuthenticatedWebSession;
 
@@ -37,7 +51,7 @@ import de.agilecoders.wicket.webjars.WicketWebjars;
 import de.agilecoders.wicket.webjars.settings.WebjarsSettings;
 import net.ftlines.wicketsource.WicketSource;
 
-@Service(WICKET_APPLICATION_NAME)
+@Component(WICKET_APPLICATION_NAME)
 public class NetbrasoftApplication extends ServletContainerAuthenticatedWebApplication {
 
   private static final BootstrapSettings BOOTSTRAP_SETTINGS = new BootstrapSettings();

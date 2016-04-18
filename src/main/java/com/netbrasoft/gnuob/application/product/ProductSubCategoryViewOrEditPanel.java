@@ -57,15 +57,16 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
 
           private static final long serialVersionUID = 890348942507232169L;
 
-          public SubCategoryDataview(final String id, final List<? extends IColumn<SubCategory, String>> columns, final ITreeProvider<SubCategory> provider,
-              final long rowsPerPage) {
-            super(id, columns, provider, rowsPerPage);
+          public SubCategoryDataview(final String id, final List<? extends IColumn<SubCategory, String>> columns,
+              final ITreeProvider<SubCategory> provider, final long rowsPerPage) {
+            super(id, null);
           }
 
           @Override
           protected Item<SubCategory> newRowItem(final String id, final int index, final IModel<SubCategory> model) {
             final Item<SubCategory> item = super.newRowItem(id, index, model);
-            for (final SubCategory subCategory : ((IModel<Product>) ProductSubCategoriesDataViewContainer.this.getDefaultModel()).getObject().getSubCategories()) {
+            for (final SubCategory subCategory : ((IModel<Product>) ProductSubCategoriesDataViewContainer.this
+                .getDefaultModel()).getObject().getSubCategories()) {
               if (subCategory.getId() == model.getObject().getId()) {
                 item.add(new BootstrapBaseBehavior() {
 
@@ -82,9 +83,12 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
 
                   @Override
                   public void onEvent(final AjaxRequestTarget target) {
-                    ((IModel<Product>) ProductSubCategoriesDataViewContainer.this.getDefaultModel()).getObject().getSubCategories().remove(subCategory);
+                    ((IModel<Product>) ProductSubCategoriesDataViewContainer.this.getDefaultModel()).getObject()
+                        .getSubCategories().remove(subCategory);
                     ProductSubCategoryViewOrEditPanel.this.removeAll();
-                    target.add(ProductSubCategoryViewOrEditPanel.this.add(ProductSubCategoryViewOrEditPanel.this.new SubCategoryEditFragment()).setOutputMarkupId(true));
+                    target.add(ProductSubCategoryViewOrEditPanel.this
+                        .add(ProductSubCategoryViewOrEditPanel.this.new SubCategoryEditFragment())
+                        .setOutputMarkupId(true));
                   }
                 });
                 return item;
@@ -97,9 +101,11 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
 
               @Override
               public void onEvent(final AjaxRequestTarget target) {
-                ((IModel<Product>) ProductSubCategoriesDataViewContainer.this.getDefaultModel()).getObject().getSubCategories().add(item.getModelObject());
+                ((IModel<Product>) ProductSubCategoriesDataViewContainer.this.getDefaultModel()).getObject()
+                    .getSubCategories().add(item.getModelObject());
                 ProductSubCategoryViewOrEditPanel.this.removeAll();
-                target.add(ProductSubCategoryViewOrEditPanel.this.add(ProductSubCategoryViewOrEditPanel.this.new SubCategoryEditFragment()).setOutputMarkupId(true));
+                target.add(ProductSubCategoryViewOrEditPanel.this
+                    .add(ProductSubCategoryViewOrEditPanel.this.new SubCategoryEditFragment()).setOutputMarkupId(true));
               }
             });
             return item;
@@ -114,7 +120,8 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
 
         public ProductSubCategoriesDataViewContainer(final String id, final IModel<Category> model) {
           super(id, model);
-          subCategoryDataview = new SubCategoryDataview(PRODUCT_SUB_CATEGORIES_DATA_VIEW_ID, createColumns(), subCategoryTreeProvider, Integer.MAX_VALUE);
+          subCategoryDataview = new SubCategoryDataview(PRODUCT_SUB_CATEGORIES_DATA_VIEW_ID, createColumns(),
+              subCategoryTreeProvider, Integer.MAX_VALUE);
         }
 
         @Override
@@ -126,7 +133,8 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
 
       private static final String SUB_CATEGORY_EDIT_FORM_ID = "subCategoryEditForm";
 
-      private static final String PRODUCT_SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID = "productSubCategoriesDataViewContainer";
+      private static final String PRODUCT_SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID =
+          "productSubCategoriesDataViewContainer";
 
       private static final long serialVersionUID = 1244529149500926347L;
 
@@ -137,7 +145,8 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
       public ProductSubCategoryEditTable(final String id, final IModel<Category> model) {
         super(id, model);
         productSubCategoriesDataViewContainer =
-            new ProductSubCategoriesDataViewContainer(PRODUCT_SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID, (IModel<Category>) ProductSubCategoryEditTable.this.getDefaultModel());
+            new ProductSubCategoriesDataViewContainer(PRODUCT_SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID,
+                (IModel<Category>) ProductSubCategoryEditTable.this.getDefaultModel());
         subCategoryEditForm = new BootstrapForm<>(SUB_CATEGORY_EDIT_FORM_ID);
       }
 
@@ -160,9 +169,10 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
     private final ProductSubCategoryEditTable productSubCategoryEditTable;
 
     public SubCategoryEditFragment() {
-      super(PRODUCT_SUB_CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, PRODUCT_SUB_CATEGORY_EDIT_FRAGMENT_MARKUP_ID, ProductSubCategoryViewOrEditPanel.this,
-          ProductSubCategoryViewOrEditPanel.this.getDefaultModel());
-      productSubCategoryEditTable = new ProductSubCategoryEditTable(PRODUCT_SUB_CATEGORY_EDIT_TABLE_ID, (IModel<Category>) SubCategoryEditFragment.this.getDefaultModel());
+      super(PRODUCT_SUB_CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, PRODUCT_SUB_CATEGORY_EDIT_FRAGMENT_MARKUP_ID,
+          ProductSubCategoryViewOrEditPanel.this, ProductSubCategoryViewOrEditPanel.this.getDefaultModel());
+      productSubCategoryEditTable = new ProductSubCategoryEditTable(PRODUCT_SUB_CATEGORY_EDIT_TABLE_ID,
+          (IModel<Category>) SubCategoryEditFragment.this.getDefaultModel());
     }
 
     @Override
@@ -217,15 +227,16 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
 
           private static final long serialVersionUID = 890348942507232169L;
 
-          public SubCategoryDataview(final String id, final List<? extends IColumn<SubCategory, String>> columns, final ITreeProvider<SubCategory> provider,
-              final long rowsPerPage) {
-            super(id, columns, provider, rowsPerPage);
+          public SubCategoryDataview(final String id, final List<? extends IColumn<SubCategory, String>> columns,
+              final ITreeProvider<SubCategory> provider, final long rowsPerPage) {
+            super(id, null);
           }
 
           @Override
           protected Item<SubCategory> newRowItem(final String id, final int index, final IModel<SubCategory> model) {
             final Item<SubCategory> item = super.newRowItem(id, index, model);
-            for (final SubCategory subCategory : ((IModel<Product>) ProductSubCategoriesDataViewContainer.this.getDefaultModel()).getObject().getSubCategories()) {
+            for (final SubCategory subCategory : ((IModel<Product>) ProductSubCategoriesDataViewContainer.this
+                .getDefaultModel()).getObject().getSubCategories()) {
               if (subCategory.getId() == model.getObject().getId()) {
                 item.add(new BootstrapBaseBehavior() {
 
@@ -251,7 +262,8 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
 
         public ProductSubCategoriesDataViewContainer(final String id, final IModel<Category> model) {
           super(id, model);
-          subCategoryDataview = new SubCategoryDataview(PRODUCT_SUB_CATEGORIES_DATA_VIEW_ID, createColumns(), subCategoryTreeProvider, Integer.MAX_VALUE);
+          subCategoryDataview = new SubCategoryDataview(PRODUCT_SUB_CATEGORIES_DATA_VIEW_ID, createColumns(),
+              subCategoryTreeProvider, Integer.MAX_VALUE);
         }
 
         @Override
@@ -263,7 +275,8 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
 
       private static final String SUB_CATEGORY_VIEW_FORM_ID = "subCategoryViewForm";
 
-      private static final String PRODUCT_SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID = "productSubCategoriesDataViewContainer";
+      private static final String PRODUCT_SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID =
+          "productSubCategoriesDataViewContainer";
 
       private static final long serialVersionUID = -4728519835478043962L;
 
@@ -274,7 +287,8 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
       public ProductSubCategoryViewTable(final String id, final IModel<Category> model) {
         super(id, model);
         productSubCategoriesDataViewContainer =
-            new ProductSubCategoriesDataViewContainer(PRODUCT_SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID, (IModel<Category>) ProductSubCategoryViewTable.this.getDefaultModel());
+            new ProductSubCategoriesDataViewContainer(PRODUCT_SUB_CATEGORIES_DATA_VIEW_CONTAINER_ID,
+                (IModel<Category>) ProductSubCategoryViewTable.this.getDefaultModel());
         subCategoryViewForm = new BootstrapForm<>(SUB_CATEGORY_VIEW_FORM_ID);
       }
 
@@ -297,9 +311,10 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
     private final ProductSubCategoryViewTable productSubCategoryViewTable;
 
     public SubCategoryViewFragment() {
-      super(PRODUCT_SUB_CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, PRODUCT_SUB_CATEGORY_VIEW_FRAGMENT_MARKUP_ID, ProductSubCategoryViewOrEditPanel.this,
-          ProductSubCategoryViewOrEditPanel.this.getDefaultModel());
-      productSubCategoryViewTable = new ProductSubCategoryViewTable(PRODUCT_SUB_CATEGORY_VIEW_TABLE_ID, (IModel<Category>) SubCategoryViewFragment.this.getDefaultModel());
+      super(PRODUCT_SUB_CATEGORY_VIEW_OR_EDIT_FRAGMENT_ID, PRODUCT_SUB_CATEGORY_VIEW_FRAGMENT_MARKUP_ID,
+          ProductSubCategoryViewOrEditPanel.this, ProductSubCategoryViewOrEditPanel.this.getDefaultModel());
+      productSubCategoryViewTable = new ProductSubCategoryViewTable(PRODUCT_SUB_CATEGORY_VIEW_TABLE_ID,
+          (IModel<Category>) SubCategoryViewFragment.this.getDefaultModel());
     }
 
     @Override
@@ -327,7 +342,8 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
   private List<IColumn<SubCategory, String>> createColumns() {
     final List<IColumn<SubCategory, String>> columns = new ArrayList<IColumn<SubCategory, String>>();
 
-    columns.add(new TreeColumn<SubCategory, String>(Model.of(ProductSubCategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.VALUE_MESSAGE_KEY))) {
+    columns.add(new TreeColumn<SubCategory, String>(
+        Model.of(ProductSubCategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.VALUE_MESSAGE_KEY))) {
       private static final long serialVersionUID = -8544017108974205690L;
 
       @Override
@@ -336,7 +352,9 @@ public class ProductSubCategoryViewOrEditPanel extends Panel {
       }
     });
 
-    columns.add(new PropertyColumn<SubCategory, String>(Model.of(ProductSubCategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.DESCRIPTION_MESSAGE_KEY)),
+    columns.add(new PropertyColumn<SubCategory, String>(
+        Model.of(
+            ProductSubCategoryViewOrEditPanel.this.getString(NetbrasoftApplicationConstants.DESCRIPTION_MESSAGE_KEY)),
         DESCRIPTION_PROPERTY_EXPRESSION) {
       private static final long serialVersionUID = -1013188144051609487L;
 

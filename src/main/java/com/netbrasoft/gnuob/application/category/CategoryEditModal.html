@@ -1,0 +1,33 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+   <wicket:extend>
+      <span wicket:id="feedback"></span>
+      <form
+         wicket:id="categoryEditForm"
+         action="">
+         <div class="form-group">
+            <small><label class="control-label"><wicket:message
+                     key="positionMessage" /></label></small> <input
+               wicket:id="position"
+               class="form-control input-sm"
+               type="number" />
+         </div>
+         <div class="form-group required">
+            <small><label class="control-label"><wicket:message
+                     key="nameMessage" /></label></small> <input
+               wicket:id="name"
+               class="form-control input-sm"
+               type="text" />
+         </div>
+         <div class="form-group required">
+            <small><label class="control-label"><wicket:message
+                     key="descriptionMessage" /></label></small>
+            <textarea
+               wicket:id="description"
+               class="form-control input-sm"
+               style="resize: vertical;"
+               rows="10"
+               cols=""></textarea>
+         </div>
+      </form>
+   </wicket:extend>
+</wicket:panel>

@@ -8,3 +8,4 @@ release.properties
 /.pmd
 /.project
 /.settings/
+/.tern-project
