@@ -1,130 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-	version="3.0">
-	<display-name>gnuob-app</display-name>
-
-	<session-config>
-		<session-timeout>30</session-timeout>
-	</session-config>
-
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/applicationContext.xml</param-value>
-	</context-param>
-
-	<filter>
-		<filter-name>simon-console-filter</filter-name>
-		<filter-class>org.javasimon.console.SimonConsoleFilter</filter-class>
-		<init-param>
-			<param-name>url-prefix</param-name>
-			<param-value>/console-servlet</param-value>
-		</init-param>
-	</filter>
-
-	<filter>
-		<filter-name>simon-filter</filter-name>
-		<filter-class>org.javasimon.javaee.SimonServletFilter</filter-class>
-		<init-param>
-			<param-name>prefix</param-name>
-			<param-value></param-value>
-		</init-param>
-		<init-param>
-			<param-name>stopwatch-source-props</param-name>
-			<param-value>includeHttpMethodName=ALWAYS</param-value>
-		</init-param>
-	</filter>
-
-	<filter>
-		<filter-name>wicket</filter-name>
-		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
-		<init-param>
-			<param-name>applicationFactoryClassName</param-name>
-			<param-value>org.apache.wicket.spring.SpringWebApplicationFactory</param-value>
-		</init-param>
-		<init-param>
-			<param-name>configuration</param-name>
-			<param-value>deployment</param-value>
-		</init-param>
-	</filter>
-
-	<filter-mapping>
-		<filter-name>simon-console-filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>simon-filter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<filter-mapping>
-		<filter-name>wicket</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>ERROR</dispatcher>
-	</filter-mapping>
-	
-	<error-page>
-		<error-code>404</error-code>
-		<location>/notFound.html</location>
-	</error-page>
-
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
-
-	<servlet>
-		<servlet-name>SimonConsoleServlet</servlet-name>
-		<servlet-class>org.javasimon.console.SimonConsoleServlet</servlet-class>
-		<init-param>
-			<param-name>url-prefix</param-name>
-			<param-value>/console-servlet</param-value>
-		</init-param>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>SimonConsoleServlet</servlet-name>
-		<url-pattern>/console-servlet/*</url-pattern>
-	</servlet-mapping>
-
-	<security-constraint>
-		<display-name>GNUOBConstraint</display-name>
-		<web-resource-collection>
-			<web-resource-name>Restricted</web-resource-name>
-			<description />
-			<url-pattern>/secure/*</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-			<description>GNUOB Roles</description>
-			<role-name>ADMINISTRATOR</role-name>
-			<role-name>MANAGER</role-name>
-			<role-name>EMPLOYEE</role-name>
-			<role-name>GUEST</role-name>
-		</auth-constraint>
-	</security-constraint>
-
-	<login-config>
-		<auth-method>FORM</auth-method>
-		<realm-name>GNUOBRealm</realm-name>
-		<form-login-config>
-			<form-login-page>/login.html</form-login-page>
-			<form-error-page>/index.html</form-error-page>
-		</form-login-config>
-	</login-config>
-
-	<security-role>
-		<role-name>ADMINISTRATOR</role-name>
-	</security-role>
-	<security-role>
-		<role-name>MANAGER</role-name>
-	</security-role>
-	<security-role>
-		<role-name>EMPLOYEE</role-name>
-	</security-role>
-	<security-role>
-		<role-name>GUEST</role-name>
-	</security-role>
+<web-app
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://java.sun.com/xml/ns/javaee"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+   version="3.0">
+   <display-name>gnuob-app</display-name>
+   <session-config>
+      <session-timeout>30</session-timeout>
+   </session-config>
+   <context-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/WEB-INF/applicationContext.xml</param-value>
+   </context-param>
+   <filter>
+      <filter-name>simon-console-filter</filter-name>
+      <filter-class>org.javasimon.console.SimonConsoleFilter</filter-class>
+      <init-param>
+         <param-name>url-prefix</param-name>
+         <param-value>/console-servlet</param-value>
+      </init-param>
+   </filter>
+   <filter>
+      <filter-name>simon-filter</filter-name>
+      <filter-class>org.javasimon.javaee.SimonServletFilter</filter-class>
+      <init-param>
+         <param-name>prefix</param-name>
+         <param-value></param-value>
+      </init-param>
+      <init-param>
+         <param-name>stopwatch-source-props</param-name>
+         <param-value>includeHttpMethodName=ALWAYS</param-value>
+      </init-param>
+   </filter>
+   <filter>
+      <filter-name>wicket</filter-name>
+      <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+      <init-param>
+         <param-name>applicationFactoryClassName</param-name>
+         <param-value>org.apache.wicket.spring.SpringWebApplicationFactory</param-value>
+      </init-param>
+      <init-param>
+         <param-name>configuration</param-name>
+         <param-value>deployment</param-value>
+      </init-param>
+   </filter>
+   <filter-mapping>
+      <filter-name>simon-console-filter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+   <filter-mapping>
+      <filter-name>simon-filter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+   <filter-mapping>
+      <filter-name>wicket</filter-name>
+      <url-pattern>/*</url-pattern>
+      <dispatcher>REQUEST</dispatcher>
+      <dispatcher>FORWARD</dispatcher>
+      <dispatcher>ERROR</dispatcher>
+   </filter-mapping>
+   <error-page>
+      <error-code>404</error-code>
+      <location>/notFound.html</location>
+   </error-page>
+   <listener>
+      <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+   </listener>
+   <servlet>
+      <servlet-name>SimonConsoleServlet</servlet-name>
+      <servlet-class>org.javasimon.console.SimonConsoleServlet</servlet-class>
+      <init-param>
+         <param-name>url-prefix</param-name>
+         <param-value>/console-servlet</param-value>
+      </init-param>
+   </servlet>
+   <servlet-mapping>
+      <servlet-name>SimonConsoleServlet</servlet-name>
+      <url-pattern>/console-servlet/*</url-pattern>
+   </servlet-mapping>
+   <security-constraint>
+      <display-name>GNUOBConstraint</display-name>
+      <web-resource-collection>
+         <web-resource-name>Restricted</web-resource-name>
+         <description />
+         <url-pattern>/secure/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+         <description>GNUOB Roles</description>
+         <role-name>ADMINISTRATOR</role-name>
+         <role-name>MANAGER</role-name>
+         <role-name>EMPLOYEE</role-name>
+         <role-name>GUEST</role-name>
+      </auth-constraint>
+   </security-constraint>
+   <login-config>
+      <auth-method>FORM</auth-method>
+      <realm-name>GNUOBRealm</realm-name>
+      <form-login-config>
+         <form-login-page>/login.html</form-login-page>
+         <form-error-page>/index.html</form-error-page>
+      </form-login-config>
+   </login-config>
+   <security-role>
+      <role-name>ADMINISTRATOR</role-name>
+   </security-role>
+   <security-role>
+      <role-name>MANAGER</role-name>
+   </security-role>
+   <security-role>
+      <role-name>EMPLOYEE</role-name>
+   </security-role>
+   <security-role>
+      <role-name>GUEST</role-name>
+   </security-role>
 </web-app>
