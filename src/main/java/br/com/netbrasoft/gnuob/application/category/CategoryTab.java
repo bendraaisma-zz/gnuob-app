@@ -14,10 +14,11 @@
 
 package br.com.netbrasoft.gnuob.application.category;
 
+import static org.apache.wicket.model.Model.of;
+
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 
 import br.com.netbrasoft.gnuob.api.Category;
 
@@ -31,11 +32,7 @@ public class CategoryTab extends AbstractTab {
 
   @Override
   public WebMarkupContainer getPanel(final String panelId) {
-    return new CategoryPanel(panelId, createCategoryModel());
-  }
-
-  private Model<Category> createCategoryModel() {
-    return Model.of(createCategory());
+    return new CategoryPanel(panelId, of(createCategory()));
   }
 
   private Category createCategory() {

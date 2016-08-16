@@ -132,7 +132,7 @@ public class CategoryContentPanel extends Panel {
         @Override
         public void onClick(final AjaxRequestTarget target) {
           categoryContentEditModal
-              .setSelectedCategory((IModel<Category>) CategoryContentTableContainer.this.getDefaultModel());
+              .setParentModel((IModel<Category>) CategoryContentTableContainer.this.getDefaultModel());
           target.add(getCategoryContentEditModelComponent());
         }
 

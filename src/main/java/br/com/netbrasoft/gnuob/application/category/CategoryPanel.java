@@ -14,6 +14,7 @@
 
 package br.com.netbrasoft.gnuob.application.category;
 
+import static br.com.netbrasoft.gnuob.api.OrderBy.POSITION_A_Z;
 import static br.com.netbrasoft.gnuob.api.generic.NetbrasoftApiConstants.CATEGORY_DATA_PROVIDER_NAME;
 import static br.com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants.ADD_ID;
 import static br.com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants.CANCEL_MESSAGE_KEY;
@@ -42,7 +43,11 @@ import static br.com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants
 import static br.com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants.REMOVE_ID;
 import static br.com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants.REMOVE_MESSAGE_KEY;
 import static br.com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants.UNCHECKED;
+import static br.com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession.getPassword;
+import static br.com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession.getSite;
+import static br.com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession.getUserName;
 import static de.agilecoders.wicket.jquery.JQuery.$;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.AttributeModifier;
@@ -66,15 +71,11 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import br.com.netbrasoft.gnuob.api.Category;
-import br.com.netbrasoft.gnuob.api.OrderBy;
-import br.com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
-import br.com.netbrasoft.gnuob.application.authorization.AppServletContainerAuthenticatedWebSession;
-import br.com.netbrasoft.gnuob.application.security.AppRoles;
-
 import br.com.netbrasoft.gnuob.api.generic.IGenericTypeDataProvider;
+import br.com.netbrasoft.gnuob.application.NetbrasoftApplicationConstants;
+import br.com.netbrasoft.gnuob.application.security.AppRoles;
 import de.agilecoders.wicket.core.markup.html.bootstrap.behavior.BootstrapBaseBehavior;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.BootstrapAjaxLink;
 import de.agilecoders.wicket.core.markup.html.bootstrap.button.Buttons;
@@ -184,10 +185,9 @@ public class CategoryPanel extends Panel {
                 removeCategory((Category) RemoveAjaxLink.this.getDefaultModelObject());
               } catch (final RuntimeException e) {
                 LOGGER.warn(e.getMessage(), e);
-                feedbackPanel.warn(e.getLocalizedMessage());
-                target.add(feedbackPanel.setOutputMarkupId(true));
+                warn(e.getLocalizedMessage());
               } finally {
-                target.add(categoryPanelContainer.setOutputMarkupId(true));
+                target.add(CategoryPanel.this.setOutputMarkupId(true));
               }
             }
 
@@ -436,35 +436,41 @@ public class CategoryPanel extends Panel {
 
   private static final long serialVersionUID = 3703226064705246155L;
   private static final int ITEMS_PER_PAGE = 20;
-  private static final Logger LOGGER = LoggerFactory.getLogger(CategoryPanel.class);
+  private static final Logger LOGGER = getLogger(CategoryPanel.class);
 
   @SpringBean(name = CATEGORY_DATA_PROVIDER_NAME, required = true)
   private IGenericTypeDataProvider<Category> categoryDataProvider;
-  private final CategoryPanelContainer categoryPanelContainer;
 
   public CategoryPanel(final String id, final IModel<Category> model) {
     super(id, model);
-    categoryPanelContainer = getCategoryPanelContainer();
-  }
-
-  private CategoryPanelContainer getCategoryPanelContainer() {
-    return new CategoryPanelContainer(CATEGORY_PANEL_CONTAINER_ID,
-        (IModel<Category>) CategoryPanel.this.getDefaultModel());
   }
 
   @Override
   protected void onInitialize() {
     super.onInitialize();
-    categoryDataProvider.setUser(AppServletContainerAuthenticatedWebSession.getUserName());
-    categoryDataProvider.setPassword(AppServletContainerAuthenticatedWebSession.getPassword());
-    categoryDataProvider.setSite(AppServletContainerAuthenticatedWebSession.getSite());
-    categoryDataProvider.setType(new Category());
-    categoryDataProvider.getType().setActive(true);
-    categoryDataProvider.setOrderBy(OrderBy.POSITION_A_Z);
+    initializeCategoryDataProvider();
     add(getCategoryPanelContainerComponent());
   }
 
+  private void initializeCategoryDataProvider() {
+    categoryDataProvider.setUser(getUserName());
+    categoryDataProvider.setPassword(getPassword());
+    categoryDataProvider.setSite(getSite());
+    categoryDataProvider.setType(new Category());
+    categoryDataProvider.getType().setActive(true);
+    categoryDataProvider.setOrderBy(POSITION_A_Z);
+  }
+
   private Component getCategoryPanelContainerComponent() {
-    return categoryPanelContainer.add(new CategoryPanelBootstrapBehavior()).setOutputMarkupId(true);
+    return getCategoryPanelContainer().add(getCategoryPanelBootstrapBehavior()).setOutputMarkupId(true);
+  }
+
+  private CategoryPanelBootstrapBehavior getCategoryPanelBootstrapBehavior() {
+    return new CategoryPanelBootstrapBehavior();
+  }
+
+  private CategoryPanelContainer getCategoryPanelContainer() {
+    return new CategoryPanelContainer(CATEGORY_PANEL_CONTAINER_ID,
+        (IModel<Category>) CategoryPanel.this.getDefaultModel());
   }
 }
